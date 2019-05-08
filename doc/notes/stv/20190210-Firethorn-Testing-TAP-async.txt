@@ -1,0 +1,417 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Date: 10 Feb 2019
+
+## Firethorn Version: 2.1.28
+## Resource ID: 1808
+## VM: Cadelicia
+## Server: trop01
+## VM Version: 4.18.13-200.fc28.x86_64
+## VM Platform: Fedora release 28 (Twenty Eight)
+## User Database: FirethornUserdataZRQ20170621151245DEV
+
+
+## TEST 1
+## Go through all tables of a resource and run an asynchronous TAP query
+
+## Firethorn Utils can be used as described here:
+## http://wfau.metagrid.co.uk/code/firethorn/file/fa50d2cbcfdd/doc/notes/stv/20190201-Firethorn-System-Validator.txt
+
+
+## Test run on local machine, with a proxy connection to Cadelicia ("8080:8081")
+/usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=async
+
+..
+
+
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [BestDR1.SpecObjAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8086158/results/result [Done]
+ERROR:root:http://localhost:8081/firethorn/tap/1808/async/8086158/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8086709')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 88, in _async_loop
+    return_vot = Table.read(url + '/results/result', format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 142, in parse
+    config=config, pos=(1, 1)).parse(iterator, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3405, in parse
+    iterator, tag, data, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3334, in _add_resource
+    resource.parse(self, iterator, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3156, in parse
+    iterator, tag, data, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3113, in _add_table
+    table.parse(iterator, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2405, in parse
+    iterator, colnumbers, fields, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2520, in _parse_tabledata
+    vo_reraise(e, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/exceptions.py", line 119, in vo_reraise
+    raise exc
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2517, in _parse_tabledata
+    fields[i].ID))
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/exceptions.py", line 119, in vo_reraise
+    raise exc
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2511, in _parse_tabledata
+    data, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/converters.py", line 555, in parse
+    value, mask = parse(x, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/converters.py", line 827, in parse
+    value = int(value, 10)
+ValueError: http://localhost:8081/firethorn/tap/1808/async/8086158/results/result:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8086709')
+Rowcount:-1
+Table query completed after 2.2352802753448486 seconds
+Testing [BestDR1.TilingInfo]
+Downloading http://localhost:8081/firethorn/tap/1808/async/8086159/results/result
+|=======================================================================================================================================================================| 2.7k/2.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 1.4024693965911865 seconds
+Testing [BestDR1.StripeDefs]
+
+
+
+##.. Query hangs
+## Check Blue Query object..
+## http://localhost:8081/firethorn/blue/query/8086160
+	.. 
+	{
+	"type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+	"input": "SELECT TOP 5 * FROM BestDR1.StripeDefs",
+	"results": {
+	"formats": {
+	"datatable": "http://localhost:8081/firethorn/adql/table/8085295/datatable",
+	"votable": "http://localhost:8081/firethorn/adql/table/8085295/votable"
+	},
+	"count": 5,
+	"state": "COMPLETED",
+	"table": "http://localhost:8081/firethorn/adql/table/8085295"
+	},
+	"status": "RUNNING",
+	"tables": [],
+	"callback": "http://localhost:8081/firethorn/callback/8086160",
+	"columns": [],
+	"mode": "DIRECT",
+	"adql": "SELECT TOP 5 *\nFROM BestDR1.StripeDefs",
+	"workspace": "http://localhost:8081/firethorn/adql/resource/1808",
+	"history": [
+	{
+	"type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+	"task": "http://localhost:8081/firethorn/blue/query/8086160",
+	"level": "INFO",
+	"message": null,
+	"state": "COMPLETED",
+	"owner": "http://localhost:8081/firethorn/community-member/8086500",
+	"self": "http://localhost:8081/firethorn/blue/log/entry/8086121",
+	"url": "http://localhost:8081/firethorn/blue/log/entry/8086121",
+	"ident": "8086121",
+	"created": "2019-02-10T20:41:50.251",
+	"modified": "2019-02-10T20:41:50.251"
+	},
+	{
+	"type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+	"task": "http://localhost:8081/firethorn/blue/query/8086160",
+	"level": "INFO",
+	"message": "Executing query",
+	"state": "READY",
+	"owner": "http://localhost:8081/firethorn/community-member/8086499",
+	"self": "http://localhost:8081/firethorn/blue/log/entry/8086120",
+	"url": "http://localhost:8081/firethorn/blue/log/entry/8086120",
+	"ident": "8086120",
+	"created": "2019-02-10T20:41:49.908",
+	"modified": "2019-02-10T20:41:49.908"
+	}
+
+...
+
+## Looks like results.state =="COMPLETED"
+## but "status": "RUNNING"
+## 
+
+## Checking firethorn logs for exception
+
+ssh Stevedore@Cadelicia
+
+[Stevedore@Cadelicia ~]$ docker exec -it stevedore_gillian_1
+
+bash-4.4$ tail -f -n 100000 logs/firethorn-debug.log | grep -C 10 "Exception"
+2019-02-10 20:37:04,519 DEBUG [callback-interface-2] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:04,519 DEBUG [callback-interface-2] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:04,520 DEBUG [callback-interface-2] [BlueTaskEntity] handle() [] 
+2019-02-10 20:37:04,520 DEBUG [callback-interface-2] [BlueTaskEntity$Handle] event() [8080047]:[COMPLETED]->[COMPLETED]:[true]->[false] 
+2019-02-10 20:37:04,523 DEBUG [FireThornTaskExecutor-21] [SimpleWorkflowResult] RequestExecutionStatus [uk.org.ogsadai.resource.request.status.PROCESSING] 
+2019-02-10 20:37:04,525 DEBUG [FireThornTaskExecutor-21] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:04,525 DEBUG [FireThornTaskExecutor-21] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:04,526 DEBUG [FireThornTaskExecutor-21] [BlueTaskEntity] transition(TaskState) 
+2019-02-10 20:37:04,526 DEBUG [FireThornTaskExecutor-21] [BlueTaskEntity]   ident [8080047] 
+2019-02-10 20:37:04,526 DEBUG [FireThornTaskExecutor-21] [BlueTaskEntity]   state [COMPLETED][RUNNING] 
+2019-02-10 20:37:04,526 ERROR [FireThornTaskExecutor-21] [BlueTaskEntity] InvalidStateTransitionException [8080047] 
+2019-02-10 20:37:04,536 DEBUG [callback-interface-2] [HttpRequestDebug] Response headers 
+2019-02-10 20:37:04,536 DEBUG [callback-interface-2] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2019-02-10 20:37:04,536 DEBUG [callback-interface-2] [HttpRequestDebug]   [Content-Type][application/json;...] 
+2019-02-10 20:37:04,536 DEBUG [callback-interface-2] [HttpRequestDebug]   [Transfer-Encoding][chunked] 
+2019-02-10 20:37:04,536 DEBUG [callback-interface-2] [HttpRequestDebug]   [Date][Sun, 10 Feb 2019 ...] 
+2019-02-10 20:37:04,536 DEBUG [callback-interface-2] [HttpRequestDebug] ---- 
+2019-02-10 20:37:04,536 DEBUG [main-interface-3] [BlueTaskEntity] Finished thread() 
+2019-02-10 20:37:04,536 DEBUG [main-interface-3] [BlueTaskEntity]   state [READY] 
+2019-02-10 20:37:04,536 DEBUG [main-interface-3] [BlueTaskEntity] Refreshing state 
+2019-02-10 20:37:04,537 DEBUG [main-interface-3] [AdqlQueryTimings] AdqlQueryTimings() 
+--
+2019-02-10 20:37:05,927 DEBUG [FireThornTaskExecutor-53] [SimpleWorkflowResult] RequestExecutionStatus [uk.org.ogsadai.resource.request.status.PROCESSING] 
+2019-02-10 20:37:05,928 DEBUG [callback-interface-3] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:05,928 DEBUG [callback-interface-3] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:05,928 DEBUG [callback-interface-3] [BlueTaskEntity] handle() [] 
+2019-02-10 20:37:05,929 DEBUG [callback-interface-3] [BlueTaskEntity$Handle] event() [8080048]:[COMPLETED]->[COMPLETED]:[true]->[false] 
+2019-02-10 20:37:05,929 DEBUG [FireThornTaskExecutor-53] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:05,929 DEBUG [FireThornTaskExecutor-53] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:05,930 DEBUG [FireThornTaskExecutor-53] [BlueTaskEntity] transition(TaskState) 
+2019-02-10 20:37:05,930 DEBUG [FireThornTaskExecutor-53] [BlueTaskEntity]   ident [8080048] 
+2019-02-10 20:37:05,930 DEBUG [FireThornTaskExecutor-53] [BlueTaskEntity]   state [COMPLETED][RUNNING] 
+2019-02-10 20:37:05,930 ERROR [FireThornTaskExecutor-53] [BlueTaskEntity] InvalidStateTransitionException [8080048] 
+2019-02-10 20:37:05,945 DEBUG [main-interface-5] [BlueTaskEntity] Finished thread() 
+2019-02-10 20:37:05,945 DEBUG [main-interface-5] [BlueTaskEntity]   state [READY] 
+2019-02-10 20:37:05,945 DEBUG [main-interface-5] [BlueTaskEntity] Refreshing state 
+2019-02-10 20:37:05,946 DEBUG [main-interface-5] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:05,946 DEBUG [main-interface-5] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-02-10 20:37:05,947 DEBUG [callback-interface-3] [HttpRequestDebug] Response headers 
+2019-02-10 20:37:05,947 DEBUG [callback-interface-3] [HttpRequestDebug]   [X-Clacks-Overhead][GNU Terry Pratchett] 
+2019-02-10 20:37:05,947 DEBUG [callback-interface-3] [HttpRequestDebug]   [Content-Type][application/json;...] 
+2019-02-10 20:37:05,947 DEBUG [callback-interface-3] [HttpRequestDebug]   [Transfer-Encoding][chunked] 
+2019-02-10 20:37:05,947 DEBUG [callback-interface-3] [HttpRequestDebug]   [Date][Sun, 10 Feb 2019 ...] 
+
+## InvalidStateTransitionException ?
+## 2019-02-10 20:37:04,526 ERROR [FireThornTaskExecutor-21] [BlueTaskEntity] InvalidStateTransitionException [8080047] 
+
+
+## Check Ogsadai Logs
+## (No exceptions found for that query..)
+
+bash-4.4$ tail -f -n 100000 logs/ogsadai.log | grep "8086160"
+        Literal: context.ident.input : 8086160
+        Literal: context.ident.input : 8086160
+        Literal: context.ident.input : 8086160
+        Literal: context.ident.input : 8086160
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:179]   Ident    [8086160]
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:180]   Endpoint [http://172.18.0.5:8081/firethorn/blue/query/callback/8086160]
+2019-02-10 20:41:50,280 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:216]   Ident [8086160]
+2019-02-10 20:41:50,281 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:219]   Self  [http://172.18.0.5:8081/firethorn/blue/query/8086160]
+^C
+bash-4.4$ ^C
+bash-4.4$ tail -f -n 100000 logs/ogsadai.log | grep -C 10 "8086160"
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a77629ad-f2bf-4175-81c9-f77134cfaff8]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a2ff91c4-00b4-4bad-a5d3-2b9cf804c882,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-67aab4c6-46f3-4f61-9ac7-9623b9b7afc4
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 8086160
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[StripeDefs].[stripe] AS "stripe",[BestDR1].[dbo].[StripeDefs].[hemisphere] AS "hemisphere",[BestDR1].[dbo].[StripeDefs].[eta] AS "eta",[BestDR1].[dbo].[StripeDefs].[lambdaMin] AS "lambdaMin",[BestDR1].[dbo].[StripeDefs].[lambdaMax] AS "lambdaMax",[BestDR1].[dbo].[StripeDefs].[htmArea] AS "htmArea"
+FROM [BestDR1].[dbo].[StripeDefs]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-296d893f-fab8-4255-97f7-ffbfc18c0ce3,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-072134f5-8fcf-46b0-a350-1321d775ef4e
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+--
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a77629ad-f2bf-4175-81c9-f77134cfaff8]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a2ff91c4-00b4-4bad-a5d3-2b9cf804c882,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-67aab4c6-46f3-4f61-9ac7-9623b9b7afc4
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 8086160
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[StripeDefs].[stripe] AS "stripe",[BestDR1].[dbo].[StripeDefs].[hemisphere] AS "hemisphere",[BestDR1].[dbo].[StripeDefs].[eta] AS "eta",[BestDR1].[dbo].[StripeDefs].[lambdaMin] AS "lambdaMin",[BestDR1].[dbo].[StripeDefs].[lambdaMax] AS "lambdaMax",[BestDR1].[dbo].[StripeDefs].[htmArea] AS "htmArea"
+FROM [BestDR1].[dbo].[StripeDefs]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-296d893f-fab8-4255-97f7-ffbfc18c0ce3,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-072134f5-8fcf-46b0-a350-1321d775ef4e
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+--
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a77629ad-f2bf-4175-81c9-f77134cfaff8]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a2ff91c4-00b4-4bad-a5d3-2b9cf804c882,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-67aab4c6-46f3-4f61-9ac7-9623b9b7afc4
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 8086160
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[StripeDefs].[stripe] AS "stripe",[BestDR1].[dbo].[StripeDefs].[hemisphere] AS "hemisphere",[BestDR1].[dbo].[StripeDefs].[eta] AS "eta",[BestDR1].[dbo].[StripeDefs].[lambdaMin] AS "lambdaMin",[BestDR1].[dbo].[StripeDefs].[lambdaMax] AS "lambdaMax",[BestDR1].[dbo].[StripeDefs].[htmArea] AS "htmArea"
+FROM [BestDR1].[dbo].[StripeDefs]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-296d893f-fab8-4255-97f7-ffbfc18c0ce3,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-072134f5-8fcf-46b0-a350-1321d775ef4e
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+--
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a77629ad-f2bf-4175-81c9-f77134cfaff8]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a2ff91c4-00b4-4bad-a5d3-2b9cf804c882,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-67aab4c6-46f3-4f61-9ac7-9623b9b7afc4
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 8086160
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[StripeDefs].[stripe] AS "stripe",[BestDR1].[dbo].[StripeDefs].[hemisphere] AS "hemisphere",[BestDR1].[dbo].[StripeDefs].[eta] AS "eta",[BestDR1].[dbo].[StripeDefs].[lambdaMin] AS "lambdaMin",[BestDR1].[dbo].[StripeDefs].[lambdaMax] AS "lambdaMax",[BestDR1].[dbo].[StripeDefs].[htmArea] AS "htmArea"
+FROM [BestDR1].[dbo].[StripeDefs]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-296d893f-fab8-4255-97f7-ffbfc18c0ce3,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-5f8f44a6-564a-4a59-80fe-822fb0921670
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-072134f5-8fcf-46b0-a350-1321d775ef4e
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+--
+2019-02-10 20:41:50,203 DEBUG activity.MatchedIterativeActivity [pool-1-thread-3522,debug:84] performing last stage of processing
+2019-02-10 20:41:50,203 DEBUG data.DelaysActivity [pool-1-thread-3522,postprocess:198] postprocess()
+2019-02-10 20:41:50,203 DEBUG activity.MatchedIterativeActivity [pool-1-thread-3522,debug:84] performing clean-up
+2019-02-10 20:41:50,204 DEBUG event.LoggingActivityListener [pool-1-thread-3522,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-67aab4c6-46f3-4f61-9ac7-9623b9b7afc4)
+2019-02-10 20:41:50,208 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:157] callback(String, Long)
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:158]   task    [COMPLETED]
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:159]   results [COMPLETED]
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:160]   count   [5]
+2019-02-10 20:41:50,209 DEBUG context.RequestContextFactory [pool-1-thread-3523,endpoint:130] endpoint [http://172.18.0.5:8081/firethorn]
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:178] Before callback
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:179]   Ident    [8086160]
+2019-02-10 20:41:50,209 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:180]   Endpoint [http://172.18.0.5:8081/firethorn/blue/query/callback/8086160]
+2019-02-10 20:41:50,266 DEBUG context.RequestContextFactory [http-nio-8080-exec-9,createContext:62] createContext(HttpServletRequest)
+2019-02-10 20:41:50,267 DEBUG context.RequestContextFactory [http-nio-8080-exec-9,createContext:64] remote [172.18.0.5]
+2019-02-10 20:41:50,280 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:215] Response bean
+2019-02-10 20:41:50,280 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:216]   Ident [8086160]
+2019-02-10 20:41:50,281 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:217]   Name  [XX_7YT4KPKGCC52IAAAAFUNSJII4Y]
+2019-02-10 20:41:50,281 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:218]   State [COMPLETED]
+2019-02-10 20:41:50,281 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:219]   Self  [http://172.18.0.5:8081/firethorn/blue/query/8086160]
+2019-02-10 20:41:50,281 DEBUG blue.CallbackHandler [pool-1-thread-3523,callback:226] After callback
+2019-02-10 20:41:50,282 DEBUG activity.MatchedIterativeActivity [pool-1-thread-3523,debug:84] performing last stage of processing
+2019-02-10 20:41:50,282 DEBUG activity.MatchedIterativeActivity [pool-1-thread-3523,debug:84] performing clean-up
+2019-02-10 20:41:50,283 DEBUG event.LoggingActivityListener [pool-1-thread-3523,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-072134f5-8fcf-46b0-a350-1321d775ef4e)
+2019-02-10 20:41:50,283 DEBUG event.LoggingActivityListener [pool-1-thread-3524,debug:84] COMPLETED: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-63d65a2e-bb39-410e-82ed-0ec1788b37e1)
+2019-02-10 20:44:36,734 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:62] createContext(HttpServletRequest)
+2019-02-10 20:44:36,735 DEBUG context.RequestContextFactory [http-nio-8080-exec-10,createContext:64] remote [172.18.0.5]
+2019-02-10 20:44:36,863 DEBUG context.RequestContextFactory [http-nio-8080-exec-6,createContext:62] createContext(HttpServletRequest)
+2019-02-10 20:44:36,863 DEBUG context.RequestContextFactory [http-nio-8080-exec-6,createContext:64] remote [172.18.0.5]
+2019-02-10 20:44:36,864 DEBUG drer.SimpleDRER [http-nio-8080-exec-6,debug:84] Entered execute(CandidateRequestDescriptor)
+
+
+
+## Check Result VOTable for that query:
+
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" version="1.3">
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="OK"/>
+<INFO name="link" value="http://localhost:8081/firethorn/adql/table/8085295"/>
+<TABLE ID="table.8085295" name="XX_JNJUK7HBAZUYCAAAAFUNSJIKMA">
+<FIELD ID="column.8086727" name="stripe" datatype="int" arraysize="1" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://localhost:8081/firethorn/adql/column/8086727"/>
+</FIELD>
+<FIELD ID="column.8086729" name="hemisphere" datatype="char" arraysize="64" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://localhost:8081/firethorn/adql/column/8086729"/>
+</FIELD>
+<FIELD ID="column.8086731" name="eta" datatype="double" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://localhost:8081/firethorn/adql/column/8086731"/>
+</FIELD>
+<FIELD ID="column.8086733" name="lambdaMin" datatype="double" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://localhost:8081/firethorn/adql/column/8086733"/>
+</FIELD>
+<FIELD ID="column.8086735" name="lambdaMax" datatype="double" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://localhost:8081/firethorn/adql/column/8086735"/>
+</FIELD>
+<FIELD ID="column.8086737" name="htmArea" datatype="char" arraysize="1024" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://localhost:8081/firethorn/adql/column/8086737"/>
+</FIELD>
+<DATA>
+<TABLEDATA>
+<TR>
+<TD>1</TD>
+<TD>N</TD>
+<TD>-55.0</TD>
+<TD>-35.5</TD>
+<TD>7.1</TD>
+<TD/>
+</TR>
+<TR>
+<TD>2</TD>
+<TD>N</TD>
+<TD>-52.5</TD>
+<TD>-42.8</TD>
+<TD>19.8</TD>
+<TD/>
+</TR>
+<TR>
+<TD>3</TD>
+<TD>N</TD>
+<TD>-50.0</TD>
+<TD>-47.2</TD>
+<TD>28.3</TD>
+<TD/>
+</TR>
+<TR>
+<TD>4</TD>
+<TD>N</TD>
+<TD>-47.5</TD>
+<TD>-50.4</TD>
+<TD>34.7</TD>
+<TD/>
+</TR>
+<TR>
+<TD>5</TD>
+<TD>N</TD>
+<TD>-45.0</TD>
+<TD>-52.8</TD>
+<TD>39.6</TD>
+<TD/>
+</TR>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
+</VOTABLE>
+

@@ -1,0 +1,450 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
+# Firethorn Chain is running on Cadelicia on trop01
+
+# ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia 
+
+
+stelios@stelios-pc:~$ python3
+
+
+
+
+# -----------------------------------------------------
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+firethorn = ftpy.Firethorn(
+    endpoint = "http://localhost:8081/firethorn"
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+# Select a specific resource by Identity (url)
+
+resource=firethorn.firethorn_engine.select_adql_resource_by_ident(
+    "http://localhost:8081/firethorn/adql/resource/1808"
+    )
+
+
+for schema in resource.select_schemas():
+    print (schema)
+
+....
+
+...
+
+
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+# Select schema by Identity
+schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/305135"))
+
+
+# Import the TAP_schema into our workspace
+workspace.import_adql_schema(
+     schema
+ )
+
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 10 * FROM WISE.wise_allskysc"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+..
+
+{
+  "ident": "14086189",
+  "root": "http://localhost:8081/firethorn/jdbc/table/14086188",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+  "url": "http://localhost:8081/firethorn/adql/table/14086189",
+  "depth": "PARTIAL",
+  "text": null,
+  "columns": "http://localhost:8081/firethorn/adql/table/14086189/columns/select",
+  "formats": {
+    "votable": "http://localhost:8081/firethorn/adql/table/14086189/votable",
+    "datatable": "http://localhost:8081/firethorn/adql/table/14086189/datatable"
+  },
+  "resource": "http://localhost:8081/firethorn/adql/resource/14086060",
+  "fullname": "temp.XX_NYZJ7LU3RCCHIAAAAFUWRS23NQ",
+  "created": "2019-03-10T18:09:11.532",
+  "query": "http://localhost:8081/firethorn/blue/query/14085973",
+  "parent": "http://localhost:8081/firethorn/adql/schema/14086111",
+  "name": "XX_NYZJ7LU3RCCHIAAAAFUWRS23NQ",
+  "schema": "http://localhost:8081/firethorn/adql/schema/14086111",
+  "metadata": {
+    "adql": {
+      "status": "COMPLETED",
+      "count": 10
+    }
+  },
+  "base": "http://localhost:8081/firethorn/jdbc/table/14086188",
+  "self": "http://localhost:8081/firethorn/adql/table/14086189",
+  "owner": "http://localhost:8081/firethorn/community-member/14100129",
+  "modified": "2019-03-10T18:09:11.533"
+}
+..
+
+
+
+##---------------------------------------------------------------------------------##
+## Copied ChaosMonkey examples from dmr notes (20181029-01-tap-controller.txt)     ##
+##---------------------------------------------------------------------------------##
+
+
+# http://wfau.metagrid.co.uk/code/firethorn/file/ab423c5da4f5/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l469
+
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "baivahP0"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 1000 ra, dec FROM WISE.wise_allskysc"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+
+..
+{
+  "mode": "DIRECT",
+  "workspace": "http://localhost:8081/firethorn/adql/resource/14086059",
+  "modified": "2019-03-10T18:13:23.372",
+  "columns": [],
+  "resource": "http://localhost:8081/firethorn/adql/resource/14086059",
+  "history": [
+    {
+      "ident": "14086033",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/14086033",
+      "created": "2019-03-10T18:13:23.344",
+      "modified": "2019-03-10T18:13:23.345",
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "task": "http://localhost:8081/firethorn/blue/query/14085975",
+      "level": "INFO",
+      "owner": "http://localhost:8081/firethorn/community-member/14100895",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/14086033",
+      "state": "COMPLETED",
+      "message": null
+    },
+    {
+      "ident": "14086032",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/14086032",
+      "created": "2019-03-10T18:13:22.748",
+      "modified": "2019-03-10T18:13:22.748",
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "task": "http://localhost:8081/firethorn/blue/query/14085975",
+      "level": "INFO",
+      "owner": "http://localhost:8081/firethorn/community-member/14100129",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/14086032",
+      "state": "READY",
+      "message": "Executing query"
+    }
+  ],
+  "results": {
+    "count": 1000,
+    "table": "http://localhost:8081/firethorn/adql/table/14086191",
+    "state": "COMPLETED",
+    "formats": {
+      "votable": "http://localhost:8081/firethorn/adql/table/14086191/votable",
+      "datatable": "http://localhost:8081/firethorn/adql/table/14086191/datatable"
+    }
+  },
+  "tables": [],
+  "osql": "SELECT TOP 1000 [WISE].[dbo].[wise_allskysc].[ra] AS [ra] , [WISE].[dbo].[wise_allskysc].[dec] AS [dec]\nFROM [WISE].[dbo].[wise_allskysc]",
+  "limits": {
+    "time": null,
+    "rows": 1000000,
+    "cells": null
+  },
+  "fields": [],
+  "self": "http://localhost:8081/firethorn/blue/query/14085975",
+  "resources": [
+    "http://localhost:8081/firethorn/jdbc/resource/1807"
+  ],
+  "input": "SELECT TOP 1000 ra, dec FROM WISE.wise_allskysc",
+  "adql": "SELECT TOP 1000 ra , dec\nFROM WISE.wise_allskysc",
+  "callback": "http://localhost:8081/firethorn/callback/14085975",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+  "url": "http://localhost:8081/firethorn/blue/query/14085975",
+  "syntax": {
+    "friendly": null,
+    "message": null,
+    "status": "VALID"
+  },
+  "text": null,
+  "created": "2019-03-10T18:13:22.629",
+  "ident": "14085975",
+  "status": "COMPLETED",
+  "name": "XX_JHNYRILXINFGKAAAAFUWRTZQIU",
+  "delays": {
+    "every": null,
+    "first": null,
+    "last": null
+  },
+  "owner": "http://localhost:8081/firethorn/community-member/14100129"
+}
+
+
+
+
+# http://wfau.metagrid.co.uk/code/firethorn/file/ab423c5da4f5/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l369
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "uche2aNa"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 1000 ra, dec FROM WISE.wise_allskysc"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+
+
+## Fail is propagated to Firethorn
+
+{
+"type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+"input": "SELECT TOP 1000 ra, dec FROM WISE.wise_allskysc",
+"tables": [],
+"status": "FAILED",
+"results": {
+"count": 0,
+"formats": {
+"votable": "http://localhost:8081/firethorn/adql/table/14086193/votable",
+"datatable": "http://localhost:8081/firethorn/adql/table/14086193/datatable"
+},
+"state": "EMPTY",
+"table": "http://localhost:8081/firethorn/adql/table/14086193"
+},
+"callback": "http://localhost:8081/firethorn/callback/14085976",
+"columns": [],
+"mode": "DIRECT",
+"workspace": "http://localhost:8081/firethorn/adql/resource/14086059",
+"history": [
+{
+"type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+"level": "INFO",
+"task": "http://localhost:8081/firethorn/blue/query/14085976",
+"message": "Executing query",
+"state": "READY",
+"owner": "http://localhost:8081/firethorn/community-member/14100129",
+"url": "http://localhost:8081/firethorn/blue/log/entry/14086034",
+"self": "http://localhost:8081/firethorn/blue/log/entry/14086034",
+"ident": "14086034",
+"created": "2019-03-10T18:15:01.631",
+"modified": "2019-03-10T18:15:01.631"
+}
+],
+"limits": {
+"cells": null,
+"rows": 1000000,
+"time": null
+},
+"delays": {
+"every": null,
+"last": null,
+"first": null
+},
+"syntax": {
+"friendly": null,
+"status": "VALID",
+"message": null
+},
+"osql": "SELECT TOP 1000 [WISE].[dbo].[wise_allskysc].[ra] AS [ra] , [WISE].[dbo].[wise_allskysc].[dec] AS [dec]\nFROM [WISE].[dbo].[wise_allskysc]",
+"adql": "SELECT TOP 1000 ra , dec\nFROM WISE.wise_allskysc",
+"fields": [],
+"resource": "http://localhost:8081/firethorn/adql/resource/14086059",
+"resources": [
+"http://localhost:8081/firethorn/jdbc/resource/1807"
+],
+"text": null,
+"name": "XX_ZRJZAOZOSJEQEAAAAFUWRUFSSY",
+"owner": "http://localhost:8081/firethorn/community-member/14100129",
+"url": "http://localhost:8081/firethorn/blue/query/14085976",
+"self": "http://localhost:8081/firethorn/blue/query/14085976",
+"ident": "14085976",
+"created": "2019-03-10T18:15:01.526",
+"modified": "2019-03-10T18:15:01.572"
+}
+
+## ----------------------------------------------
+
+
+
+# http://wfau.metagrid.co.uk/code/firethorn/file/ab423c5da4f5/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l414
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement"})
+params.update({"firethorn.monkey.data" : "Eoph9xie"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 1000 ra, dec FROM WISE.wise_allskysc"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+
+## Fail is propagated to Firethorn
+
+{
+"type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+"input": "SELECT TOP 1000 ra, dec FROM WISE.wise_allskysc",
+"tables": [],
+"status": "FAILED",
+"results": {
+"count": 0,
+"formats": {
+"votable": "http://localhost:8081/firethorn/adql/table/14086195/votable",
+"datatable": "http://localhost:8081/firethorn/adql/table/14086195/datatable"
+},
+"state": "EMPTY",
+"table": "http://localhost:8081/firethorn/adql/table/14086195"
+},
+"callback": "http://localhost:8081/firethorn/callback/14085977",
+"columns": [],
+"mode": "DIRECT",
+"workspace": "http://localhost:8081/firethorn/adql/resource/14086059",
+"history": [
+{
+"type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+"level": "INFO",
+"task": "http://localhost:8081/firethorn/blue/query/14085977",
+"message": "Executing query",
+"state": "READY",
+"owner": "http://localhost:8081/firethorn/community-member/14100129",
+"url": "http://localhost:8081/firethorn/blue/log/entry/14086035",
+"self": "http://localhost:8081/firethorn/blue/log/entry/14086035",
+"ident": "14086035",
+"created": "2019-03-10T18:16:09.367",
+"modified": "2019-03-10T18:16:09.367"
+}
+],
+"limits": {
+"cells": null,
+"rows": 1000000,
+"time": null
+},
+"delays": {
+"every": null,
+"last": null,
+"first": null
+},
+"syntax": {
+"friendly": null,
+"status": "VALID",
+"message": null
+},
+"osql": "SELECT TOP 1000 [WISE].[dbo].[wise_allskysc].[ra] AS [ra] , [WISE].[dbo].[wise_allskysc].[dec] AS [dec]\nFROM [WISE].[dbo].[wise_allskysc]",
+"adql": "SELECT TOP 1000 ra , dec\nFROM WISE.wise_allskysc",
+"fields": [],
+"resource": "http://localhost:8081/firethorn/adql/resource/14086059",
+"resources": [
+"http://localhost:8081/firethorn/jdbc/resource/1807"
+],
+"text": null,
+"name": "XX_542JCH6IEYA2UAAAAFUWRUN3HQ",
+"owner": "http://localhost:8081/firethorn/community-member/14100129",
+"url": "http://localhost:8081/firethorn/blue/query/14085977",
+"self": "http://localhost:8081/firethorn/blue/query/14085977",
+"ident": "14085977",
+"created": "2019-03-10T18:16:09.276",
+"modified": "2019-03-10T18:16:09.311"
+}
+
+
+## Looking at previous notes, the above would be expected to cause the non-completing issue we are seeing, but it doesnt, query fails and its correctly propagated to Firethorn
+
+## ----------------------------------------------
+
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement"})
+params.update({"firethorn.monkey.data" : "Eoph9xie"})
+
+
+print(
+    params
+    )
+query_str = "SELECT TOP 1000 ra, dec FROM WISE.wise_allskysc"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+print(
+    query_obj
+    )
+

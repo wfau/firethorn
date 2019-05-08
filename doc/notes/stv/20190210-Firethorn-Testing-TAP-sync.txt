@@ -1,0 +1,46 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Date: 10 Feb 2019
+
+## Firethorn Version: 2.1.28
+## Resource ID: 1808
+## VM: Cadelicia
+## Server: trop01
+## VM Version: 4.18.13-200.fc28.x86_64
+## VM Platform: Fedora release 28 (Twenty Eight)
+## User Database: FirethornUserdataZRQ20170621151245DEV
+
+
+## TEST 1
+## Go through all tables of a resource and run a synchronous TAP query
+
+## Firethorn Utils can be used as described here:
+## http://wfau.metagrid.co.uk/code/firethorn/file/fa50d2cbcfdd/doc/notes/stv/20190201-Firethorn-System-Validator.txt
+
+
+/usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=sync
+
+..
+
+## Queries seem to be working fine, no query hangs so far
+## Will update once test has completed

@@ -1,0 +1,216 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Date: 10 Feb 2019
+
+## Firethorn Version: 2.1.28
+## Resource ID: 1808
+## VM: Cadelicia
+## Server: trop01
+## VM Version: 4.18.13-200.fc28.x86_64
+## VM Platform: Fedora release 28 (Twenty Eight)
+## User Database: FirethornUserdataZRQ20170621151245DEV
+
+
+## TEST 1
+## Go through all tables of a resource and run a synchronous TAP query
+
+## Firethorn Utils can be used as described here:
+## http://wfau.metagrid.co.uk/code/firethorn/file/fa50d2cbcfdd/doc/notes/stv/20190201-Firethorn-System-Validator.txt
+
+
+
+## Test run on local machine, with a proxy connection to Cadelicia ("8080:8081")
+
+/usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn  -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=sync
+
+..
+
+## Queries seem to be working fine, no query hangs so far
+## Will update once test has completed..
+
+
+## UPDATE (11/02/2019): The test completed with the following exceptions:
+
+{  
+   "VHSDR2.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VHSDR2.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:20736: ValueError: invalid literal for int() with base 10: '0000000a' (in row 1, col 'column.9022123')",
+   "VIDEODR5.FilterSections":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR5.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2165: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9051217')",
+   "IRAS.iras_asc":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+IRAS.iras_asc&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2883: ValueError: invalid literal for int() with base 10: '0000000d' (in row 2, col 'column.8858871')",
+   "VVVDR4.vvvSourceXDetection":"HTTP Error 400: ",
+   "BestDR5.SpecObj":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13679: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8743131')",
+   "BestDR7.\"Region\"":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.%22Region%22&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:7:74: ValueError: invalid literal for int() with base 10: '560100000001287a449111a05a400100000043040000000101287a449111a05a400500000002be268bc5e2eabf29a1ebe150d1b2bf5b1ac0f28e31e13f8c730b7e1a3ac63f171c818c8b83ef3fabffeccb0666d8bf740368f1a613a1bf478d32cf6b90e (in row 0, col 'column.8770319')",
+   "BestDR1.PlateX":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.PlateX&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14501: ValueError: invalid literal for int() with base 10: '5749ae00554a40005749ae00554ae0005749ae00554ae0005749ae00554ae00058326b80554a400058326b80554ae00058326b80554ae00058326b80554ae00057e4d700554a400057e4d700554ae00057e4d700554ae00057e4d700554ae00058726b8 (in row 0, col 'column.8713541')",
+   "BestDR7.SpecObj":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14649: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8765703')",
+   "VVVDR4.ExternalProductCatalogue":"HTTP Error 400: ",
+   "BestDR8.Frame":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6999: ValueError: invalid literal for int() with base 10: '0000000c6a5020200d0a870a00000014667479706a703220000000006a703220000000476a703268000000166968647200000571000007c00003070701000000000f636f6c72010000000000100000001a7265732000000012726573632449800024498 (in row 0, col 'column.8803977')",
+   "BestDR9.Frame":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:7015: ValueError: invalid literal for int() with base 10: '0000000c6a5020200d0a870a00000014667479706a703220000000006a703220000000476a7032680000001669686472000000af000000f80003070701000000000f636f6c72010000000000100000001a7265732000000012726573632449800024498 (in row 0, col 'column.8830231')",
+   "BestDR9.SpecObj":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:43288: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000b0b0b1212121b1b1b2121212929293434343636383a3a3a4343434949495252525c5c5c6464646a6a6a76767679797901008a0000ba282 (in row 0, col 'column.8829835')",
+   "VVVDR4.CurationTask":"HTTP Error 400: ",
+   "VVVDR4.vvvSource":"HTTP Error 400: ",
+   "BestDR1.Frame":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6964: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000ffdb0043000a07070807060a0808080b0a0a0b0e18100e0d0d0e1d15161118231f2524221f2221262b372f26293429212230413134393b3e3e3e252e4449433c48373d3e3bffdb0043010a0b0b0e0d0 (in row 0, col 'column.8712207')",
+   "VVVDR4.vvvSourceXiras_psc":"HTTP Error 400: ",
+   "VIKINGDR2.vikingTilePawTDOnly":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIKINGDR2.vikingTilePawTDOnly&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:9676: ValueError: invalid literal for int() with base 10: '0000000e' (in row 0, col 'column.9057385')",
+   "BestDR9.segue1SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segue1SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:43246: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000d0d0d1212121b1b1b0000362323232a2a2a3535353c3c3c0001540100630100684141414e4e4e5353535d5d5d6161616a6a6a777777787 (in row 0, col 'column.8829155')",
+   "BestDR9.segueSpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segueSpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:43246: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000d0d0d1212121b1b1b0000362323232a2a2a3535353c3c3c0001540100630100684141414e4e4e5353535d5d5d6161616a6a6a777777787 (in row 0, col 'column.8847411')",
+   "VVVDR4.Survey":"HTTP Error 400: ",
+   "VVVDR4.Provenance":"HTTP Error 400: ",
+   "VIDEODR2.CurrentAstrometry":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR2.CurrentAstrometry&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14405: ValueError: invalid literal for int() with base 10: '0000000d' (in row 0, col 'column.9035017')",
+   "VVVDR4.vvvSourceXtwomass_xsc":"HTTP Error 400: ",
+   "VVVDR4.RequiredStack":"HTTP Error 400: ",
+   "ROSAT.rosat_fsc":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+ROSAT.rosat_fsc&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:11104: E04: Invalid bit value 'true'",
+   "VVVDR4.vvvSourceExtinction":"HTTP Error 400: ",
+   "VVVDR4.SurveyProgrammes":"HTTP Error 400: ",
+   "BestDR3.PlateX":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PlateX&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:16524: ValueError: invalid literal for int() with base 10: '5749ae00554ae0005749ae00554ae0005749ae00554ae0005749ae00554ae00058326b80554ae00058326b80554ae00058326b80554ae00058326b80554ae00057e4d700554ae00057e4d700554ae00057e4d700554ae00057e4d700554ae00058726b8 (in row 0, col 'column.8721903')",
+   "VIDEODR4.CurrentAstrometry":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR4.CurrentAstrometry&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:19674: ValueError: invalid literal for int() with base 10: '0000000a' (in row 4, col 'column.9044465')",
+   "VVVDR4.Programme":"HTTP Error 400: ",
+   "VMCDR1.MultiframeDetectorEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR1.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:29458: ValueError: invalid literal for int() with base 10: '0000000e' (in row 0, col 'column.9076579')",
+   "BestDR3.SiteDBs":"HTTP Error 400: ",
+   "BestDR9.StarTag":"<urlopen error timed out>",
+   "BestDR9.\"Region\"":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.%22Region%22&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2298: ValueError: invalid literal for int() with base 10: '560100000001dd352a374500303f0100000043040000000101dd352a374500303f04000000779f801fa46c22bf97970526c78b01bf113465faffffef3f0020054bb3ee213f78b6f9faffffef3f75a51f8b8f98ecbfdf1f528a6fb9dc3f5d8740f2cf651 (in row 0, col 'column.8833655')",
+   "VVVDR4.vvvDetection":"HTTP Error 400: ",
+   "BestDR9.SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:43288: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000b0b0b1212121b1b1b2121212929293434343636383a3a3a4343434949495252525c5c5c6464646a6a6a76767679797901008a0000ba282 (in row 0, col 'column.8824089')",
+   "IRAS.iras_psc":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+IRAS.iras_psc&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14962: E04: Invalid bit value 'false'",
+   "BestDR5.QsoConcordance":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoConcordance&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:28024: E04: Invalid bit value 'true'",
+   "VVVDR4.vvvTilePawPrints":"HTTP Error 400: ",
+   "VVVDR4.vvvVarFrameSetInfo":"HTTP Error 400: ",
+   "UKIDSSDR5PLUS.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR5PLUS.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:27503: ValueError: invalid literal for int() with base 10: '0000006f' (in row 4, col 'column.8924079')",
+   "VVVDR4.ProgrammeTable":"HTTP Error 400: ",
+   "VVVDR4.vvvSourceXSynopticSource":"HTTP Error 400: ",
+   "BestDR5.QsoCatalog":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoCatalog&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4284: E04: Invalid bit value 'true'",
+   "VIDEODR3.MultiframeDetectorEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR3.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:36790: ValueError: invalid literal for int() with base 10: '0000000a' (in row 4, col 'column.9039667')",
+   "BestDR1.SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:12607: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8707105')",
+   "VIKINGDR3.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIKINGDR3.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:19003: ValueError: invalid literal for int() with base 10: '0000000f' (in row 0, col 'column.9064625')",
+   "BestDR8.\"Region\"":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.%22Region%22&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2288: ValueError: invalid literal for int() with base 10: '560100000001d8233f502d89163f0100000043040000000101d8233f502d89163f05000000a55b971f722bd3bf61e74b343cc69abfe86259def384eebf00b099e670ab923fc1eae469a3feef3fe21db0d75e80d03f740e23e2ee0c973f7bf5360fdfe8e (in row 0, col 'column.8803919')",
+   "BestDR7.QsoCatalog":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.QsoCatalog&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4280: E04: Invalid bit value 'true'",
+   "TWOMASS.twomass_sixx2_psc":"<urlopen error timed out>",
+   "BestDR5.PhotoProfile":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.PhotoProfile&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:1533: ValueError: invalid literal for int() with base 10: '0000000b' (in row 0, col 'column.8750267')",
+   "VVVDR4.Release":"HTTP Error 400: ",
+   "VVVDR4.vvvMergeLog":"HTTP Error 400: ",
+   "VVVDR4.ExternalProduct":"<urlopen error timed out>",
+   "VVVDR4.Filter":"HTTP Error 400: ",
+   "VVVDR4.ExternalSurvey":"<urlopen error timed out>",
+   "VVVDR4.vvvSourceXxmm3dr4":"HTTP Error 400: ",
+   "BestDR3.PhotoProfile":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoProfile&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2056: ValueError: invalid literal for int() with base 10: '0000000a' (in row 4, col 'column.8721083')",
+   "BestDR9.Sky":"<urlopen error timed out>",
+   "VVVDR4.vvvSynopticSource":"HTTP Error 400: ",
+   "VVVDR4.MultiframeEsoKeys":"HTTP Error 400: ",
+   "BestDR3.SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13757: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8725387')",
+   "VVVDR4.ProductLinks":"HTTP Error 400: ",
+   "VIDEODR3.CurrentAstrometry":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR3.CurrentAstrometry&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14405: ValueError: invalid literal for int() with base 10: '0000000f' (in row 0, col 'column.9039531')",
+   "BestDR9.segue2SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segue2SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:43283: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000300504c54450000000100000001000101010000020202020303030404040505050606060707070808080909090a0a0a0b0b0b0c0c0c0d0d0d0e0e0e0f0f0f010 (in row 0, col 'column.8848687')",
+   "VMCDR1.CurrentAstrometry":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR1.CurrentAstrometry&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14405: ValueError: invalid literal for int() with base 10: '0000000c' (in row 0, col 'column.9075847')",
+   "VMCDR2.MultiframeEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR2.MultiframeEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:60286: ValueError: invalid literal for int() with base 10: '0000000f' (in row 0, col 'column.9084375')",
+   "BestDR8.SiteDiagnostics":"<urlopen error timed out>",
+   "VVVDR4.ExternalSurveyTable":"HTTP Error 400: ",
+   "VVVDR4.vvvSourceXglimpse1_hrc":"HTTP Error 400: ",
+   "VIDEODR3.videoTilePawTDOnly":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR3.videoTilePawTDOnly&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:10508: ValueError: invalid literal for int() with base 10: '0000000e' (in row 1, col 'column.9040133')",
+   "BestDR3.SpecObj":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13757: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8731927')",
+   "Stripe82.PhotoObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+Stripe82.PhotoObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:91605: ValueError: invalid literal for int() with base 10: '0000000f' (in row 0, col 'column.8862989')",
+   "BestDR5.SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13693: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8740347')",
+   "VIDEODR2.videoTilePawPrints":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR2.videoTilePawPrints&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:10508: ValueError: invalid literal for int() with base 10: '0000000e' (in row 1, col 'column.9032721')",
+   "VIDEODR3.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR3.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:24130: ValueError: invalid literal for int() with base 10: '0000000a' (in row 3, col 'column.9040515')",
+   "BestDR5.QsoCatalogAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoCatalogAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4284: E04: Invalid bit value 'true'",
+   "VVVDR4.ProgrammeFrame":"HTTP Error 400: ",
+   "VMCDR3.CurrentAstrometry":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR3.CurrentAstrometry&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:15722: ValueError: invalid literal for int() with base 10: '0000000a' (in row 1, col 'column.9092107')",
+   "BestDR8.SDSSConstants":"<urlopen error timed out>",
+   "VVVDR4.SectionDetectors":"HTTP Error 400: ",
+   "VIDEODR3.videoTilePawPrints":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR3.videoTilePawPrints&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:10508: ValueError: invalid literal for int() with base 10: '0000000e' (in row 1, col 'column.9037997')",
+   "VHSDR3.FilterSections":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VHSDR3.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2165: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9029371')",
+   "VHSDR1.MultiframeEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VHSDR1.MultiframeEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:78794: ValueError: invalid literal for int() with base 10: '0000000f' (in row 4, col 'column.9010751')",
+   "VMCDR3.FilterSections":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR3.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2165: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9092563')",
+   "BestDR8.Sky":"<urlopen error timed out>",
+   "VVVDR4.FilterSections":"HTTP Error 400: ",
+   "BestDR5.Frame":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6972: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c75449544c452020203d202753445353203734352d34302d312d353138206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2f7 (in row 0, col 'column.8744311')",
+   "BestDR3.Frame":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6956: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c95449544c452020203d20275344535320313436322d34302d332d313431206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2 (in row 0, col 'column.8718757')",
+   "BestDR5.QsoTarget":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:12076: E04: Invalid bit value 'false'",
+   "VVVDR4.vvvSourceXwise_allskysc":"HTTP Error 400: ",
+   "VIDEODR4.MultiframeDetectorEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR4.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:29459: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9044871')",
+   "VMCDR4.CurrentAstrometry":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR4.CurrentAstrometry&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14406: ValueError: invalid literal for int() with base 10: '0000000d' (in row 0, col 'column.9108533')",
+   "VHSDR2.CurrentAstrometry":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VHSDR2.CurrentAstrometry&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:18387: ValueError: invalid literal for int() with base 10: '0000000a' (in row 3, col 'column.9020289')",
+   "VMCDR4.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR4.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:20733: ValueError: invalid literal for int() with base 10: '0000000a' (in row 1, col 'column.9110245')",
+   "BestDR7.Unknown":"<urlopen error timed out>",
+   "VMCDR2.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR2.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:25899: ValueError: invalid literal for int() with base 10: '0000000a' (in row 4, col 'column.9089427')",
+   "VVVDR4.vvvSourceXDR8gpsSource":"HTTP Error 400: ",
+   "BestDR7.QsoConcordance":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.QsoConcordance&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:28024: E04: Invalid bit value 'true'",
+   "VMCDR4.FilterSections":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR4.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2165: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9103255')",
+   "VIKINGDR2.vikingTilePawPrints":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIKINGDR2.vikingTilePawPrints&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:9676: ValueError: invalid literal for int() with base 10: '0000000e' (in row 0, col 'column.9056271')",
+   "VVVDR4.RequiredMosaic":"HTTP Error 400: ",
+   "VVVDR4.vvvSourceXSSASource":"HTTP Error 400: ",
+   "VVVDR4.MultiframeDetector":"HTTP Error 400: ",
+   "BestDR7.QsoConcordanceAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.QsoConcordanceAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:28024: E04: Invalid bit value 'true'",
+   "VVVDR4.vvvSynopticMergeLog":"HTTP Error 400: ",
+   "BestDR7.PlateX":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.PlateX&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:17811: ValueError: invalid literal for int() with base 10: '4521f00055223000452200005522300045221000552230004522200055223000580000005522300058000000552230005800000055223000580000005522300057800000552230005780000055223000578000005522300057800000552230005840000 (in row 0, col 'column.8784465')",
+   "VVVDR4.vvvSourceXglimpse2_mca":"HTTP Error 400: ",
+   "BestDR7.Frame":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6946: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c95449544c452020203d20275344535320353336302d34302d312d313039206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2 (in row 0, col 'column.8768397')",
+   "VVVDR4.vvvVariability":"HTTP Error 400: ",
+   "VIDEODR2.videoTilePawTDOnly":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR2.videoTilePawTDOnly&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:10508: ValueError: invalid literal for int() with base 10: '0000000e' (in row 1, col 'column.9035669')",
+   "VVVDR4.vvvSourceXglimpse2_hrc":"HTTP Error 400: ",
+   "VVVDR4.vvvTilePawTDOnly":"HTTP Error 400: ",
+   "BestDR8.SpecObj":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:34530: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000300504c54450000000100000001000101010000020303030404040606060707070808080909090a0a0a0b0b0b0c0c0c0d0d0d0e0e0e0f0f0f101010111111121 (in row 0, col 'column.8800363')",
+   "BestDR8.segueSpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.segueSpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:34717: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000300504c54450000000001000101010000020202020303030404040505050606060707070808080909090a0a0a0b0b0b0c0c0c0d0d0d0e0e0e0f0f0f101010111 (in row 0, col 'column.8815957')",
+   "VVVDR4.AstrCalVers":"HTTP Error 400: ",
+   "VVVDR4.RequiredMergeLogMultiEpoch":"HTTP Error 400: ",
+   "VMCDR3.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR3.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:25960: ValueError: invalid literal for int() with base 10: '0000000a' (in row 4, col 'column.9092885')",
+   "VVVDR4.RequiredNeighbours":"HTTP Error 400: ",
+   "UKIDSSDR5PLUS.RequiredMosaic":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR5PLUS.RequiredMosaic&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:5908: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.8922545')",
+   "VIDEODR4.FilterSections":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR4.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2165: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9045629')",
+   "VVVDR4.RequiredDiffImage":"HTTP Error 400: ",
+   "VVVDR4.PreviousMFDZP":"HTTP Error 400: ",
+   "VIKINGDR4.MultiframeDetectorEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIKINGDR4.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:34970: ValueError: invalid literal for int() with base 10: '0000000a' (in row 3, col 'column.9068475')",
+   "VVVDR4.ArchiveCurationHistory":"HTTP Error 400: ",
+   "VHSDR3.MultiframeDetectorEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VHSDR3.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:29459: ValueError: invalid literal for int() with base 10: '0000000f' (in row 0, col 'column.9028241')",
+   "VIKINGDR4.FilterSections":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIKINGDR4.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2165: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9067927')",
+   "UKIDSSDR6PLUS.RequiredMosaic":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR6PLUS.RequiredMosaic&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:5457: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.8946925')",
+   "VHSDR1.vhsTilePawPrints":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VHSDR1.vhsTilePawPrints&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:10700: ValueError: invalid literal for int() with base 10: '0000000b' (in row 1, col 'column.9011809')",
+   "BestDR5.PlateX":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.PlateX&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:17996: ValueError: invalid literal for int() with base 10: '5749920055223000574992005522300057499200552230005749920055223000583264805522300058326480552230005832648055223000583264805522300057e4c9005522300057e4c9005522300057e4c9005522300057e4c900552230005872648 (in row 0, col 'column.8757665')",
+   "BestDR7.QsoTarget":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.QsoTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:11641: E04: Invalid bit value 'false'",
+   "VVVDR4.vvvSourceXDetectionBestMatch":"HTTP Error 400: ",
+   "VVVDR4.Multiframe":"HTTP Error 400: ",
+   "VVVDR4.PhotCalVers":"HTTP Error 400: ",
+   "BestDR8.segue1SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.segue1SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:34717: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000300504c54450000000001000101010000020202020303030404040505050606060707070808080909090a0a0a0b0b0b0c0c0c0d0d0d0e0e0e0f0f0f101010111 (in row 0, col 'column.8799733')",
+   "VHSDR2.vhsTilePawPrints":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VHSDR2.vhsTilePawPrints&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13245: ValueError: invalid literal for int() with base 10: '0000000e' (in row 4, col 'column.9020187')",
+   "UKIDSSDR4PLUS.RequiredMosaic":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR4PLUS.RequiredMosaic&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:5908: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.8900503')",
+   "BestDR8.TwoMass":"<urlopen error timed out>",
+   "VVVDR4.vvvAstrometricInfo":"HTTP Error 400: ",
+   "VVVDR4.EpochFrameStatus":"HTTP Error 400: ",
+   "ROSAT.rosat_bsc":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+ROSAT.rosat_bsc&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:9497: ValueError: invalid literal for int() with base 10: '0000000f' (in row 0, col 'column.8859767')",
+   "BestDR5.QsoConcordanceAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoConcordanceAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:28024: E04: Invalid bit value 'true'",
+   "VVVDR4.ProgrammeCurationHistory":"HTTP Error 400: ",
+   "VMCDR4.MultiframeDetectorEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR4.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:29459: ValueError: invalid literal for int() with base 10: '0000000b' (in row 0, col 'column.9102447')",
+   "BestDR8.SpecObjAll":"<urlopen error timed out>",
+   "VVVDR4.MultiframeDetectorEsoKeys":"HTTP Error 400: ",
+   "BestDR7.SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:14655: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.8761845')",
+   "VVVDR4.vvvSourceXglimpse1_mca":"HTTP Error 400: ",
+   "VVVDR4.vvvSourceXtwomass_psc":"HTTP Error 400: ",
+   "VVVDR4.RequiredTile":"HTTP Error 400: ",
+   "VIDEODR2.MultiframeDetector":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VIDEODR2.MultiframeDetector&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:19003: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.9036057')",
+   "BestDR7.QsoCatalogAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.QsoCatalogAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4280: E04: Invalid bit value 'true'",
+   "BestDR8.segue2SpecObjAll":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.segue2SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:34687: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000300504c54450000000100000001000101010200010000020100020202020303030404040505050606060707070808080909090a0a0a0b0b0b0c0c0c0d0d0d0e0 (in row 0, col 'column.8817265')",
+   "BestDR9.PhotoProfile":"<urlopen error timed out>",
+   "WISE.wise_prelimsc":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+WISE.wise_prelimsc&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:68135: ValueError: invalid literal for int() with base 10: '0000000f' (in row 3, col 'column.9118999')",
+   "BestDR9.neighbors":"<urlopen error timed out>",
+   "VVVDR4.vvvTileSet":"HTTP Error 400: ",
+   "VVVDR4.CurrentAstrometry":"HTTP Error 400: ",
+   "VVVDR4.RequiredFilters":"HTTP Error 400: ",
+   "VMCDR2.MultiframeDetectorEsoKeys":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+VMCDR2.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:31291: ValueError: invalid literal for int() with base 10: '0000000a' (in row 1, col 'column.9085387')",
+   "BestDR8.USNO":"http://localhost:8081/firethorn/tap/1808/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.USNO&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:8602: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.8809013')"
+}

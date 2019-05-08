@@ -272,6 +272,8 @@ public class SQLQueryActivity
                 );
             
             logger.debug("Executing query");
+            this.mContext.monkey().sqlException(this, "dIgjKw32");
+
             ResultSet resultSet = executeQuery(expression);
             
             logger.debug("Processing tuples");
@@ -318,27 +320,29 @@ public class SQLQueryActivity
 
         catch (SQLException e)
             {
-            logger.debug("Caught a SQLException, wrapping it in an ActivitySQLUserException");
-            throw new ActivitySQLUserException(e);
+	        logger.error("Caught a SQLException, sending a callback");
+	        callback.failed();
+	        throw new ActivitySQLUserException(e);
             }
         catch (PipeIOException e)
             {
-            logger.debug("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
+            logger.error("Caught a PipeIOException, wrapping it in an ActivityPipeProcessingException");
             throw new ActivityPipeProcessingException(e);
             }
         catch (PipeTerminatedException e)
             {
-            logger.debug("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
+            logger.error("Caught a PipeTerminatedException, wrapping it in an ActivityTerminatedException");
             throw new ActivityTerminatedException();
             }
         catch (IOException e)
             {
-            logger.debug("Caught an IOException, wrapping it in an ActivityIOException");
+            logger.error("Caught an IOException, sending a callback");
+    	    callback.failed();
             throw new ActivityIOException(e);
             }
         catch (Throwable e)
             {
-            logger.debug("Caught a Throwable, wrapping it in an ActivityProcessingException");
+            logger.error("Caught a Throwable, wrapping it in an ActivityProcessingException");
             throw new ActivityProcessingException(e);
             }
         }
@@ -372,15 +376,16 @@ public class SQLQueryActivity
         try
         {
         logger.debug("Initiating CallableStatement and starting background execution");
-            // This will initiate the Callable object and so
-            // basically execute Statement.executeQuery in the
-            // background. If execution is interrupted e.g. by
-            // interruption of the current thread as happens if an
-            // OGSA-DAI request is terminated, then an exception
-            // will be thrown.
-            resultSet = future.get();
-            logger.debug("CallableStatement returned ResultSet");
-            this.mContext.monkey().sqlException(this, "chahw2Ao");
+	        // This will initiate the Callable object and so
+	        // basically execute Statement.executeQuery in the
+	        // background. If execution is interrupted e.g. by
+	        // interruption of the current thread as happens if an
+	        // OGSA-DAI request is terminated, then an exception
+	        // will be thrown.
+	        this.mContext.monkey().sqlException(this, "jG2hdk00", "Warning: Fatal error 823 occurred at Mar 19 2019 12:57PM. Note the error and time, and contact your system administrator.");
+	        resultSet = future.get();
+	        logger.debug("CallableStatement returned ResultSet");
+	        this.mContext.monkey().sqlException(this, "chahw2Ao");
         }
         catch (ExecutionException e)
         {
@@ -411,7 +416,21 @@ public class SQLQueryActivity
         @Override
         public ResultSet call() throws Exception
         {
-            mContext.monkey().sqlException(this, "Eoph9xie");
+            if (mContext.monkey().test(this, "Eoph9xie"))
+	    {
+                try {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException ouch)
+                {
+                    logger.debug("Sleep interrupted");
+                }
+                
+                 throw new SQLException(
+                     "Delayed SQLException"
+                 );
+            }
+
             final ResultSet results = super.call();
             mContext.monkey().sqlException(this, "oz4Kie0M");
             return results;

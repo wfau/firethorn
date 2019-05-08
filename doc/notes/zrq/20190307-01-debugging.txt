@@ -1,0 +1,48 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+Suspect code
+http://wfau.metagrid.co.uk/code/firethorn/file/51b29dcb6234/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l276
+./ogsa-dai/trunk/extensions/relational/server/src/main/java/uk/org/ogsadai/activity/sql/SQLUtilities.java
+
+Debug notes and log fragments
+http://wfau.metagrid.co.uk/code/firethorn/file/e426ae5a7dc5/doc/notes/stv/20190304-OSA-TAP-Debug.txt
+http://wfau.metagrid.co.uk/code/firethorn/file/e426ae5a7dc5/doc/notes/stv/20190304-OSA-TAP-Debug.txt#l182
+
+Query [created 2019-03-04T15:41:39.461]
+http://tap.roe.ac.uk/firethorn/blue/query/30550353
+
+Query [created 2019-03-06T19:47:36.588]
+http://tap.roe.ac.uk/firethorn/blue/query/31126552
+
+Debugging 20190307
+https://firethorn-dev.slack.com/files/U43GJC35J/FGR9U1GG1/ogsadai_logs.txt
+https://firethorn-dev.slack.com/files/U43GJC35J/FGSUVPGK1/firethorn_logs.txt
+https://files.slack.com/files-pri/T42PGVD7T-FGSUVPGK1/firethorn_logs.txt
+
+JSON snippet created on March 7, 2019
+    https://firethorn-dev.slack.com/files/U43GJC35J/FGSAHF8BF/-.js
+    https://firethorn-dev.slack.com/files/U43GJC35J/FGSAKFTM3/-.js
+    https://firethorn-dev.slack.com/files/U43GJC35J/FGTDYDEMU/-.js
+
+

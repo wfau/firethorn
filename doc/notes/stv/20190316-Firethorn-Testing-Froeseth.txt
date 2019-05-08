@@ -1,0 +1,393 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Not sure whats going on here?
+## Was running some sync & async tests from localhost to a tunnelled connection to Gworewia & Cadelicia
+## After several runs, getting a strange issue
+
+stelios@stelios-pc:~$ /usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn  -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=async
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [BestDR1.SpecObjAll]
+Rowcount:-1
+ERROR:root:b'null'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn_utils-0.1.0-py3.4.egg/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: b'null'
+<class 'Exception'>
+Table query completed after 2.495541572570801 seconds
+Testing [BestDR1.TilingInfo]
+Rowcount:-1
+ERROR:root:b'null'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn_utils-0.1.0-py3.4.egg/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: b'null'
+<class 'Exception'>
+Table query completed after 2.1504883766174316 seconds
+Testing [BestDR1.StripeDefs]
+Rowcount:-1
+ERROR:root:b'null'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn_utils-0.1.0-py3.4.egg/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: b'null'
+<class 'Exception'>
+Table query completed after 2.1152148246765137 seconds
+Testing [BestDR1.HoleObj]
+Rowcount:-1
+ERROR:root:b'null'
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn_utils-0.1.0-py3.4.egg/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: b'null'
+<class 'Exception'>
+Table query completed after 2.180051565170288 seconds
+Testing [BestDR1.Neighbors]
+Rowcount:-1
+ERROR:root:b'null'
+
+
+
+## --------------------------
+## OGSADAI Logs
+## --------------------------
+
+Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-ec482506-1f4a-4af8-a0c3-a20cdc3d6977
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-f576a710-61de-4dbf-9d53-8be3a64169a3]
+    outputs:
+
+Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-581c73f1-1068-4826-a94f-6d423a19e0a1
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-fe732e13-5de4-43ff-a0b6-697921373745]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-07fb9b1c-3740-4fe0-952d-52ba90ab0471,source=uk.org.ogsadai.SQLQuery-ogsadai-581c73f1-1068-4826-a94f-6d423a19e0a1
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-845265e8-5e99-4daa-bb23-ebe09f4944ad
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-f3842e5d-a280-48f9-a12c-ba76bdc4c759]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_JVWJXISRAKQVKAAAAFUYNMSIGY]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-f576a710-61de-4dbf-9d53-8be3a64169a3,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-845265e8-5e99-4daa-bb23-ebe09f4944ad
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-76390904-b365-486d-91ca-90ac70744361
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14772018
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[QsoCatalogAll].[SpecObjID] AS "SpecObjID",[BestDR1].[dbo].[QsoCatalogAll].[zone] AS "zone",[BestDR1].[dbo].[QsoCatalogAll].[ra] AS "ra",[BestDR1].[dbo].[QsoCatalogAll].[dec] AS "dec"
+FROM [BestDR1].[dbo].[QsoCatalogAll]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-fe732e13-5de4-43ff-a0b6-697921373745,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-76390904-b365-486d-91ca-90ac70744361
+
+
+2019-03-16 13:30:24,941 DEBUG drer.SimpleDRER [http-nio-8080-exec-4,debug:84] Created engine.Request: uk.org.ogsadai.activity.request.WorkflowRequest@2ffcb4e0
+2019-03-16 13:30:24,941 DEBUG drer.SimpleDRER [http-nio-8080-exec-4,debug:84] About to submit request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@6b6dafe4
+2019-03-16 13:30:26,833 DEBUG context.RequestContextFactory [http-nio-8080-exec-1,createContext:62] createContext(HttpServletRequest)
+2019-03-16 13:30:26,834 DEBUG context.RequestContextFactory [http-nio-8080-exec-1,createContext:64] remote [172.18.0.5]
+2019-03-16 13:30:26,964 DEBUG context.RequestContextFactory [http-nio-8080-exec-2,createContext:62] createContext(HttpServletRequest)
+2019-03-16 13:30:26,965 DEBUG context.RequestContextFactory [http-nio-8080-exec-2,createContext:64] remote [172.18.0.5]
+2019-03-16 13:30:26,966 DEBUG drer.SimpleDRER [http-nio-8080-exec-2,debug:84] Entered execute(CandidateRequestDescriptor)
+2019-03-16 13:30:26,968 DEBUG drer.SimpleDRER [http-nio-8080-exec-2,debug:84] Workflow: Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-07ac3bb9-871e-40d1-a07e-c51967b752a7
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-40d63ab0-336f-4055-a17a-84ed9c3fefd9]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-0c13260f-c067-4a1a-9b85-d2bb64437a27,source=uk.org.ogsadai.SQLQuery-ogsadai-07ac3bb9-871e-40d1-a07e-c51967b752a7
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-30eba4e9-f4f1-474f-8da8-263a7086efef
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-0c13260f-c067-4a1a-9b85-d2bb64437a27]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-8cce9b3c-f46d-4116-9339-1c44af2afb1c,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-30eba4e9-f4f1-474f-8da8-263a7086efef
+
+Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-c0d90d9f-1894-4dd6-8301-82ddfb4a7793
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-6ae9a62a-2982-48e0-914a-405258a16baf]
+    outputs:
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-31c99afd-912e-45b8-b6bf-7a9fb6cee83e
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-8cce9b3c-f46d-4116-9339-1c44af2afb1c]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-8647c53e-25e9-44e4-bf1c-b3e37d8cde0f,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-31c99afd-912e-45b8-b6bf-7a9fb6cee83e
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-99c96b02-241d-4e4d-bd2a-1275c52f62fe
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-8647c53e-25e9-44e4-bf1c-b3e37d8cde0f]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_WNAKWMPOCHWZYAAAAFUYNMSP4U]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-6ae9a62a-2982-48e0-914a-405258a16baf,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-99c96b02-241d-4e4d-bd2a-1275c52f62fe
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-2f40925a-c063-4cac-a10d-4ce1bba2b359
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14772019
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[Match].[distance] AS "distance"
+FROM [BestDR1].[dbo].[Match]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-40d63ab0-336f-4055-a17a-84ed9c3fefd9,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-2f40925a-c063-4cac-a10d-4ce1bba2b359
+
+
+2019-03-16 13:30:26,972 DEBUG drer.SimpleDRER [http-nio-8080-exec-2,debug:84] Entered execute(activity.RequestDescriptor)
+2019-03-16 13:30:26,973 DEBUG activity.OGSADAIActivityFramework [http-nio-8080-exec-2,debug:84] Found Workflow in RequestDescriptor: Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-07ac3bb9-871e-40d1-a07e-c51967b752a7
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-40d63ab0-336f-4055-a17a-84ed9c3fefd9]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-0c13260f-c067-4a1a-9b85-d2bb64437a27,source=uk.org.ogsadai.SQLQuery-ogsadai-07ac3bb9-871e-40d1-a07e-c51967b752a7
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-30eba4e9-f4f1-474f-8da8-263a7086efef
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-0c13260f-c067-4a1a-9b85-d2bb64437a27]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-8cce9b3c-f46d-4116-9339-1c44af2afb1c,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-30eba4e9-f4f1-474f-8da8-263a7086efef
+
+Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-c0d90d9f-1894-4dd6-8301-82ddfb4a7793
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-6ae9a62a-2982-48e0-914a-405258a16baf]
+    outputs:
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-31c99afd-912e-45b8-b6bf-7a9fb6cee83e
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-8cce9b3c-f46d-4116-9339-1c44af2afb1c]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-8647c53e-25e9-44e4-bf1c-b3e37d8cde0f,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-31c99afd-912e-45b8-b6bf-7a9fb6cee83e
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-99c96b02-241d-4e4d-bd2a-1275c52f62fe
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-8647c53e-25e9-44e4-bf1c-b3e37d8cde0f]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_WNAKWMPOCHWZYAAAAFUYNMSP4U]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-6ae9a62a-2982-48e0-914a-405258a16baf,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-99c96b02-241d-4e4d-bd2a-1275c52f62fe
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-2f40925a-c063-4cac-a10d-4ce1bba2b359
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14772019
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[Match].[distance] AS "distance"
+FROM [BestDR1].[dbo].[Match]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-40d63ab0-336f-4055-a17a-84ed9c3fefd9,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-2f40925a-c063-4cac-a10d-4ce1bba2b359
+
+
+2019-03-16 13:30:26,978 DEBUG drer.SimpleDRER [http-nio-8080-exec-2,debug:84] Created engine.Request: uk.org.ogsadai.activity.request.WorkflowRequest@56fe4775
+2019-03-16 13:30:26,979 DEBUG drer.SimpleDRER [http-nio-8080-exec-2,debug:84] About to submit request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@6b6dafe4
+2019-03-16 13:30:28,957 DEBUG context.RequestContextFactory [http-nio-8080-exec-5,createContext:62] createContext(HttpServletRequest)
+2019-03-16 13:30:28,958 DEBUG context.RequestContextFactory [http-nio-8080-exec-5,createContext:64] remote [172.18.0.5]
+2019-03-16 13:30:29,027 DEBUG context.RequestContextFactory [http-nio-8080-exec-7,createContext:62] createContext(HttpServletRequest)
+2019-03-16 13:30:29,027 DEBUG context.RequestContextFactory [http-nio-8080-exec-7,createContext:64] remote [172.18.0.5]
+2019-03-16 13:30:29,028 DEBUG drer.SimpleDRER [http-nio-8080-exec-7,debug:84] Entered execute(CandidateRequestDescriptor)
+2019-03-16 13:30:29,029 DEBUG drer.SimpleDRER [http-nio-8080-exec-7,debug:84] Workflow: Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-0811e7e9-9cbd-4b3c-9af8-fbf550661ff2
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-dff2e17d-f9ea-4e20-8660-9b49e2eb9f43]
+    outputs:
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-a2cb499e-6f90-499f-a409-1564d3ca6269
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-6d870963-a928-4d72-9c80-c1d7e2f5292c]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-d742cafc-97c8-4a8d-b98a-52662eb27460,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-a2cb499e-6f90-499f-a409-1564d3ca6269
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-ca9f3b7a-ecf4-43a7-b5bd-780c74d2e814
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-d09c3bf1-d92e-4216-8326-21dc6bf7bed2]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-6d870963-a928-4d72-9c80-c1d7e2f5292c,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-ca9f3b7a-ecf4-43a7-b5bd-780c74d2e814
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-ff9b166b-a88d-42bc-9a55-95efd9f07c69
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14772020
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[SiteConstants].[name] AS "name",[BestDR1].[dbo].[SiteConstants].[value] AS "value",[BestDR1].[dbo].[SiteConstants].[comment] AS "comment"
+FROM [BestDR1].[dbo].[SiteConstants]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-aabf401c-88e3-48db-9299-e64ea56a9e45,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-ff9b166b-a88d-42bc-9a55-95efd9f07c69
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-81443490-c75f-4695-9925-ed2afcc92e25
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-d742cafc-97c8-4a8d-b98a-52662eb27460]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_R6VQDJIGDYI66AAAAFUYNMSYGQ]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-dff2e17d-f9ea-4e20-8660-9b49e2eb9f43,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-81443490-c75f-4695-9925-ed2afcc92e25
+
+Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-cd8edb4b-d30a-4636-abdb-503b029d5a61
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-aabf401c-88e3-48db-9299-e64ea56a9e45]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-d09c3bf1-d92e-4216-8326-21dc6bf7bed2,source=uk.org.ogsadai.SQLQuery-ogsadai-cd8edb4b-d30a-4636-abdb-503b029d5a61
+
+
+2019-03-16 13:30:29,029 DEBUG drer.SimpleDRER [http-nio-8080-exec-7,debug:84] Entered execute(activity.RequestDescriptor)
+2019-03-16 13:30:29,031 DEBUG activity.OGSADAIActivityFramework [http-nio-8080-exec-7,debug:84] Found Workflow in RequestDescriptor: Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-0811e7e9-9cbd-4b3c-9af8-fbf550661ff2
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-dff2e17d-f9ea-4e20-8660-9b49e2eb9f43]
+    outputs:
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-a2cb499e-6f90-499f-a409-1564d3ca6269
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-6d870963-a928-4d72-9c80-c1d7e2f5292c]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-d742cafc-97c8-4a8d-b98a-52662eb27460,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-a2cb499e-6f90-499f-a409-1564d3ca6269
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-ca9f3b7a-ecf4-43a7-b5bd-780c74d2e814
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-d09c3bf1-d92e-4216-8326-21dc6bf7bed2]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-6d870963-a928-4d72-9c80-c1d7e2f5292c,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-ca9f3b7a-ecf4-43a7-b5bd-780c74d2e814
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-ff9b166b-a88d-42bc-9a55-95efd9f07c69
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14772020
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[SiteConstants].[name] AS "name",[BestDR1].[dbo].[SiteConstants].[value] AS "value",[BestDR1].[dbo].[SiteConstants].[comment] AS "comment"
+FROM [BestDR1].[dbo].[SiteConstants]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-aabf401c-88e3-48db-9299-e64ea56a9e45,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-ff9b166b-a88d-42bc-9a55-95efd9f07c69
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-81443490-c75f-4695-9925-ed2afcc92e25
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-d742cafc-97c8-4a8d-b98a-52662eb27460]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_R6VQDJIGDYI66AAAAFUYNMSYGQ]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-dff2e17d-f9ea-4e20-8660-9b49e2eb9f43,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-81443490-c75f-4695-9925-ed2afcc92e25
+
+Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-cd8edb4b-d30a-4636-abdb-503b029d5a61
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-aabf401c-88e3-48db-9299-e64ea56a9e45]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-d09c3bf1-d92e-4216-8326-21dc6bf7bed2,source=uk.org.ogsadai.SQLQuery-ogsadai-cd8edb4b-d30a-4636-abdb-503b029d5a61
+
+
+2019-03-16 13:30:29,031 DEBUG drer.SimpleDRER [http-nio-8080-exec-7,debug:84] Created engine.Request: uk.org.ogsadai.activity.request.WorkflowRequest@344759bf
+2019-03-16 13:30:29,032 DEBUG drer.SimpleDRER [http-nio-8080-exec-7,debug:84] About to submit request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@6b6dafe4
+2019-03-16 13:30:31,916 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:62] createContext(HttpServletRequest)
+
+
+
+## --------------------------
+## Firethorn Logs
+## --------------------------
+
+2019-03-16 13:30:46,494 DEBUG [FireThornTaskExecutor-53] [BaseComponentEntity] prevscan   [2019-03-16T13:23:37.179Z] 
+2019-03-16 13:30:46,494 DEBUG [FireThornTaskExecutor-53] [BaseComponentEntity] scanperiod [PT11M] 
+2019-03-16 13:30:46,494 DEBUG [FireThornTaskExecutor-53] [BaseComponentEntity] prev scan is recent - skipping 
+2019-03-16 13:30:46,585 DEBUG [FireThornTaskExecutor-53] [OgsaContextClient] monkey(MonkeyParam) 
+2019-03-16 13:30:46,601 DEBUG [FireThornTaskExecutor-53] [BlueWorkflowClient] Exception during request processing [{}] 
+uk.org.ogsadai.client.toolkit.exception.ClientException: [1552743046601:187] uk.org.ogsadai.REQUEST_REJECTED : ogsadai-9599dd5e-fae3-40c1-a7b3-98ba2c5a07d1
+	at uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyUtilities.buildClientException(JerseyUtilities.java:91)
+	at uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyUtilities.handleError(JerseyUtilities.java:74)
+	at uk.org.ogsadai.client.toolkit.presentation.jersey.JerseyDRERResource.executeRequest(JerseyDRERResource.java:164)
+	at uk.org.ogsadai.client.toolkit.resource.BaseDataRequestExecutionResource.execute(BaseDataRequestExecutionResource.java:141)
+	at uk.org.ogsadai.client.toolkit.resource.BaseDataRequestExecutionResource.execute(BaseDataRequestExecutionResource.java:118)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.client.blue.BlueWorkflowClient.execute(BlueWorkflowClient.java:189)
+	at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity.execute(BlueQueryEntity.java:1805)
+	at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$2.update(BlueTaskEntity.java:1533)
+	at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner.future(BlueTaskEntity.java:236)
+	at uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskEntity$TaskRunner$$FastClassBySpringCGLIB$$d43bdbfb.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:746)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:294)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:115)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+## Monkey param? 
+## Where was this passed?
+
+## Works after restarting Firethorn & Ogsadai services..
+
+

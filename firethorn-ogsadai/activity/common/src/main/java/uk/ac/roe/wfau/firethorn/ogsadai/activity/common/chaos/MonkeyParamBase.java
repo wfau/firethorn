@@ -107,4 +107,15 @@ implements MonkeyParam
                 ); 
             }
         }
+
+    @Override
+    public void sqlException(Object owner, Object value, String message) throws SQLException
+        {
+        if (test(owner, value))
+            {
+            throw new SQLException(
+                message
+                ); 
+            }
+        }
     }

@@ -1,0 +1,322 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+### Same query run twice (with a ChaosMonkey param to cause it to fail) produces different behaviour
+### On the same resource, the failing query was run first (B) and the propagated fail was run second (A)
+
+### Query run: 
+
+
+
+	params = {}
+	params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+	params.update({"firethorn.monkey.data" : "jG2hdk00"})
+
+	print(
+	    params
+	    )
+	query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
+	query_obj = workspace.create_query(
+	    query_str,
+	    "COMPLETED",
+	    None,
+	    3000000,
+	    params=params
+	    )
+	print(
+	    query_obj
+	    )
+	print(
+	    query_obj.table()
+	    )
+	print(
+	    query_obj.table().count()
+	    )
+
+
+### Try to find differences in OGSA-DAI Logs between two cases, A & B listed below:
+
+### A) Graceful Failed query - Propagates correctly to Firethorn
+### B) Non-Graceful Failed query - Does not propagate the FAIL, gets stuck in a "RUNNING" status
+
+
+
+
+
+###-----------------------------------------------------------------------------
+
+
+
+
+### 1. Order is different in initial Workflow creation output
+
+
+
+
+
+### 2. 
+
+B
+--
+2019-04-21 11:13:33,223 DEBUG activity.OGSADAIActivityFramework [http-nio-8080-exec-6,debug:84] No WORKFLOW_AUTHORIZER in OGSA-DAI context
+2019-04-21 11:13:33,225 DEBUG activity.OGSADAIActivityFramework [http-nio-8080-exec-6,debug:84] No MONITORING_FRAMEWORK in OGSA-DAI context
+
+Does not show up for A
+
+
+
+
+
+## 3. 
+
+A
+--  
+2019-04-21 11:13:34,772 DEBUG drer.SimpleDRER [http-nio-8080-exec-1,debug:84] Created engine.Request: uk.org.ogsadai.activity.request.WorkflowRequest@af22729
+2019-04-21 11:13:34,781 DEBUG drer.SimpleDRER [http-nio-8080-exec-1,debug:84] About to submit request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@177969b3
+2019-04-21 11:13:34,782 DEBUG request.WorkflowRequest [pool-2-thread-1,debug:84] Did not get a workflow transformation from the context
+
+vs 
+
+B 
+--
+2019-04-21 11:15:54,164 DEBUG drer.SimpleDRER [http-nio-8080-exec-10,debug:84] Created engine.Request: uk.org.ogsadai.activity.request.WorkflowRequest@64f818a6
+2019-04-21 11:15:54,164 DEBUG drer.SimpleDRER [http-nio-8080-exec-10,debug:84] About to submit request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@177969b3
+2019-04-21 11:15:54,165 DEBUG drer.SimpleDRER [http-nio-8080-exec-10,debug:84] Sucessfully submitted request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@177969b3
+2019-04-21 11:15:54,171 DEBUG request.WorkflowRequest [pool-2-thread-2,debug:84] Did not get a workflow transformation from the context
+
+Sucessfully submitted request to engine appears at different points in the logs
+
+
+
+
+
+### 4.
+
+
+A
+--  
+2019-04-21 11:15:54,189 DEBUG event.LoggingActivityListener [pool-1-thread-8,debug:84] PENDING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-4b7e7809-7597-41be-9ff1-87f7937073a0)
+2019-04-21 11:15:54,190 DEBUG event.LoggingActivityListener [pool-1-thread-8,debug:84] PENDING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-3f0e5175-b6c9-4c1a-aadc-5e4cdf1bedda)
+2019-04-21 11:15:54,190 DEBUG event.LoggingActivityListener [pool-1-thread-8,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-1fd04cd8-5d01-4785-8654-f3861b8af05f)
+2019-04-21 11:15:54,190 DEBUG event.LoggingActivityListener [pool-1-thread-8,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-67368124-ee07-409d-a2d1-19b3888301d8)
+2019-04-21 11:15:54,190 DEBUG event.LoggingActivityListener [pool-1-thread-8,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-245968b6-bc51-4de9-8215-fd6a91611510)
+2019-04-21 11:15:54,191 DEBUG event.LoggingActivityListener [pool-1-thread-8,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-b953b608-a1c5-417f-b767-516dd4426460)
+
+
+vs 
+
+B 
+--
+2019-04-21 11:13:34,821 DEBUG event.LoggingActivityListener [pool-1-thread-1,debug:84] PENDING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-373dfd1d-3e3a-4f4f-855c-77a1cb640d3b)
+2019-04-21 11:13:34,821 DEBUG event.LoggingActivityListener [pool-1-thread-1,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-a3f304c6-b611-405b-865d-569603c435d4)
+2019-04-21 11:13:34,821 DEBUG event.LoggingActivityListener [pool-1-thread-1,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-3bc71121-ae5a-4970-8c2c-c55d8306bdb5)
+2019-04-21 11:13:34,821 DEBUG event.LoggingActivityListener [pool-1-thread-1,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-7d7668ff-d63e-4d15-835b-8317057e21e6)
+2019-04-21 11:13:34,822 DEBUG event.LoggingActivityListener [pool-1-thread-1,debug:84] PENDING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-ff255f1b-4fbd-4cf5-8510-75b92573f4b0)
+2019-04-21 11:13:34,822 DEBUG event.LoggingActivityListener [pool-1-thread-1,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-92dea697-5a16-4bf1-aa17-db8f947796cd)
+
+
+
+
+
+
+### 5.
+
+A
+-- 
+2019-04-21 11:15:54,196 DEBUG event.LoggingActivityListener [pool-1-thread-12,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-1fd04cd8-5d01-4785-8654-f3861b8af05f)
+2019-04-21 11:15:54,204 DEBUG activity.MatchedIterativeActivity [pool-1-thread-12,debug:84] performing first stage of processing
+2019-04-21 11:15:54,204 DEBUG data.LimitsActivity [pool-1-thread-12,preprocess:144] preprocess()
+2019-04-21 11:15:54,204 DEBUG activity.MatchedIterativeActivity [pool-1-thread-12,debug:84] performing iterative stage of processing
+2019-04-21 11:15:54,205 DEBUG event.LoggingActivityListener [pool-1-thread-9,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-67368124-ee07-409d-a2d1-19b3888301d8)
+2019-04-21 11:15:54,209 DEBUG activity.MatchedIterativeActivity [pool-1-thread-9,debug:84] performing first stage of processing
+2019-04-21 11:15:54,209 DEBUG event.LoggingActivityListener [pool-1-thread-14,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-245968b6-bc51-4de9-8215-fd6a91611510)
+2019-04-21 11:15:54,209 DEBUG activity.MatchedIterativeActivity [pool-1-thread-14,debug:84] performing first stage of processing
+2019-04-21 11:15:54,209 DEBUG data.DelaysActivity [pool-1-thread-9,preprocess:102] preprocess()
+2019-04-21 11:15:54,212 DEBUG activity.MatchedIterativeActivity [pool-1-thread-9,debug:84] performing iterative stage of processing
+2019-04-21 11:15:54,210 DEBUG event.LoggingActivityListener [pool-1-thread-10,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-4b7e7809-7597-41be-9ff1-87f7937073a0)
+2019-04-21 11:15:54,213 DEBUG event.LoggingActivityListener [pool-1-thread-11,debug:84] PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-3f0e5175-b6c9-4c1a-aadc-5e4cdf1bedda)
+
+
+vs 
+
+
+B 
+--
+2019-04-21 11:13:34,822 DEBUG event.LoggingActivityListener [pool-1-thread-3,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-3bc71121-ae5a-4970-8c2c-c55d8306bdb5)
+2019-04-21 11:13:34,822 DEBUG event.LoggingActivityListener [pool-1-thread-2,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-ff255f1b-4fbd-4cf5-8510-75b92573f4b0)
+2019-04-21 11:13:34,823 DEBUG event.LoggingActivityListener [pool-1-thread-4,debug:84] PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-373dfd1d-3e3a-4f4f-855c-77a1cb640d3b)
+2019-04-21 11:13:34,823 DEBUG activity.MatchedIterativeActivity [pool-1-thread-4,debug:84] performing first stage of processing
+2019-04-21 11:13:34,824 DEBUG event.LoggingActivityListener [pool-1-thread-5,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-a3f304c6-b611-405b-865d-569603c435d4)
+2019-04-21 11:13:34,825 DEBUG event.LoggingActivityListener [pool-1-thread-6,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-7d7668ff-d63e-4d15-835b-8317057e21e6)
+
+
+
+
+
+### 6.
+
+A
+--
+## JdbcInsertData starts processing after first batch of activities has started,  
+## and after the blue.ContextActivity debug output like:
+   
+   2019-04-21 11:15:54,216 DEBUG blue.ContextActivity [pool-1-thread-14,postprocess:227] postprocess()
+
+
+2019-04-21 11:15:54,217 DEBUG event.LoggingActivityListener [pool-1-thread-13,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-b953b608-a1c5-417f-b767-516dd4426460)
+
+
+
+B
+--
+
+## In the failing query, the JdbcInsertData Activity has already started with the first batch.
+## After the first batch, and after the last blue.ContextActivity output "postprocess()" we see:  
+
+    2019-04-21 11:13:34,826 DEBUG event.LoggingActivityListener [pool-1-thread-6,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-7d7668ff-d63e-4d15-835b-8317057e21e6)
+    2019-04-21 11:13:34,827 DEBUG event.LoggingActivityListener [pool-1-thread-7,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-92dea697-5a16-4bf1-aa17-db8f947796cd)
+
+
+
+
+
+### 7. 
+
+A
+--
+## The Context Activity completes AFTER we see any JdbcInsertData Activity output
+
+
+B
+--
+## The Context Activity completes BEFORE we see any JdbcInsertData Activity output
+
+
+
+
+
+
+### 8. 
+
+A
+--
+##
+- 
+
+
+
+B
+--
+##
+
+2019-04-21 11:13:35,119 DEBUG jdbc.JDBCDataResource [pool-1-thread-5,debug:84] Creating a connection pool for resource ogsadai-5f913864-d792-4227-9bfc-ca03a4950f73 at jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20180719
+2019-04-21 11:13:35,119 DEBUG jdbc.JDBCDataResource [pool-1-thread-5,debug:84] DBCP connection pool settings: 
+MaxActive = 8
+MaxIdle = 8
+WhenExhaustedAction = 1
+TestOnBorrow = false
+TestOnReturn = false
+TimeBetweenEvictionRunsMillis = -1
+MinEvictableIdleTimeMillis = 1800000
+TestWhileIdle = false
+SoftMinEvictableIdleTimeMillis = -1
+NumTestsPerEvictionRun = 3
+Lifo = true
+MaxWait = -1
+2019-04-21 11:13:35,130 DEBUG file.SimpleFileLoginProvider [pool-1-thread-4,debug:84] In SimpleFileLogin:getLogin
+2019-04-21 11:13:35,131 DEBUG file.SimpleFileLoginProvider [pool-1-thread-4,debug:84] In getLogin: ResourceID:  User ID: null
+2019-04-21 11:13:35,131 DEBUG file.SimpleFileLoginProvider [pool-1-thread-4,debug:84] Found 4 lines that match
+2019-04-21 11:13:35,131 DEBUG file.SimpleFileLoginProvider [pool-1-thread-4,debug:84] Found a login for null
+2019-04-21 11:13:35,133 DEBUG jdbc.JDBCDataResource [pool-1-thread-5,debug:84] Checked if a pool with a similar URL has not  already been registered.
+2019-04-21 11:13:35,133 DEBUG jdbc.JDBCDataResource [pool-1-thread-5,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ogsadai-5f913864-d792-4227-9bfc-ca03a4950f73
+2019-04-21 11:13:35,131 DEBUG jdbc.JDBCDataResource [pool-1-thread-4,debug:84] Creating a connection pool for resource ogsadai-d2794a0d-d5ee-47d9-9e12-4e06d2148976 at jdbc:jtds:sqlserver://192.168.137.11/ATLASDR3
+2019-04-21 11:13:35,135 DEBUG jdbc.JDBCDataResource [pool-1-thread-4,debug:84] DBCP connection pool settings: 
+MaxActive = 8
+MaxIdle = 8
+WhenExhaustedAction = 1
+TestOnBorrow = false
+TestOnReturn = false
+TimeBetweenEvictionRunsMillis = -1
+MinEvictableIdleTimeMillis = 1800000
+TestWhileIdle = false
+SoftMinEvictableIdleTimeMillis = -1
+NumTestsPerEvictionRun = 3
+Lifo = true
+MaxWait = -1
+
+
+This is possibly related to the fact that B) was the first query run after creating the workspace and importing the Schema
+
+
+
+
+
+
+### 9. Order of Activities
+
+	
+A
+--
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-1fd04cd8-5d01-4785-8654-f3861b8af05f)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-67368124-ee07-409d-a2d1-19b3888301d8)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-245968b6-bc51-4de9-8215-fd6a91611510)
+PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-4b7e7809-7597-41be-9ff1-87f7937073a0)
+PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-3f0e5175-b6c9-4c1a-aadc-5e4cdf1bedda)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-b953b608-a1c5-417f-b767-516dd4426460)
+COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-245968b6-bc51-4de9-8215-fd6a91611510)
+
+B
+--
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-3bc71121-ae5a-4970-8c2c-c55d8306bdb5)
+PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-ff255f1b-4fbd-4cf5-8510-75b92573f4b0)
+PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-373dfd1d-3e3a-4f4f-855c-77a1cb640d3b)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-a3f304c6-b611-405b-865d-569603c435d4)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-7d7668ff-d63e-4d15-835b-8317057e21e6)
+COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-7d7668ff-d63e-4d15-835b-8317057e21e6)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-92dea697-5a16-4bf1-aa17-db8f947796cd)
+
+
+
+
+### Just to compare, here is the order of activities from another two example queries, C) is a query that Failed gracefully, and D) a query that did not
+
+
+C
+--
+PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-8775be3e-586b-4e04-9252-290e44bf668f)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-907622ba-73d9-40c6-82d8-8281abb292e8)
+PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-06706101-43e6-4c60-9316-8983c0bfb240)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-6334ea8a-6685-4233-83bd-b7ea735cf38d)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-de0ceeca-bad9-4cac-8589-7aa3a73d7f47)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-8117c5bf-7c4f-4048-8718-4f4350376758)
+COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-de0ceeca-bad9-4cac-8589-7aa3a73d7f47)
+
+D
+--
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-47cc78c5-bfe7-49ab-91b9-2394abe5c3f7)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-0ef2e6b9-f063-49a9-860f-9f9ea2d481ad)
+COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-0ef2e6b9-f063-49a9-860f-9f9ea2d481ad)
+PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-15df7c00-a340-4e47-a7e7-ea8cb3c059c3)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-1d1af8cd-2e4d-438c-8699-2dd8df45a2e5)
+PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-4c660365-75de-4e62-b96e-aff634cd2ede)
+PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-6cf18e79-eb0c-448b-87c9-8466a2505f48)

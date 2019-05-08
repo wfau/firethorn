@@ -531,15 +531,15 @@ public class UWSJob {
 	public String writeUWSJobToXML () throws ProtectionException{
 
 			StringBuilder writer = new StringBuilder();
-			
+			String ownerId = ((this.getOwnerId() == null) ? "" : this.getOwnerId());
 	        writer.append("<?xml version='1.0' encoding='UTF-8'?>");
-	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0 http://vo.ari.uni-heidelberg.de/docs/schemata/uws-1.0.xsd'>");
+	        writer.append("	<uws:job xmlns:uws='http://www.ivoa.net/xml/UWS/v1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xlink='http://www.w3.org/1999/xlink' xsi:schemaLocation='http://www.ivoa.net/xml/UWS/v1.0'>");
 	     
 	            writer.append("<uws:jobId>" + this.getJobId() + "</uws:jobId>");
-	            writer.append("<uws:ownerId xsi:nil='true'>" + this.getOwnerId() + "</uws:ownerId>");
+	            writer.append("<uws:ownerId xsi:nil='true'>" + ownerId + "</uws:ownerId>");
 	            writer.append("<uws:phase>" + this.getPhase() + "</uws:phase>");
-	            writer.append("<uws:startTime xsi:nil='true'>" + this.getStartTime() + "</uws:startTime>");
-	            writer.append("<uws:endTime xsi:nil='true'>" + this.getEndTime() + "</uws:endTime>");
+	            writer.append("<uws:startTime>" + this.getStartTime() + "</uws:startTime>");
+	            writer.append("<uws:endTime>" + this.getEndTime() + "</uws:endTime>");
 	            writer.append("<uws:executionDuration>" + this.getExecutionDuration() + "</uws:executionDuration>");
 	            writer.append("<uws:destruction xsi:nil='true'>" + this.getDestructionTime() + "</uws:destruction>");
 	            writer.append("<uws:parameters>");

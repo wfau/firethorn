@@ -1,0 +1,63 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+#
+
+
+# Issues found during testing
+# Todo: Create Redmine issues with details
+
+- TAP Async Test (All Tables):
+  - Query hanging
+      Investigating shows that result state does not match query status
+  - Astropy Error while reading VOTable response
+      "ValueError: invalid literal for int() with base 10:"
+       .. Query returns an "img" field which has type unsignedByte in the VOTable
+       .. Astropy tries to read this as an integer and fails 
+        https://msdn.microsoft.com/en-us/library/ee625175(v=exchg.80).aspx
+	"The unsignedByte data type is an integer value between 0 and 255, inclusive." 
+
+
+- TAP Sync Test (All Tables):
+  - Same Astropy Error mentioned above
+
+
+
+Firethorn Query Test (All Tables):
+  - Bad Status Line Exceptions
+
+
+# Ongoing work and Plans
+
+- Fixed issue with Health Checker running on my machine, which didn't recognize that OSA TAP VM had crashed
+- Working on fixing Firethorn-Utils validation output (Need to output full exception)
+- Testing 3 different ways of running the ALL-TABLES test on Firethorn
+- Testing using TAPlint
+- Plan on using ChaosMonkey to simulate exception in OGSADAI similar to the 823 Fatal error known issue, and documenting if this causes infinite loops or VM crashing
+- .. 
+
+# Taplint Validation pointed to VVVDR4 missing from ramses19?
+# Checking ogsadai logs:
+  Caused by: java.sql.SQLException: Invalid object name 'VVVDR4.dbo.ProgrammeTable'.
+
+# Don't inform Rob yet, run some tests to see if this will cause VM to crash again
+
+

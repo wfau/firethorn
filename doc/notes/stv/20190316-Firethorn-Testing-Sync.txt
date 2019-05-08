@@ -1,0 +1,623 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# From local machine, setup tunnel connection to Gworewia (Apache Service), which maps TAP service to Cadelicia
+ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia 
+
+
+
+## ----------------------
+## From Local Machine
+##----------------------
+
+## Edit firethorn-utils to only Test UKIDSSDR4PLUS
+
+nano firethorn_utils/tap_validator.py
+
+# .. Edit line 163
+        for schema in list(filter(lambda x: x.name().lower() in ["ukidssdr4plus"], resource.get_schemas())):
+# ..
+
+## Test Resource 1808 (VVV), which should have some registered Schemas which are missing, like UKIDSSDR4PLUS
+
+/usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 -v=True -m=sync
+
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [UKIDSSDR4PLUS.PreviousAstrometry]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.004610061645508 seconds
+Testing [UKIDSSDR4PLUS.lasListRemeasurement]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.011334419250488 seconds
+Testing [UKIDSSDR4PLUS.dxsSourceXtwoxmm]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.011358261108398 seconds
+Testing [UKIDSSDR4PLUS.lasSourceXmgcDetection]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.007440090179443 seconds
+Testing [UKIDSSDR4PLUS.lasSourceXDR3PhotoObj]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.010822057723999 seconds
+Testing [UKIDSSDR4PLUS.dxsJKsource]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.012039184570312 seconds
+Testing [UKIDSSDR4PLUS.gcsSourceXDR5PhotoObj]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.010644912719727 seconds
+Testing [UKIDSSDR4PLUS.dxsSourceNeighbours]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/home/stelios/firethorn-utils/firethorn_utils/tap_validator.py", line 210, in validate
+    raise Exception(voqry.get_error())
+Exception: <urlopen error timed out>
+<class 'Exception'>
+Table query completed after 10.007557153701782 seconds
+Testing [UKIDSSDR4PLUS.lasYJHKmergeLog]
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1059, in download_file
+    remote_url, timeout=timeout)) as remote:
+  File "/usr/lib/python3.4/urllib/request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.4/urllib/request.py", line 463, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.4/urllib/request.py", line 481, in _open
+    '_open', req)
+  File "/usr/lib/python3.4/urllib/request.py", line 441, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.4/urllib/request.py", line 1210, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.4/urllib/request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.4/http/client.py", line 1208, in getresponse
+    response.begin()
+  File "/usr/lib/python3.4/http/client.py", line 380, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.4/http/client.py", line 342, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.4/socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 132, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 140, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 168, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 66, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.4/contextlib.py", line 59, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 202, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/utils/data.py", line 1132, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+
+
+
+
+
+## This produces the issue where Firethorn stops responding
+## http://localhost:8081/firethorn/system/info
+
+502 Proxy Error
+The proxy server received an invalid response from an upstream server.
+The proxy server could not handle the request GET /firethorn/system/info.
+
+Reason: Error reading from remote server
+
+
+
+## I can still log into the VM, and requests to port 8081 "/firethorn/system/info" work from inside the VM
+

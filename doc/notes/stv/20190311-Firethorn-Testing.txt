@@ -1,0 +1,203 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# 11 March 2019 - Testing for Non-completing queries in Firethorn
+
+# This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
+# Firethorn Chain is running on Cadelicia on trop01
+
+# ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia 
+
+stelios@stelios-pc:~$ /usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=${username:?} -p=${pass:?} -g=${group:?} -v=True -m=async
+
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [BestDR1.SpecObjAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197543/results/result [Done]
+ERROR:root:http://localhost:8081/firethorn/tap/1808/async/14197543/results/result:1:12717: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.14223391')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn-0.1.0-py3.4.egg/firethorn/tap/voQuery.py", line 92, in _async_loop
+    return_vot = Table.read(url + '/results/result', format="votable")
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/table/table.py", line 2521, in read
+    out = io_registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/registry.py", line 531, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/connect.py", line 75, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/table.py", line 142, in parse
+    config=config, pos=(1, 1)).parse(iterator, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3405, in parse
+    iterator, tag, data, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3334, in _add_resource
+    resource.parse(self, iterator, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3156, in parse
+    iterator, tag, data, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 3113, in _add_table
+    table.parse(iterator, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2405, in parse
+    iterator, colnumbers, fields, config)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2520, in _parse_tabledata
+    vo_reraise(e, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/exceptions.py", line 119, in vo_reraise
+    raise exc
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2517, in _parse_tabledata
+    fields[i].ID))
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/exceptions.py", line 119, in vo_reraise
+    raise exc
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/tree.py", line 2511, in _parse_tabledata
+    data, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/converters.py", line 555, in parse
+    value, mask = parse(x, config, pos)
+  File "/usr/local/lib/python3.4/dist-packages/astropy-2.0.2-py3.4-linux-x86_64.egg/astropy/io/votable/converters.py", line 827, in parse
+    value = int(value, 10)
+ValueError: http://localhost:8081/firethorn/tap/1808/async/14197543/results/result:1:12717: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.14223391')
+Rowcount:-1
+ERROR:root:http://localhost:8081/firethorn/tap/1808/async/14197543/results/result:1:12717: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.14223391')
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.4/dist-packages/firethorn_utils-0.1.0-py3.4.egg/firethorn_utils/tap_validator.py", line 209, in validate
+    raise Exception(voqry.get_error())
+Exception: http://localhost:8081/firethorn/tap/1808/async/14197543/results/result:1:12717: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.14223391')
+<class 'Exception'>
+{'BestDR1.SpecObjAll': "http://localhost:8081/firethorn/tap/1808/async/14197543/results/result:1:12717: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.14223391')"}
+Table query completed after 4.06763219833374 seconds
+Testing [BestDR1.TilingInfo]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197544/results/result
+|=======================================================================================================================================================================| 2.7k/2.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.5575454235076904 seconds
+Testing [BestDR1.StripeDefs]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197545/results/result
+|=======================================================================================================================================================================| 2.1k/2.1k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.33341646194458 seconds
+Testing [BestDR1.HoleObj]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197546/results/result
+|=======================================================================================================================================================================| 3.7k/3.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.3672046661376953 seconds
+Testing [BestDR1.Neighbors]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197547/results/result
+|=======================================================================================================================================================================| 2.8k/2.8k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.2320265769958496 seconds
+Testing [BestDR1.SDSSConstants]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197548/results/result
+|=======================================================================================================================================================================| 1.9k/1.9k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.3489420413970947 seconds
+Testing [BestDR1.PhotoTag]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197549/results/result [Done]
+Rowcount:5
+Table query completed after 3.070641040802002 seconds
+Testing [BestDR1.ObjMask]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197550/results/result
+|=======================================================================================================================================================================| 4.0k/4.0k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.4063730239868164 seconds
+Testing [BestDR1.RunShift]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14197551/results/result
+|=======================================================================================================================================================================| 1.1k/1.1k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.2684085369110107 seconds
+Testing [BestDR1.QsoConcordance]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223852/results/result [Done]
+Rowcount:5
+Table query completed after 2.9337563514709473 seconds
+Testing [BestDR1.ProfileDefs]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223853/results/result
+|=======================================================================================================================================================================| 2.6k/2.6k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.2722878456115723 seconds
+Testing [BestDR1.TargetParam]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223854/results/result
+|=======================================================================================================================================================================| 1.1k/1.1k (100.00%)         0s
+Rowcount:0
+Table query completed after 2.3661415576934814 seconds
+Testing [BestDR1.MaskedObject]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223855/results/result
+|=======================================================================================================================================================================| 1.5k/1.5k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.3666043281555176 seconds
+Testing [BestDR1.Photoz]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223856/results/result [Done]
+Rowcount:5
+Table query completed after 2.732147455215454 seconds
+Testing [BestDR1.QsoCatalogAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223857/results/result
+|=======================================================================================================================================================================| 1.7k/1.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.316422939300537 seconds
+Testing [BestDR1."Match"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223858/results/result
+|=======================================================================================================================================================================| 929 /929  (100.00%)         0s
+Rowcount:5
+Table query completed after 2.275411367416382 seconds
+Testing [BestDR1.SiteConstants]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223859/results/result
+|=======================================================================================================================================================================| 1.6k/1.6k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.348067045211792 seconds
+Testing [BestDR1.USNO]
+ 
+
+
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223860/results/result
+|=======================================================================================================================================================================| 2.8k/2.8k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.512054443359375 seconds
+Testing [BestDR1.TileAll]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223861/results/result
+|=======================================================================================================================================================================| 6.1k/6.1k (100.00%)         0s
+Rowcount:5
+Table query completed after 3.0946521759033203 seconds
+Testing [BestDR1.QueryResults]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223862/results/result
+|=======================================================================================================================================================================| 2.3k/2.3k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.6233162879943848 seconds
+Testing [BestDR1."Region"]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223863/results/result
+|=======================================================================================================================================================================| 4.8k/4.8k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.4311323165893555 seconds
+Testing [BestDR1.Rosat]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223864/results/result
+|=======================================================================================================================================================================| 4.9k/4.9k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.300107479095459 seconds
+Testing [BestDR1.FileGroupMap]
+Downloading http://localhost:8081/firethorn/tap/1808/async/14223865/results/result
+|=======================================================================================================================================================================| 1.7k/1.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 2.302009105682373 seconds
+Testing [BestDR1.ELRedShift]
+
+
+## Test Hangs Here
+
+
+## Grab Firethorn and OGSA-DAI logs from last two queries and compare
+## Logs in separate notes files
+
+## Leaving this test running will continue to poll /PHASE of that job every second.
+## I can start another test which will run a few more queries successfully before hanging again
+

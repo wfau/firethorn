@@ -1,0 +1,568 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+## Testing fix #55e7f3bc6fc4
+## This is run locally, with a tunneled connection to Gworewia which is running an httpd proxy
+# ssh -L '*:8081:Gworewia:80' Stevedore@Gworewia 
+## Firethorn Chain is running on Froeseth on trop01
+
+
+
+
+# -----------------------------------------------------
+
+
+## Test 1.
+## First query to a newly deployed Firethorn Chain, with a ChaosMonkey paramater to cause a FAIL
+## This test normally causes the Non-Completing query issue we've seen, where the Fail will never reach Firethorn
+
+
+
+stelios@stelios-pc:~$ python3
+
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+firethorn = ftpy.Firethorn(
+    endpoint = "http://localhost:8081/firethorn"
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+# Select a specific resource by Identity (url)
+
+resource=firethorn.firethorn_engine.select_adql_resource_by_ident(
+    "http://localhost:8081/firethorn/adql/resource/54"
+    )
+
+
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+# Select schema by Identity
+schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/437")
+
+
+# Import the TAP_schema into our workspace
+workspace.import_adql_schema(
+     schema
+ )
+
+
+
+params = {}
+params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
+params.update({"firethorn.monkey.data" : "jG2hdk00"})
+
+print(
+    params
+    )
+query_str = "SELECT TOP 10 * from ATLASDR1.Filter"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000,
+    params=params
+    )
+
+
+>>> print(
+...     query_obj
+...     )
+{
+  "mode": "DIRECT",
+  "columns": [],
+  "status": "FAILED",
+  "self": "http://localhost:8081/firethorn/blue/query/290652",
+  "workspace": "http://localhost:8081/firethorn/adql/resource/290552",
+  "resources": [
+    "http://localhost:8081/firethorn/jdbc/resource/53"
+  ],
+  "fields": [],
+  "name": "XX_DIEZENTEDIQPGAAAAFVE7J25ZM",
+  "text": null,
+  "results": {
+    "count": 0,
+    "table": "http://localhost:8081/firethorn/adql/table/290753",
+    "formats": {
+      "votable": "http://localhost:8081/firethorn/adql/table/290753/votable",
+      "datatable": "http://localhost:8081/firethorn/adql/table/290753/datatable"
+    },
+    "state": "PARTIAL"
+  },
+  "ident": "290652",
+  "adql": "SELECT TOP 10 *\nFROM ATLASDR1.Filter",
+  "resource": "http://localhost:8081/firethorn/adql/resource/290552",
+  "modified": "2019-04-24T14:02:13.344",
+  "owner": "http://localhost:8081/firethorn/community-member/290456",
+  "limits": {
+    "rows": 1000000,
+    "time": null,
+    "cells": null
+  },
+  "tables": [],
+  "delays": {
+    "every": null,
+    "last": null,
+    "first": null
+  },
+  "created": "2019-04-24T14:02:09.739",
+  "history": [
+    {
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "level": "INFO",
+      "owner": "http://localhost:8081/firethorn/community-member/290458",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/290703",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/290703",
+      "state": "FAILED",
+      "ident": "290703",
+      "created": "2019-04-24T14:02:13.303",
+      "task": "http://localhost:8081/firethorn/blue/query/290652",
+      "message": null,
+      "modified": "2019-04-24T14:02:13.303"
+    },
+    {
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "level": "INFO",
+      "owner": "http://localhost:8081/firethorn/community-member/290456",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/290702",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/290702",
+      "state": "READY",
+      "ident": "290702",
+      "created": "2019-04-24T14:02:10.144",
+      "task": "http://localhost:8081/firethorn/blue/query/290652",
+      "message": "Executing query",
+      "modified": "2019-04-24T14:02:10.151"
+    }
+  ],
+  "syntax": {
+    "status": "VALID",
+    "friendly": null,
+    "message": null
+  },
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+  "url": "http://localhost:8081/firethorn/blue/query/290652",
+  "callback": "http://localhost:8081/firethorn/callback/290652",
+  "osql": "SELECT TOP 10 [ATLASDR1].[dbo].[Filter].[filterID] AS \"filterID\",[ATLASDR1].[dbo].[Filter].[shortName] AS \"shortName\",[ATLASDR1].[dbo].[Filter].[name] AS \"name\",[ATLASDR1].[dbo].[Filter].[description] AS \"description\",[ATLASDR1].[dbo].[Filter].[cutOn] AS \"cutOn\",[ATLASDR1].[dbo].[Filter].[cutOff] AS \"cutOff\",[ATLASDR1].[dbo].[Filter].[aebv] AS \"aebv\",[ATLASDR1].[dbo].[Filter].[vegaToAB] AS \"vegaToAB\",[ATLASDR1].[dbo].[Filter].[oneSecMLVg] AS \"oneSecMLVg\",[ATLASDR1].[dbo].[Filter].[isSectioned] AS \"isSectioned\"\nFROM [ATLASDR1].[dbo].[Filter]",
+  "input": "SELECT TOP 10 * from ATLASDR1.Filter"
+}
+>>> print(
+...     query_obj.table()
+...     )
+{
+  "schema": "http://localhost:8081/firethorn/adql/schema/290603",
+  "columns": "http://localhost:8081/firethorn/adql/table/290753/columns/select",
+  "base": "http://localhost:8081/firethorn/jdbc/table/290752",
+  "self": "http://localhost:8081/firethorn/adql/table/290753",
+  "depth": "PARTIAL",
+  "metadata": {
+    "adql": {
+      "count": -1,
+      "status": "PARTIAL"
+    }
+  },
+  "formats": {
+    "votable": "http://localhost:8081/firethorn/adql/table/290753/votable",
+    "datatable": "http://localhost:8081/firethorn/adql/table/290753/datatable"
+  },
+  "created": "2019-04-24T14:02:10.233",
+  "resource": "http://localhost:8081/firethorn/adql/resource/290553",
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+  "url": "http://localhost:8081/firethorn/adql/table/290753",
+  "name": "XX_J7FRZP7E55JISAAAAFVE7J27W4",
+  "owner": "http://localhost:8081/firethorn/community-member/290456",
+  "text": null,
+  "root": "http://localhost:8081/firethorn/jdbc/table/290752",
+  "parent": "http://localhost:8081/firethorn/adql/schema/290603",
+  "ident": "290753",
+  "fullname": "temp.XX_J7FRZP7E55JISAAAAFVE7J27W4",
+  "query": "http://localhost:8081/firethorn/blue/query/290652",
+  "modified": "2019-04-24T14:02:10.233"
+}
+>>> print(
+...     query_obj.table().count()
+...     )
+-1
+
+
+
+
+## Result: Failed query, and Fail was successfully propagated to Firethorn
+
+
+
+
+
+##------------------------------------------------------------------------
+
+
+## Test 2.
+##
+## Test Consecutive Asynchronous Queries to all tables of a Resource
+## r= 54 (OSA Resource containing ATLASDR1)
+
+/usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=54 -u=lohhoh5bah3yaeCh8oos -p=ahng3aefaLohJie3thoo -g=oe5ShaimeeFah2iGoh3j -v=True -m=async
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/54---
+Testing [ATLASDR1.ArchiveCurationHistory]
+Downloading http://localhost:8081/firethorn/tap/54/async/77354/results/result
+|=======================================================================================================================================================================| 3.2k/3.2k (100.00%)         0s
+Rowcount:5
+Table query completed after 5.916067361831665 seconds
+Testing [ATLASDR1.AstrCalVers]
+Downloading http://localhost:8081/firethorn/tap/54/async/77355/results/result
+|=======================================================================================================================================================================| 1.3k/1.3k (100.00%)         0s
+Rowcount:0
+Table query completed after 2.9826622009277344 seconds
+Testing [ATLASDR1.CurationTask]
+Downloading http://localhost:8081/firethorn/tap/54/async/77356/results/result
+|=======================================================================================================================================================================| 1.2k/1.2k (100.00%)         0s
+Rowcount:5
+Table query completed after 3.889338731765747 seconds
+
+
+
+...
+
+
+Testing [TAP_SCHEMA.schemas]
+Downloading http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+TAP_SCHEMA.schemas&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|=======================================================================================================================================================================| 1.7k/1.7k (100.00%)         0s
+Rowcount:2
+Table query completed after 1.618809700012207 seconds
+Testing [TAP_SCHEMA.tables]
+Downloading http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+TAP_SCHEMA.tables&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|=======================================================================================================================================================================| 3.0k/3.0k (100.00%)         0s
+Rowcount:5
+Table query completed after 1.646622896194458 seconds
+--- Validation completed after  117.8199372291565 seconds ---
+Processed: 
+{'ATLASDR1.RequiredStack': 5, 'ATLASDR1.atlasSourceXglimpse_hrc_inter': 1, 'ATLASDR1.atlasSourceXtwomass_xsc': 5, 'ATLASDR1.ProgrammeTable': 4, 'ATLASDR1.atlasSourceXDR7PhotoObjAll': 5, 'ATLASDR1.atlasSourceXdenisDR3Source': 5, 'ATLASDR1.ProgrammeCurationHistory': 5, 'ATLASDR1.atlasSourceXDR9PhotoObj': 5, 'ATLASDR1.Multiframe': 5, 'ATLASDR1.atlasSourceXSegueDR6PhotoObj': 0, 'ATLASDR1.MultiframeEsoKeys': -1, 'ATLASDR1.atlasSourceXvhsDr1Source': 5, 'ATLASDR1.ExternalSurveyTable': 5, 'ATLASDR1.atlasSourceXmgcDetection': 0, 'ATLASDR1.ExternalSurvey': 5, 'ATLASDR1.Programme': 3, 'ATLASDR1.ukirtFSstars': 5, 'ATLASDR1.atlasSourceXDR5PhotoObj': 5, 'ATLASDR1.Release': 5, 'ATLASDR1.SurveyProgrammes': 1, 'ATLASDR1.RequiredDiffImage': 0, 'ATLASDR1.atlasSourceXSegueDR6PhotoObjAll': 0, 'ATLASDR1.MultiframeDetector': 5, 'TAP_SCHEMA.key_columns': 0, 'ATLASDR1.atlasSourceXGR6PhotoObjAll': 5, 'ATLASDR1.Provenance': 5, 'ATLASDR1.atlasSourceXSSASource': 5, 'ATLASDR1.MultiframeDetectorEsoKeys': -1, 'ATLASDR1.atlasSourceXStripe82PhotoObjAll': 0, 'ATLASDR1.CurationTask': 5, 'ATLASDR1.CurrentAstrometry': 5, 'TAP_SCHEMA.schemas': 2, 'TAP_SCHEMA.columns': 5, 'ATLASDR1.RequiredListDrivenProduct': 1, 'TAP_SCHEMA.keys': 0, 'ATLASDR1.RequiredNeighbours': 5, 'ATLASDR1.ProgrammeFrame': 5, 'ATLASDR1.StdFieldInfo': 5, 'ATLASDR1.atlasSourceXrosat_bsc': 5, 'ATLASDR1.ArchiveCurationHistory': 5, 'ATLASDR1.atlasSourceXDR8PhotoObjAll': 5, 'ATLASDR1.atlasSourceXDR9PhotoObjAll': 5, 'ATLASDR1.Filter': 5, 'ATLASDR1.atlasSourceXglimpse_mca_inter': 2, 'ATLASDR1.atlasSourceXDR7PhotoObj': 5, 'ATLASDR1.PreviousMFDZP': 0, 'ATLASDR1.atlasSourceXtwoxmm': 5, 'ATLASDR1.atlasSourceXiras_psc': 5, 'ATLASDR1.atlasMergeLog': -1, 'ATLASDR1.atlasSourceXDR8PhotoObj': 5, 'ATLASDR1.AstrCalVers': 0, 'ATLASDR1.FilterSections': -1, 'ATLASDR1.ProductLinks': 0, 'ATLASDR1.atlasSourceXrosat_fsc': 5, 'ATLASDR1.atlasSourceXtwomass_psc': 5, 'ATLASDR1.SectionDetectors': 5, 'ATLASDR1.RequiredFilters': 5, 'ATLASDR1.atlasSourceXDR5PhotoObjAll': 5, 'ATLASDR1.atlasSourceXwise_allskysc': 5, 'TAP_SCHEMA.tables': 5, 'ATLASDR1.atlasSourceNeighbours': 5, 'ATLASDR1.Survey': 1, 'ATLASDR1.atlasSourceXvikingDr2Source': 5, 'ATLASDR1.atlasDetection': 5, 'ATLASDR1.PhotCalVers': 0, 'ATLASDR1.atlasSource': 5, 'ATLASDR1.atlasSourceXfirstSource': 5}
+------------
+Candidates: 
+{'ATLASDR1.RequiredStack': 5, 'ATLASDR1.atlasSourceXglimpse_hrc_inter': 1, 'ATLASDR1.atlasSourceXtwomass_xsc': 5, 'ATLASDR1.ProgrammeTable': 4, 'ATLASDR1.atlasSourceXDR7PhotoObjAll': 5, 'ATLASDR1.atlasSourceXdenisDR3Source': 5, 'ATLASDR1.atlasSourceXSSASource': 5, 'ATLASDR1.atlasSourceXDR9PhotoObj': 5, 'ATLASDR1.Multiframe': 5, 'ATLASDR1.atlasSourceXSegueDR6PhotoObj': 0, 'ATLASDR1.atlasSourceXvhsDr1Source': 5, 'ATLASDR1.ExternalSurveyTable': 5, 'ATLASDR1.atlasSourceXmgcDetection': 0, 'ATLASDR1.ExternalSurvey': 5, 'ATLASDR1.Programme': 3, 'ATLASDR1.ukirtFSstars': 5, 'ATLASDR1.atlasSourceXDR5PhotoObj': 5, 'ATLASDR1.Release': 5, 'ATLASDR1.SurveyProgrammes': 1, 'ATLASDR1.RequiredDiffImage': 0, 'ATLASDR1.atlasSourceXSegueDR6PhotoObjAll': 0, 'ATLASDR1.MultiframeDetector': 5, 'TAP_SCHEMA.key_columns': 0, 'ATLASDR1.atlasSourceXGR6PhotoObjAll': 5, 'ATLASDR1.Provenance': 5, 'ATLASDR1.RequiredListDrivenProduct': 1, 'ATLASDR1.atlasSourceXStripe82PhotoObjAll': 0, 'ATLASDR1.CurationTask': 5, 'ATLASDR1.CurrentAstrometry': 5, 'TAP_SCHEMA.schemas': 2, 'TAP_SCHEMA.columns': 5, 'ATLASDR1.Filter': 5, 'TAP_SCHEMA.keys': 0, 'ATLASDR1.RequiredNeighbours': 5, 'ATLASDR1.ProgrammeFrame': 5, 'ATLASDR1.StdFieldInfo': 5, 'ATLASDR1.atlasSourceXrosat_bsc': 5, 'ATLASDR1.ArchiveCurationHistory': 5, 'ATLASDR1.atlasSourceXDR8PhotoObjAll': 5, 'ATLASDR1.atlasSourceXDR9PhotoObjAll': 5, 'ATLASDR1.ProgrammeCurationHistory': 5, 'ATLASDR1.atlasSourceXglimpse_mca_inter': 2, 'ATLASDR1.atlasSourceXDR7PhotoObj': 5, 'ATLASDR1.PreviousMFDZP': 0, 'ATLASDR1.atlasSourceXtwoxmm': 5, 'ATLASDR1.atlasSourceXiras_psc': 5, 'ATLASDR1.atlasSourceXDR8PhotoObj': 5, 'ATLASDR1.AstrCalVers': 0, 'ATLASDR1.ProductLinks': 0, 'ATLASDR1.atlasSourceXrosat_fsc': 5, 'ATLASDR1.atlasSourceXtwomass_psc': 5, 'ATLASDR1.SectionDetectors': 5, 'ATLASDR1.RequiredFilters': 5, 'ATLASDR1.atlasSourceXDR5PhotoObjAll': 5, 'ATLASDR1.atlasSourceXwise_allskysc': 5, 'TAP_SCHEMA.tables': 5, 'ATLASDR1.atlasSourceNeighbours': 5, 'ATLASDR1.Survey': 1, 'ATLASDR1.atlasSourceXvikingDr2Source': 5, 'ATLASDR1.atlasDetection': 5, 'ATLASDR1.PhotCalVers': 0, 'ATLASDR1.atlasSource': 5, 'ATLASDR1.atlasSourceXfirstSource': 5}
+------------
+Exceptions: 
+{'ATLASDR1.MultiframeEsoKeys': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.MultiframeEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:50951: ValueError: invalid literal for int() with base 10: '0000001e' (in row 0, col 'column.97298')", 'ATLASDR1.MultiframeDetectorEsoKeys': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:7303: ValueError: invalid literal for int() with base 10: '0000000a' (in row 1, col 'column.96898')", 'ATLASDR1.atlasMergeLog': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.atlasMergeLog&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:7894: ValueError: invalid literal for int() with base 10: '0000001f' (in row 1, col 'column.99716')", 'ATLASDR1.FilterSections': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2129: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.96371')"}
+------------
+{'ATLASDR1.MultiframeEsoKeys': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.MultiframeEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:50951: ValueError: invalid literal for int() with base 10: '0000001e' (in row 0, col 'column.97298')", 'ATLASDR1.MultiframeDetectorEsoKeys': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.MultiframeDetectorEsoKeys&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:7303: ValueError: invalid literal for int() with base 10: '0000000a' (in row 1, col 'column.96898')", 'ATLASDR1.atlasMergeLog': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.atlasMergeLog&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:7894: ValueError: invalid literal for int() with base 10: '0000001f' (in row 1, col 'column.99716')", 'ATLASDR1.FilterSections': "http://localhost:8081/firethorn/tap/54/sync?QUERY=SELECT+TOP+5+%2A+FROM+ATLASDR1.FilterSections&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2129: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.96371')"}
+
+
+## Test Completed, No timeouts due to non-completing queries
+## A few fails due to "invalid literal for int()" astropy issue
+
+
+
+
+
+## --------------------------------------------------------------
+
+
+## Test 3
+## Run sync test on resource 77265 (Tests a subset of WSA)
+
+/usr/bin/python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=77265 -u=lohhoh5bah3yaeCh8oos -p=ahng3aefaLohJie3thoo -g=oe5ShaimeeFah2iGoh3j -v=True -m=sync
+
+
+...
+
+
+Table query completed after 1.4587171077728271 seconds
+Testing [UKIDSSDR8PLUS.UKIDSSDetection]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.UKIDSSDetection&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 2.5534727573394775 seconds
+Testing [UKIDSSDR8PLUS.ProgrammeCurationHistory]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.ProgrammeCurationHistory&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|=======================================================================================================================================================================| 1.8k/1.8k (100.00%)         0s
+Rowcount:5
+Table query completed after 1.5157749652862549 seconds
+Testing [UKIDSSDR8PLUS.udsVarFrameSetInfo]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.udsVarFrameSetInfo&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:1
+Table query completed after 1.7713031768798828 seconds
+Testing [UKIDSSDR8PLUS.RequiredListDrivenProduct]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.RequiredListDrivenProduct&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|=======================================================================================================================================================================| 2.0k/2.0k (100.00%)         0s
+Rowcount:5
+Table query completed after 1.5131947994232178 seconds
+Testing [UKIDSSDR8PLUS.gpsPointSource]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.gpsPointSource&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 2.511986017227173 seconds
+Testing [UKIDSSDR8PLUS.dxsSourceXDetection]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.dxsSourceXDetection&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|=======================================================================================================================================================================| 1.4k/1.4k (100.00%)         0s
+Rowcount:5
+Table query completed after 1.4790120124816895 seconds
+Testing [UKIDSSDR8PLUS.lasSourceXrosat_bsc]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.lasSourceXrosat_bsc&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|=======================================================================================================================================================================| 1.4k/1.4k (100.00%)         0s
+Rowcount:5
+Table query completed after 1.5173389911651611 seconds
+Testing [UKIDSSDR8PLUS.udsSource]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.udsSource&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 2.852620840072632 seconds
+Testing [UKIDSSDR8PLUS.lasSource]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.lasSource&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 3.119715452194214 seconds
+Testing [UKIDSSDR8PLUS.lasSourceXSegueDR6PhotoObjAll]
+Downloading http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR8PLUS.lasSourceXSegueDR6PhotoObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|=======================================================================================================================================================================| 2.1k/2.1k (100.00%)         0s
+Rowcount:5
+Table query completed after 1.501967191696167 seconds
+--- Validation completed after  1017.956155538559 seconds ---
+Processed: 
+{'BestDR5.TilingInfo': 5, 'BestDR9.SourceType': 5, 'BestDR5.SiteConstants': 5, 'BestDR5.TileAll': 5, 'BestDR5."Match"': 5, 'UKIDSSDR4PLUS.ukirtFSstars': 5, 'BestDR9.Galaxy': 5, 'BestDR9.TableDesc': 0, 'BestDR9.thingIndex': 5, 'UKIDSSDR4PLUS.gpsSourceXglimpse_hrc_inter': 5, 'BestDR5.QsoConcordance': -1, 'UKIDSSDR8PLUS.udsAstrometricInfo': 5, 'UKIDSSDR8PLUS.lasSourceXmgcDetection': 5, 'BestDR9."Region"': -1, 'UKIDSSDR4PLUS.reliableLasPointSource': 5, 'BestDR5.Versions': 0, 'BestDR9.PlateX': 5, 'BestDR5.ProperMotions': 5, 'BestDR9.StripeDefs': 5, 'UKIDSSDR8PLUS.udsSourceXDetection': 5, 'BestDR5.Unknown': 5, 'BestDR9.Versions': 0, 'BestDR9.segue2SpecObjAll': -1, 'BestDR9.SpecObj': -1, 'BestDR9.SpecZWarning': 5, 'BestDR5.TilingMask': 5, 'UKIDSSDR4PLUS.RequiredMosaic': -1, 'BestDR9."Zone"': 5, 'UKIDSSDR8PLUS.Survey': 1, 'BestDR5."Diagnostics"': 5, 'BestDR9.Unknown': 5, 'BestDR9.zooSpec': 5, 'BestDR9."FIRST"': 5, 'BestDR9.Run': 5, 'BestDR9.sdssTileAll': 5, 'BestDR9.Field': 5, 'UKIDSSDR8PLUS.dxsSourceXDetection': 5, 'BestDR9.TwoMassXSC': 5, 'UKIDSSDR8PLUS.gpsListRemeasurement': 0, 'BestDR5.RecentQueries': 1, 'BestDR5.Stetson': 5, 'UKIDSSDR8PLUS.dxsSourceXtwomass_psc': 5, 'UKIDSSDR8PLUS.lasMergeLog': 5, 'UKIDSSDR4PLUS.lasSourceXtwomass_psc': 5, 'UKIDSSDR4PLUS.reliableDxsSource': 5, 'BestDR9.galSpecInfo': 5, 'UKIDSSDR8PLUS.RequiredFilters': 5, 'UKIDSSDR8PLUS.gcsMergeLog': 5, 'BestDR9.sdssTilingBoundary': 5, 'UKIDSSDR8PLUS.gcsSourceXtwoxmm': 5, 'BestDR5.DBObjects': 5, 'BestDR9.sdssTargetParam': 5, 'UKIDSSDR4PLUS.gcsSourceRemeasurement': 0, 'BestDR9.SecTarget': 5, 'UKIDSSDR8PLUS.Filter': 5, 'BestDR9.RC3': 5, 'UKIDSSDR8PLUS.lasSourceNeighbours': 5, 'BestDR9.sdssPolygon2Field': 5, 'UKIDSSDR8PLUS.lasDetection': 5, 'BestDR9.IndexMap': 5, 'BestDR5.ImageMask': 5, 'BestDR9.SpecPhoto': 5, 'UKIDSSDR4PLUS.dxsSourceXDetection': 5, 'UKIDSSDR8PLUS.ArchiveCurationHistory': 5, 'UKIDSSDR8PLUS.Release': 5, 'BestDR5.QueryResults': 5, 'UKIDSSDR8PLUS.dxsSource': 5, 'UKIDSSDR8PLUS.reliableLasPointSource': 5, 'BestDR9.PspStatus': 5, 'UKIDSSDR8PLUS.udsSourceNeighbours': 5, 'UKIDSSDR8PLUS.CurrentAstrometry': 5, 'BestDR5.HalfSpace': 0, 'BestDR9.PhotoObj': 5, 'BestDR5.QsoBest': 5, 'BestDR5.TilingBoundary': 5, 'BestDR5.Photoz2': 5, 'UKIDSSDR8PLUS.gpsJHKsource': 5, 'BestDR5.StripeDefs': 5, 'UKIDSSDR8PLUS.dxsMergeLog': 5, 'UKIDSSDR4PLUS.SurveyProgrammes': 5, 'UKIDSSDR8PLUS.gpsDetection': 5, 'BestDR5.PhotoAuxAll': 5, 'BestDR5.SpecLineIndex': 5, 'BestDR5.TilingGeometry': 5, 'BestDR5.PubHistory': 0, 'UKIDSSDR8PLUS.lasListRemeasurement': 0, 'BestDR5.ProfileDefs': 5, 'BestDR5.Mask': 5, 'UKIDSSDR8PLUS.udsSourceXtwoxmm': 5, 'UKIDSSDR4PLUS.lasExtendedSource': 5, 'BestDR9.sdssImagingHalfSpaces': 5, 'UKIDSSDR8PLUS.reliableUdsSource': 5, 'BestDR5.FieldProfile': 5, 'BestDR5.PartitionMap': 5, 'BestDR9.sdssTile': 5, 'UKIDSSDR4PLUS.gpsJHKmergeLog': 5, 'BestDR5.SpecLine': 5, 'UKIDSSDR4PLUS.PreviousMFDZP': 5, 'UKIDSSDR4PLUS.udsMergeLog': 1, 'BestDR9.SpecPixMask': 5, 'BestDR9.sppTargets': 0, 'BestDR9.FileGroupMap': 0, 'UKIDSSDR8PLUS.lasSourceXiras_psc': 5, 'BestDR9.sdssTilingMask': 5, 'UKIDSSDR8PLUS.lasSourceXDR2PhotoObj': 5, 'UKIDSSDR8PLUS.gcsZYJHKsource': 5, 'BestDR9.HalfSpace': 5, 'BestDR5.Segment': 5, 'BestDR9.PhotoPrimaryDR7': 5, 'BestDR5.RunQA': 5, 'BestDR9.PhotozTemplateCoeff': 5, 'BestDR5.QsoCatalogAll': -1, 'UKIDSSDR8PLUS.lasSourceXrosat_bsc': 5, 'UKIDSSDR8PLUS.dxsVarFrameSetInfo': 5, 'BestDR5.Tile': 5, 'UKIDSSDR4PLUS.lasSourceXSegueDR6PhotoObjAll': 5, 'BestDR5.ELRedShift': 5, 'UKIDSSDR4PLUS.lasSourceXDR5PhotoObjAll': 5, 'BestDR9.Target': 0, 'UKIDSSDR8PLUS.lasSourceXDR3PhotoObj': 5, 'BestDR5.QsoTarget': -1, 'UKIDSSDR8PLUS.lasSourceXtwoxmm': 5, 'UKIDSSDR8PLUS.gpsJHKmergeLog': 5, 'UKIDSSDR4PLUS.ArchiveCurationHistory': 5, 'UKIDSSDR4PLUS.gcsZYJHKsource': 5, 'UKIDSSDR4PLUS.RequiredSynoptic': 4, 'UKIDSSDR4PLUS.lasSourceRemeasurement': 0, 'UKIDSSDR4PLUS.lasPointSource': 5, 'UKIDSSDR4PLUS.dxsVarFrameSetInfo': 0, 'UKIDSSDR8PLUS.CurationTask': 5, 'UKIDSSDR8PLUS.lasSourceXSegueDR6PhotoObjAll': 5, 'UKIDSSDR4PLUS.gpsSourceXglimpse_mca_inter': 5, 'UKIDSSDR8PLUS.lasSourceXDR5PhotoObjAll': 5, 'UKIDSSDR4PLUS.lasSource': 5, 'BestDR5.PhotoTag': 5, 'BestDR9.SDSSConstants': 5, 'BestDR5.PhotoFlags': 5, 'BestDR9.MaskedObject': 5, 'UKIDSSDR4PLUS.gcsSourceXtwomass_psc': 5, 'BestDR5.Sector': 0, 'BestDR5.StarTag': 5, 'UKIDSSDR8PLUS.udsMergeLog': 1, 'BestDR5.InsideMask': 5, 'BestDR5.ObjMask': 5, 'BestDR5.Rosat': 5, 'BestDR5.PhotoProfile': -1, 'BestDR5.PrimTarget': 5, 'BestDR5.TilingNote': 0, 'UKIDSSDR4PLUS.CurationTask': 5, 'UKIDSSDR4PLUS.ExternalSurvey': 1, 'BestDR9.USNO': 5, 'UKIDSSDR4PLUS.reliableGcsPointSource': 5, 'BestDR5.Sky': 5, 'BestDR9.stellarMassPCAWisc': 5, 'UKIDSSDR4PLUS.udsSource': 0, 'UKIDSSDR8PLUS.udsVariability': 5, 'UKIDSSDR4PLUS.Release': 5, 'UKIDSSDR4PLUS.lasFrameSets': 5, 'BestDR5.XCRedshift': 5, 'BestDR5.Galaxy': 5, 'BestDR9.PhotoPrimary': 5, 'BestDR5.MaskType': 5, 'BestDR9.PubHistory': 5, 'UKIDSSDR8PLUS.gpsSource': 5, 'BestDR9.sdssPolygons': 5, 'BestDR9.zooNoSpec': 5, 'BestDR9.sdssTilingInfo': 5, 'BestDR5.PhotoFamily': 5, 'UKIDSSDR4PLUS.Survey': 1, 'BestDR5.SpecZStatus': 5, 'BestDR9.galSpecLine': 5, 'UKIDSSDR8PLUS.RequiredListDrivenProduct': 5, 'BestDR5.PhotoObjAll': 5, 'UKIDSSDR8PLUS.dxsDetection': 5, 'UKIDSSDR4PLUS.lasYJHKmergeLog': 5, 'UKIDSSDR8PLUS.dxsFrameSets': 5, 'UKIDSSDR8PLUS.dxsSourceXtwoxmm': 5, 'BestDR9.sdssBestTarget2Sector': 0, 'UKIDSSDR4PLUS.udsVarFrameSetInfo': 0, 'UKIDSSDR4PLUS.allFrameSets': 5, 'UKIDSSDR4PLUS.gpsPointSource': 5, 'UKIDSSDR4PLUS.CurrentAstrometry': 5, 'UKIDSSDR4PLUS.lasSourceNeighbours': 5, 'UKIDSSDR8PLUS.lasSourceXDR7PhotoObjAll': 5, 'BestDR5.QsoCatalog': -1, 'BestDR5.PhotoPrimary': 5, 'UKIDSSDR4PLUS.ProgrammeTable': 5, 'BestDR9.DBObjects': 5, 'BestDR5.Target': 5, 'BestDR9.FieldProfile': 5, 'UKIDSSDR8PLUS.ProgrammeFrame': 5, 'BestDR9.SpecialTarget1': 5, 'BestDR5.SDSSConstants': 5, 'UKIDSSDR8PLUS.dxsVariability': 5, 'BestDR9.RecentQueries': 1, 'UKIDSSDR8PLUS.lasPointSource': 5, 'BestDR9.PhotoProfile': 5, 'BestDR5."Region"': 0, 'BestDR5.SiteDBs': 1, 'BestDR9.FieldQuality': 5, 'UKIDSSDR4PLUS.gpsMergeLog': 5, 'BestDR5.Chunk': 5, 'UKIDSSDR4PLUS.udsSourceXDetectionBestMatch': 0, 'UKIDSSDR4PLUS.gpsSource': 5, 'UKIDSSDR8PLUS.lasSourceXDR7PhotoObj': 5, 'UKIDSSDR8PLUS.dxsJKmergeLog': 5, 'BestDR5.SpecClass': 5, 'UKIDSSDR4PLUS.gpsSourceRemeasurement': 0, 'BestDR9.StarTag': 5, 'BestDR9.RegionArcs': 5, 'BestDR9.galSpecIndx': 5, 'UKIDSSDR4PLUS.gcsSourceNeighbours': 5, 'UKIDSSDR4PLUS.lasSourceXDR3PhotoObj': 5, 'BestDR9.GalaxyTag': 5, 'UKIDSSDR4PLUS.gpsFrameSets': 5, 'UKIDSSDR4PLUS.gcsZYJHKmergeLog': 5, 'BestDR5.DBViewCols': 5, 'BestDR9.Photoz': 5, 'BestDR9.segueTargetAll': 5, 'UKIDSSDR4PLUS.udsSourceRemeasurement': 0, 'BestDR5.RegionArcs': 0, 'UKIDSSDR8PLUS.Multiframe': 5, 'UKIDSSDR8PLUS.PhotCalVers': 5, 'BestDR9.zooVotes': 5, 'BestDR9.HoleType': 5, 'UKIDSSDR4PLUS.lasSourceXrosat_bsc': 5, 'UKIDSSDR8PLUS.dxsSourceXDR7PhotoObj': 5, 'BestDR5.CoordType': 4, 'UKIDSSDR4PLUS.dxsSourceRemeasurement': 0, 'UKIDSSDR4PLUS.dxsSourceXtwoxmm': 5, 'UKIDSSDR4PLUS.reliableUdsSource': 0, 'UKIDSSDR8PLUS.allFrameSets': 5, 'UKIDSSDR4PLUS.lasSourceXfirstSource': 5, 'UKIDSSDR8PLUS.lasSourceXDR5PhotoObj': 5, 'BestDR5.QuasarCatalog': 0, 'BestDR9.sppLines': 5, 'BestDR5.DataConstants': 5, 'UKIDSSDR8PLUS.gcsSourceXDR5PhotoObj': 5, 'BestDR9.sdssTilingGeometry': 5, 'UKIDSSDR8PLUS.lasYJHKsource': 5, 'UKIDSSDR4PLUS.lasYJHKsource': 5, 'BestDR5.Rmatrix': 0, 'BestDR9.CoordType': 4, 'UKIDSSDR8PLUS.udsFrameSets': 3, 'BestDR9.Sky': 0, 'BestDR9.RegionConvex': 5, 'BestDR5.PhotoObj': 5, 'BestDR9.PhotoStatus': 5, 'BestDR9.Region2Box': 0, 'BestDR5.Region2Box': 0, 'BestDR9.PhotoType': 5, 'UKIDSSDR8PLUS.MultiframeDetector': 5, 'BestDR9.sdssTiledTargetAll': 5, 'BestDR5.BestTarget2Sector': 0, 'UKIDSSDR4PLUS.lasSourceXtwoxmm': 5, 'BestDR5.Neighbors': 5, 'BestDR5.TiMask': 5, 'UKIDSSDR8PLUS.lasSource': 5, 'BestDR5.TiledTarget': 5, 'BestDR5.SpecPhotoAll': 5, 'UKIDSSDR8PLUS.udsSourceXDetectionBestMatch': 5, 'BestDR9.Inventory': 5, 'UKIDSSDR4PLUS.dxsFrameSets': 5, 'UKIDSSDR8PLUS.gcsListRemeasurement': 0, 'BestDR5.Run': 5, 'UKIDSSDR4PLUS.RequiredDiffImage': 1, 'UKIDSSDR4PLUS.lasSourceXSegueDR6PhotoObj': 5, 'BestDR9.SiteConstants': 5, 'UKIDSSDR4PLUS.ProgrammeFrame': 5, 'UKIDSSDR8PLUS.ukirtFSstars': 5, 'BestDR5.SpecObjAll': -1, 'BestDR5.USNO': 5, 'BestDR9.Frame': -1, 'BestDR9.sdssTilingRun': 5, 'UKIDSSDR4PLUS.gcsSource': 5, 'UKIDSSDR4PLUS.ExternalSurveyTable': 0, 'UKIDSSDR8PLUS.udsSource': 5, 'UKIDSSDR8PLUS.gcsSourceRemeasurement': 0, 'UKIDSSDR4PLUS.gcsSourceXDR5PhotoObj': 5, 'BestDR9."Diagnostics"': 5, 'UKIDSSDR8PLUS.ProgrammeTable': 5, 'BestDR9.ImageStatus': 5, 'UKIDSSDR8PLUS.ExternalSurveyTable': 3, 'UKIDSSDR8PLUS.udsSourceXtwomass_psc': 5, 'BestDR5.ProgramType': 3, 'BestDR5."First"': 5, 'BestDR9.PhotoSecondary': 5, 'BestDR9.TwoMass': 5, 'BestDR9.History': 5, 'BestDR9.CalibStatus': 5, 'BestDR5.TargetParam': 0, 'UKIDSSDR8PLUS.UKIDSSDetection': 5, 'UKIDSSDR4PLUS.dxsSource': 5, 'BestDR9.Plate2Target': 5, 'BestDR9.DBViewCols': 5, 'BestDR5.IndexMap': 5, 'UKIDSSDR4PLUS.lasSourceXDR5PhotoObj': 5, 'BestDR9.galSpecExtra': 5, 'UKIDSSDR4PLUS.dxsSourceXtwomass_psc': 5, 'BestDR5.Dependency': 5, 'BestDR9.neighbors': 5, 'BestDR9.SiteDBs': 5, 'UKIDSSDR8PLUS.lasSourceXtwomass_psc': 5, 'UKIDSSDR4PLUS.gpsDetection': 5, 'UKIDSSDR4PLUS.StdFieldInfo': 5, 'UKIDSSDR8PLUS.dxsAstrometricInfo': 5, 'BestDR5.QsoConcordanceAll': -1, 'BestDR5.PhotoSecondary': 5, 'UKIDSSDR8PLUS.gpsFrameSets': 5, 'BestDR9.MaskType': 5, 'BestDR5.PhotoAux': 5, 'UKIDSSDR8PLUS.gcsZYJHKmergeLog': 5, 'UKIDSSDR4PLUS.ProgrammeCurationHistory': 5, 'UKIDSSDR4PLUS.lasSourceXnvssSource': 5, 'UKIDSSDR8PLUS.gpsMergeLog': 5, 'UKIDSSDR4PLUS.gcsSourceXtwoxmm': 5, 'UKIDSSDR8PLUS.PreviousAstrometry': 0, 'BestDR5.Star': 5, 'BestDR5.MatchHead': 5, 'BestDR9.Segue1Target1': 5, 'UKIDSSDR8PLUS.reliableDxsSource': 5, 'BestDR5.RC3': 5, 'BestDR9.Rmatrix': 5, 'BestDR9.sdssSector2Tile': 0, 'UKIDSSDR4PLUS.lasSourceXDR2PhotoObj': 5, 'BestDR5.FileGroupMap': 5, 'UKIDSSDR8PLUS.PreviousMFDZP': 5, 'UKIDSSDR4PLUS.udsVariability': 0, 'UKIDSSDR4PLUS.RequiredFilters': 5, 'BestDR9.PhotoMode': 5, 'UKIDSSDR8PLUS.reliableGpsPointSource': 5, 'UKIDSSDR8PLUS.lasSourceXSegueDR6PhotoObj': 5, 'UKIDSSDR4PLUS.Filter': 5, 'BestDR5."Zone"': 5, 'UKIDSSDR8PLUS.gcsSource': 5, 'BestDR9.ROSAT': 5, 'BestDR9.InsideMask': 5, 'BestDR5.FieldQuality': 5, 'UKIDSSDR8PLUS.SurveyProgrammes': 5, 'BestDR9.PrimTarget': 5, 'BestDR5.GalaxyTag': 5, 'BestDR9.PartitionMap': 5, 'BestDR5.PlateX': -1, 'UKIDSSDR8PLUS.lasFrameSets': 5, 'UKIDSSDR4PLUS.PhotCalVers': 5, 'BestDR5.PhotoStatus': 5, 'UKIDSSDR8PLUS.lasSourceXnvssSource': 5, 'BestDR5.SiteDiagnostics': 5, 'UKIDSSDR8PLUS.dxsJKsource': 5, 'BestDR5.Frame': -1, 'UKIDSSDR8PLUS.dxsSourceXStripe82PhotoObjAll': 5, 'BestDR9.AtlasOutline': 5, 'UKIDSSDR8PLUS.AstrCalVers': 0, 'UKIDSSDR4PLUS.gpsSourceXtwoxmm': 5, 'UKIDSSDR8PLUS.Provenance': 5, 'UKIDSSDR4PLUS.dxsSourceNeighbours': 5, 'BestDR5.HoleType': 5, 'UKIDSSDR8PLUS.StdFieldInfo': 5, 'UKIDSSDR8PLUS.lasSourceXStripe82PhotoObjAll': 5, 'BestDR9.PhotoTag': 5, 'UKIDSSDR8PLUS.udsSourceRemeasurement': 0, 'BestDR9.Columns': 5, 'BestDR9.Mask': 5, 'UKIDSSDR4PLUS.lasSourceXtwomass_xsc': 5, 'UKIDSSDR4PLUS.gcsDetection': 5, 'BestDR9.emissionLinesPort': 5, 'UKIDSSDR8PLUS.gpsSourceRemeasurement': 0, 'BestDR5.FieldMask': 5, 'UKIDSSDR8PLUS.dxsSourceNeighbours': 5, 'UKIDSSDR4PLUS.dxsJKsource': 5, 'BestDR9.SpecObjAll': -1, 'BestDR9.zooMirrorBias': 5, 'UKIDSSDR8PLUS.lasSourceRemeasurement': 0, 'UKIDSSDR4PLUS.lasSourceXrosat_fsc': 5, 'BestDR5.RunShift': 5, 'BestDR9.LoadHistory': 5, 'BestDR5.PhotoMode': 4, 'BestDR5.SecTarget': 5, 'BestDR9.RunShift': 5, 'BestDR9.segue1SpecObjAll': -1, 'UKIDSSDR8PLUS.gcsFrameSets': 5, 'BestDR9.Star': 5, 'UKIDSSDR4PLUS.gpsSourceXtwomass_psc': 5, 'BestDR5.DBColumns': 5, 'BestDR9.DataConstants': 5, 'UKIDSSDR4PLUS.MultiframeDetector': 5, 'BestDR5.History': 5, 'UKIDSSDR4PLUS.UKIDSSDetection': 5, 'BestDR9.DBColumns': 5, 'BestDR5.TargetInfo': 5, 'BestDR5.PspStatus': 5, 'BestDR9.segueSpecObjAll': -1, 'BestDR9.ProfileDefs': 5, 'BestDR9.PhotoFlags': 5, 'BestDR9.PhotoFamily': 5, 'UKIDSSDR4PLUS.RequiredStack': 5, 'BestDR5.Sector2Tile': 0, 'UKIDSSDR8PLUS.gcsSourceXtwomass_psc': 5, 'BestDR5.Field': 5, 'BestDR5.FramesStatus': 4, 'BestDR9.PhotozRF': 5, 'BestDR5.TargRunQA': 5, 'BestDR9.zooConfidence': 5, 'UKIDSSDR8PLUS.RequiredStack': 5, 'BestDR9.FramesStatus': 4, 'UKIDSSDR8PLUS.ExternalSurvey': 3, 'UKIDSSDR8PLUS.dxsSourceXDetectionBestMatch': 5, 'BestDR9.PhotoObjDR7': 5, 'BestDR9.QueryResults': 5, 'BestDR9.sdssSector': 0, 'BestDR9.SiteDiagnostics': 5, 'BestDR5.MaskedObject': 5, 'UKIDSSDR4PLUS.dxsDetection': 5, 'UKIDSSDR4PLUS.gcsListRemeasurement': 0, 'UKIDSSDR4PLUS.lasMergeLog': 5, 'UKIDSSDR8PLUS.gcsDetection': 5, 'UKIDSSDR8PLUS.gpsPointSource': 5, 'UKIDSSDR8PLUS.RequiredMosaic': 3, 'BestDR9.TargetInfo': 0, 'UKIDSSDR8PLUS.RequiredNeighbours': 5, 'UKIDSSDR4PLUS.Provenance': 5, 'BestDR9.zooMonochromeBias': 5, 'BestDR9.ProgramType': 3, 'BestDR9.stellarMassPassivePort': 5, 'BestDR5.TiledTargetAll': 5, 'UKIDSSDR4PLUS.dxsListRemeasurement': 0, 'BestDR9.stellarMassStarformingPort': 5, 'BestDR9.SpecPhotoAll': 5, 'UKIDSSDR4PLUS.udsFrameSets': 3, 'BestDR9.sppParams': 5, 'UKIDSSDR4PLUS.AstrCalVers': 0, 'UKIDSSDR4PLUS.gpsListRemeasurement': 0, 'BestDR5.PhotoType': 5, 'BestDR5.SpecPhoto': 5, 'BestDR5.Glossary': 0, 'UKIDSSDR8PLUS.reliableGcsPointSource': 5, 'BestDR5.SpecZWarning': 5, 'UKIDSSDR4PLUS.gcsMergeLog': 5, 'BestDR5.Inventory': 5, 'UKIDSSDR8PLUS.ProductLinks': 3, 'UKIDSSDR8PLUS.dxsSourceRemeasurement': 0, 'UKIDSSDR4PLUS.Programme': 5, 'UKIDSSDR4PLUS.lasDetection': 5, 'BestDR9.SpecDR7': 5, 'BestDR5.SpecLineNames': 5, 'UKIDSSDR8PLUS.dxsListRemeasurement': 0, 'BestDR9.RegionPatch': 5, 'BestDR5.LoadHistory': 0, 'UKIDSSDR8PLUS.lasSourceXfirstSource': 5, 'UKIDSSDR8PLUS.gcsSourceXDR7PhotoObj': 5, 'UKIDSSDR4PLUS.gcsFrameSets': 5, 'BestDR9.Segue2Target1': 5, 'BestDR9.TiMask': 5, 'UKIDSSDR8PLUS.lasYJHKmergeLog': 5, 'UKIDSSDR4PLUS.gpsSourceNeighbours': 5, 'BestDR5.QsoSpec': 5, 'UKIDSSDR4PLUS.dxsJKmergeLog': 5, 'UKIDSSDR4PLUS.lasSourceXiras_psc': 5, 'UKIDSSDR4PLUS.dxsSourceXDetectionBestMatch': 0, 'UKIDSSDR4PLUS.Multiframe': 5, 'UKIDSSDR4PLUS.gpsJHKsource': 5, 'BestDR5.SpecLineAll': 5, 'UKIDSSDR8PLUS.udsDetection': 5, 'BestDR5.ObjType': 5, 'BestDR9.ProperMotions': 5, 'UKIDSSDR8PLUS.udsVarFrameSetInfo': 1, 'UKIDSSDR4PLUS.dxsMergeLog': 5, 'BestDR5.RegionConvex': 0, 'UKIDSSDR4PLUS.PreviousAstrometry': 0, 'UKIDSSDR8PLUS.RequiredDiffImage': 1, 'BestDR5.SpecObj': -1, 'UKIDSSDR8PLUS.ProgrammeCurationHistory': 5, 'UKIDSSDR4PLUS.lasSourceXmgcDetection': 5, 'BestDR5.Algorithm': 0, 'UKIDSSDR4PLUS.reliableGpsPointSource': 5, 'UKIDSSDR4PLUS.dxsVariability': 0, 'UKIDSSDR8PLUS.lasSourceXrosat_fsc': 5, 'UKIDSSDR8PLUS.gcsPointSource': 5, 'UKIDSSDR4PLUS.udsDetection': 0, 'UKIDSSDR8PLUS.gcsSourceNeighbours': 5, 'BestDR9.PhotoObjAll': 5, 'BestDR9.ResolveStatus': 5, 'BestDR9.PhotozRFTemplateCoeff': 5, 'UKIDSSDR8PLUS.Programme': 5, 'BestDR5.Columns': 5, 'BestDR5.Photoz': 5, 'BestDR9.detectionIndex': 5, 'UKIDSSDR4PLUS.lasListRemeasurement': 0, 'BestDR5.TilingRun': 5, 'UKIDSSDR4PLUS.RequiredListDrivenProduct': 5, 'UKIDSSDR4PLUS.RequiredNeighbours': 5, 'UKIDSSDR8PLUS.udsListRemeasurement': 0, 'BestDR5.QsoBunch': 5, 'BestDR9.Dependency': 5, 'UKIDSSDR8PLUS.lasExtendedSource': 5, 'BestDR5.HoleObj': 5, 'BestDR5.TableDesc': 0, 'UKIDSSDR4PLUS.gcsPointSource': 5, 'UKIDSSDR4PLUS.udsListRemeasurement': 0, 'UKIDSSDR8PLUS.lasSourceXtwomass_xsc': 5}
+------------
+Candidates: 
+{'BestDR5.TilingInfo': 5, 'BestDR9.SourceType': 5, 'BestDR5.SiteConstants': 5, 'BestDR5.TileAll': 5, 'BestDR5."Match"': 5, 'UKIDSSDR4PLUS.ukirtFSstars': 5, 'BestDR9.Galaxy': 5, 'BestDR9.TableDesc': 0, 'BestDR9.thingIndex': 5, 'UKIDSSDR4PLUS.gpsSourceXglimpse_hrc_inter': 5, 'BestDR5.QueryResults': 5, 'UKIDSSDR8PLUS.udsAstrometricInfo': 5, 'UKIDSSDR8PLUS.lasSourceXmgcDetection': 5, 'BestDR9.Rmatrix': 5, 'UKIDSSDR4PLUS.reliableLasPointSource': 5, 'BestDR5.Versions': 0, 'BestDR9.PlateX': 5, 'BestDR5.ProperMotions': 5, 'BestDR9.StripeDefs': 5, 'UKIDSSDR8PLUS.udsSourceXDetection': 5, 'BestDR5.Unknown': 5, 'BestDR9.Versions': 0, 'BestDR9.SpecZWarning': 5, 'BestDR5.TilingMask': 5, 'BestDR9."Zone"': 5, 'UKIDSSDR8PLUS.Survey': 1, 'BestDR5."Diagnostics"': 5, 'BestDR9.Unknown': 5, 'BestDR9.zooSpec': 5, 'BestDR9."FIRST"': 5, 'BestDR9.Run': 5, 'BestDR9.sdssTileAll': 5, 'BestDR9.Field': 5, 'UKIDSSDR8PLUS.dxsSourceXDetection': 5, 'BestDR9.TwoMassXSC': 5, 'UKIDSSDR8PLUS.gpsListRemeasurement': 0, 'BestDR5.RecentQueries': 1, 'BestDR5.Stetson': 5, 'UKIDSSDR8PLUS.dxsSourceXtwomass_psc': 5, 'UKIDSSDR8PLUS.lasMergeLog': 5, 'UKIDSSDR4PLUS.lasSourceXtwomass_psc': 5, 'UKIDSSDR4PLUS.reliableDxsSource': 5, 'BestDR9.galSpecInfo': 5, 'UKIDSSDR8PLUS.RequiredFilters': 5, 'UKIDSSDR8PLUS.gcsMergeLog': 5, 'BestDR9.sdssTilingBoundary': 5, 'BestDR5.DBObjects': 5, 'BestDR9.sdssTargetParam': 5, 'UKIDSSDR4PLUS.gcsSourceRemeasurement': 0, 'BestDR9.SecTarget': 5, 'UKIDSSDR8PLUS.Filter': 5, 'BestDR9.RC3': 5, 'UKIDSSDR8PLUS.lasSourceNeighbours': 5, 'BestDR9.sdssPolygon2Field': 5, 'UKIDSSDR8PLUS.lasDetection': 5, 'BestDR9.IndexMap': 5, 'BestDR5.ImageMask': 5, 'BestDR9.SpecPhoto': 5, 'UKIDSSDR8PLUS.dxsSourceNeighbours': 5, 'UKIDSSDR8PLUS.ArchiveCurationHistory': 5, 'UKIDSSDR8PLUS.Release': 5, 'BestDR9.ProgramType': 3, 'UKIDSSDR8PLUS.dxsSource': 5, 'UKIDSSDR8PLUS.reliableLasPointSource': 5, 'BestDR9.PspStatus': 5, 'UKIDSSDR8PLUS.udsSourceNeighbours': 5, 'UKIDSSDR8PLUS.CurrentAstrometry': 5, 'BestDR5.HalfSpace': 0, 'BestDR9.PhotoObj': 5, 'BestDR5.QsoBest': 5, 'BestDR5.TilingBoundary': 5, 'BestDR5.Photoz2': 5, 'UKIDSSDR8PLUS.gpsJHKsource': 5, 'BestDR5.StripeDefs': 5, 'UKIDSSDR8PLUS.dxsMergeLog': 5, 'UKIDSSDR4PLUS.SurveyProgrammes': 5, 'UKIDSSDR8PLUS.gpsDetection': 5, 'BestDR5.PhotoAuxAll': 5, 'BestDR5.TilingGeometry': 5, 'BestDR5.PubHistory': 0, 'UKIDSSDR8PLUS.lasListRemeasurement': 0, 'BestDR5.ProfileDefs': 5, 'BestDR5.Mask': 5, 'UKIDSSDR8PLUS.udsSourceXtwoxmm': 5, 'UKIDSSDR4PLUS.lasExtendedSource': 5, 'BestDR9.sdssImagingHalfSpaces': 5, 'UKIDSSDR8PLUS.reliableUdsSource': 5, 'BestDR5.FieldProfile': 5, 'BestDR5.SpecLineIndex': 5, 'BestDR9.sdssTile': 5, 'UKIDSSDR4PLUS.gpsJHKmergeLog': 5, 'BestDR5.SpecLine': 5, 'UKIDSSDR4PLUS.PreviousMFDZP': 5, 'UKIDSSDR4PLUS.udsMergeLog': 1, 'BestDR9.SpecPixMask': 5, 'BestDR9.sppTargets': 0, 'BestDR9.FileGroupMap': 0, 'UKIDSSDR8PLUS.lasSourceXiras_psc': 5, 'BestDR9.sdssTilingMask': 5, 'UKIDSSDR8PLUS.lasSourceXDR2PhotoObj': 5, 'UKIDSSDR8PLUS.gcsZYJHKsource': 5, 'BestDR9.HalfSpace': 5, 'BestDR5.Segment': 5, 'BestDR9.PhotoPrimaryDR7': 5, 'BestDR5.RunQA': 5, 'BestDR9.PhotozTemplateCoeff': 5, 'BestDR5.PartitionMap': 5, 'BestDR9.galSpecLine': 5, 'UKIDSSDR8PLUS.lasSourceXrosat_bsc': 5, 'UKIDSSDR8PLUS.dxsVarFrameSetInfo': 5, 'BestDR5.Tile': 5, 'UKIDSSDR4PLUS.lasSourceXSegueDR6PhotoObjAll': 5, 'BestDR5.ELRedShift': 5, 'UKIDSSDR4PLUS.lasSourceXDR5PhotoObjAll': 5, 'BestDR9.Target': 0, 'UKIDSSDR8PLUS.lasSourceXDR3PhotoObj': 5, 'UKIDSSDR4PLUS.lasSourceXrosat_bsc': 5, 'UKIDSSDR8PLUS.lasSourceXtwoxmm': 5, 'UKIDSSDR8PLUS.gpsJHKmergeLog': 5, 'UKIDSSDR4PLUS.ArchiveCurationHistory': 5, 'UKIDSSDR4PLUS.gcsZYJHKsource': 5, 'UKIDSSDR4PLUS.RequiredSynoptic': 4, 'UKIDSSDR4PLUS.lasSourceRemeasurement': 0, 'UKIDSSDR4PLUS.lasPointSource': 5, 'UKIDSSDR4PLUS.dxsVarFrameSetInfo': 0, 'UKIDSSDR8PLUS.CurationTask': 5, 'UKIDSSDR8PLUS.lasSourceXSegueDR6PhotoObjAll': 5, 'UKIDSSDR4PLUS.gpsSourceXglimpse_mca_inter': 5, 'UKIDSSDR8PLUS.lasSourceXDR5PhotoObjAll': 5, 'UKIDSSDR4PLUS.lasSource': 5, 'BestDR5.PhotoTag': 5, 'BestDR9.SDSSConstants': 5, 'BestDR5.PhotoFlags': 5, 'BestDR9.MaskedObject': 5, 'UKIDSSDR4PLUS.gcsSourceXtwomass_psc': 5, 'BestDR5.Sector': 0, 'BestDR5.StarTag': 5, 'UKIDSSDR8PLUS.udsMergeLog': 1, 'BestDR5.InsideMask': 5, 'BestDR5.ObjMask': 5, 'BestDR5.PhotoMode': 4, 'BestDR5.PrimTarget': 5, 'BestDR5.TilingNote': 0, 'UKIDSSDR4PLUS.CurationTask': 5, 'UKIDSSDR4PLUS.ExternalSurvey': 1, 'BestDR9.USNO': 5, 'UKIDSSDR4PLUS.reliableGcsPointSource': 5, 'BestDR5.Sky': 5, 'BestDR9.stellarMassPCAWisc': 5, 'UKIDSSDR4PLUS.udsSource': 0, 'UKIDSSDR8PLUS.udsVariability': 5, 'UKIDSSDR4PLUS.Release': 5, 'UKIDSSDR4PLUS.lasFrameSets': 5, 'BestDR5.GalaxyTag': 5, 'BestDR5.Galaxy': 5, 'BestDR9.PhotoPrimary': 5, 'BestDR5.MaskType': 5, 'BestDR9.PubHistory': 5, 'UKIDSSDR8PLUS.gpsSource': 5, 'BestDR9.sdssPolygons': 5, 'BestDR9.zooNoSpec': 5, 'BestDR9.sdssTilingInfo': 5, 'BestDR5.PhotoFamily': 5, 'UKIDSSDR4PLUS.Survey': 1, 'BestDR5.SpecZStatus': 5, 'UKIDSSDR4PLUS.dxsSourceXDetection': 5, 'UKIDSSDR8PLUS.RequiredListDrivenProduct': 5, 'BestDR5.PhotoObjAll': 5, 'UKIDSSDR8PLUS.dxsDetection': 5, 'UKIDSSDR4PLUS.lasYJHKmergeLog': 5, 'UKIDSSDR8PLUS.dxsFrameSets': 5, 'UKIDSSDR8PLUS.dxsSourceXtwoxmm': 5, 'BestDR9.sdssBestTarget2Sector': 0, 'UKIDSSDR4PLUS.udsVarFrameSetInfo': 0, 'UKIDSSDR4PLUS.allFrameSets': 5, 'UKIDSSDR4PLUS.gpsPointSource': 5, 'UKIDSSDR4PLUS.CurrentAstrometry': 5, 'UKIDSSDR4PLUS.lasSourceNeighbours': 5, 'UKIDSSDR8PLUS.lasSourceXDR7PhotoObjAll': 5, 'BestDR5.PhotoPrimary': 5, 'UKIDSSDR4PLUS.ProgrammeTable': 5, 'BestDR9.DBObjects': 5, 'BestDR5.Target': 5, 'BestDR9.FieldProfile': 5, 'UKIDSSDR8PLUS.ProgrammeFrame': 5, 'BestDR9.SpecialTarget1': 5, 'BestDR5.SDSSConstants': 5, 'UKIDSSDR8PLUS.dxsVariability': 5, 'BestDR9.RecentQueries': 1, 'UKIDSSDR8PLUS.lasPointSource': 5, 'BestDR9.PhotoProfile': 5, 'BestDR5."Region"': 0, 'BestDR5.SiteDBs': 1, 'BestDR9.FieldQuality': 5, 'UKIDSSDR4PLUS.gpsMergeLog': 5, 'BestDR5.Chunk': 5, 'UKIDSSDR4PLUS.udsSourceXDetectionBestMatch': 0, 'UKIDSSDR4PLUS.gpsSource': 5, 'UKIDSSDR8PLUS.lasSourceXDR7PhotoObj': 5, 'UKIDSSDR8PLUS.dxsJKmergeLog': 5, 'BestDR5.SpecClass': 5, 'UKIDSSDR4PLUS.gpsSourceRemeasurement': 0, 'BestDR9.StarTag': 5, 'BestDR9.RegionArcs': 5, 'BestDR9.galSpecIndx': 5, 'UKIDSSDR4PLUS.gcsSourceNeighbours': 5, 'UKIDSSDR4PLUS.lasSourceXDR3PhotoObj': 5, 'BestDR9.GalaxyTag': 5, 'UKIDSSDR4PLUS.gpsFrameSets': 5, 'UKIDSSDR4PLUS.gcsZYJHKmergeLog': 5, 'BestDR5.DBViewCols': 5, 'UKIDSSDR4PLUS.PhotCalVers': 5, 'BestDR9.segueTargetAll': 5, 'UKIDSSDR4PLUS.udsSourceRemeasurement': 0, 'BestDR5.RegionArcs': 0, 'UKIDSSDR8PLUS.Multiframe': 5, 'UKIDSSDR8PLUS.PhotCalVers': 5, 'BestDR9.zooVotes': 5, 'BestDR9.HoleType': 5, 'UKIDSSDR8PLUS.dxsSourceXDR7PhotoObj': 5, 'BestDR5.CoordType': 4, 'UKIDSSDR4PLUS.dxsSourceRemeasurement': 0, 'UKIDSSDR4PLUS.dxsSourceXtwoxmm': 5, 'UKIDSSDR4PLUS.reliableUdsSource': 0, 'UKIDSSDR8PLUS.allFrameSets': 5, 'UKIDSSDR4PLUS.lasSourceXfirstSource': 5, 'UKIDSSDR8PLUS.lasSourceXDR5PhotoObj': 5, 'BestDR5.QuasarCatalog': 0, 'BestDR9.sppLines': 5, 'BestDR5.DataConstants': 5, 'UKIDSSDR8PLUS.gcsSourceXDR5PhotoObj': 5, 'BestDR9.sdssTilingGeometry': 5, 'UKIDSSDR8PLUS.lasYJHKsource': 5, 'UKIDSSDR4PLUS.lasYJHKsource': 5, 'BestDR5.Rmatrix': 0, 'BestDR9.CoordType': 4, 'UKIDSSDR8PLUS.udsFrameSets': 3, 'BestDR9.Sky': 0, 'BestDR9.RegionConvex': 5, 'BestDR5.PhotoObj': 5, 'BestDR9.PhotoStatus': 5, 'BestDR9.Region2Box': 0, 'BestDR5.Region2Box': 0, 'BestDR9.PhotoType': 5, 'UKIDSSDR8PLUS.MultiframeDetector': 5, 'BestDR9.sdssTiledTargetAll': 5, 'BestDR5.BestTarget2Sector': 0, 'UKIDSSDR4PLUS.lasSourceXtwoxmm': 5, 'BestDR5.Neighbors': 5, 'BestDR5.TiMask': 5, 'UKIDSSDR8PLUS.lasSource': 5, 'BestDR5.TiledTarget': 5, 'BestDR5.SpecPhotoAll': 5, 'UKIDSSDR8PLUS.udsSourceXDetectionBestMatch': 5, 'BestDR9.Inventory': 5, 'UKIDSSDR4PLUS.dxsFrameSets': 5, 'UKIDSSDR8PLUS.gcsListRemeasurement': 0, 'BestDR5.Run': 5, 'UKIDSSDR4PLUS.RequiredDiffImage': 1, 'BestDR9.Photoz': 5, 'UKIDSSDR4PLUS.lasSourceXSegueDR6PhotoObj': 5, 'BestDR9.SiteConstants': 5, 'UKIDSSDR4PLUS.ProgrammeFrame': 5, 'UKIDSSDR8PLUS.ukirtFSstars': 5, 'BestDR5.USNO': 5, 'BestDR9.sdssTilingRun': 5, 'UKIDSSDR4PLUS.gcsSource': 5, 'UKIDSSDR4PLUS.ExternalSurveyTable': 0, 'UKIDSSDR8PLUS.udsSource': 5, 'UKIDSSDR8PLUS.gcsSourceRemeasurement': 0, 'UKIDSSDR4PLUS.gcsSourceXDR5PhotoObj': 5, 'BestDR9."Diagnostics"': 5, 'BestDR9.ImageStatus': 5, 'UKIDSSDR8PLUS.ExternalSurveyTable': 3, 'UKIDSSDR8PLUS.udsSourceXtwomass_psc': 5, 'BestDR5.ProgramType': 3, 'BestDR5."First"': 5, 'BestDR9.PhotoSecondary': 5, 'BestDR9.TwoMass': 5, 'BestDR9.History': 5, 'BestDR9.CalibStatus': 5, 'BestDR5.TargetParam': 0, 'UKIDSSDR8PLUS.UKIDSSDetection': 5, 'UKIDSSDR4PLUS.dxsSource': 5, 'BestDR9.Plate2Target': 5, 'BestDR9.DBViewCols': 5, 'BestDR5.IndexMap': 5, 'UKIDSSDR4PLUS.lasSourceXDR5PhotoObj': 5, 'BestDR9.galSpecExtra': 5, 'UKIDSSDR4PLUS.dxsSourceXtwomass_psc': 5, 'BestDR5.Dependency': 5, 'BestDR9.neighbors': 5, 'BestDR9.SiteDBs': 5, 'UKIDSSDR8PLUS.lasSourceXtwomass_psc': 5, 'UKIDSSDR4PLUS.gpsDetection': 5, 'UKIDSSDR4PLUS.StdFieldInfo': 5, 'UKIDSSDR8PLUS.dxsAstrometricInfo': 5, 'BestDR5.PhotoSecondary': 5, 'UKIDSSDR8PLUS.gpsFrameSets': 5, 'BestDR9.MaskType': 5, 'BestDR5.PhotoAux': 5, 'UKIDSSDR8PLUS.gcsZYJHKmergeLog': 5, 'UKIDSSDR4PLUS.ProgrammeCurationHistory': 5, 'UKIDSSDR4PLUS.lasSourceXnvssSource': 5, 'UKIDSSDR8PLUS.gpsMergeLog': 5, 'UKIDSSDR4PLUS.gcsSourceXtwoxmm': 5, 'UKIDSSDR8PLUS.PreviousAstrometry': 0, 'BestDR5.Star': 5, 'BestDR5.MatchHead': 5, 'BestDR9.Segue1Target1': 5, 'UKIDSSDR8PLUS.reliableDxsSource': 5, 'BestDR5.RC3': 5, 'UKIDSSDR8PLUS.gcsSourceXtwoxmm': 5, 'BestDR9.sdssSector2Tile': 0, 'UKIDSSDR4PLUS.lasSourceXDR2PhotoObj': 5, 'BestDR5.FileGroupMap': 5, 'UKIDSSDR8PLUS.PreviousMFDZP': 5, 'UKIDSSDR4PLUS.udsVariability': 0, 'UKIDSSDR4PLUS.RequiredFilters': 5, 'BestDR9.PhotoMode': 5, 'UKIDSSDR8PLUS.reliableGpsPointSource': 5, 'UKIDSSDR8PLUS.lasSourceXSegueDR6PhotoObj': 5, 'UKIDSSDR4PLUS.Filter': 5, 'BestDR5."Zone"': 5, 'BestDR9.ROSAT': 5, 'BestDR9.InsideMask': 5, 'BestDR5.FieldQuality': 5, 'UKIDSSDR8PLUS.SurveyProgrammes': 5, 'BestDR9.PrimTarget': 5, 'BestDR5.XCRedshift': 5, 'BestDR9.PartitionMap': 5, 'BestDR5.SecTarget': 5, 'UKIDSSDR8PLUS.lasFrameSets': 5, 'UKIDSSDR8PLUS.ProgrammeTable': 5, 'BestDR5.PhotoStatus': 5, 'UKIDSSDR8PLUS.lasSourceXnvssSource': 5, 'BestDR5.SiteDiagnostics': 5, 'UKIDSSDR8PLUS.dxsJKsource': 5, 'UKIDSSDR8PLUS.dxsSourceXStripe82PhotoObjAll': 5, 'BestDR9.AtlasOutline': 5, 'UKIDSSDR8PLUS.AstrCalVers': 0, 'UKIDSSDR4PLUS.gpsSourceXtwoxmm': 5, 'UKIDSSDR8PLUS.Provenance': 5, 'UKIDSSDR4PLUS.dxsSourceNeighbours': 5, 'BestDR5.HoleType': 5, 'UKIDSSDR8PLUS.StdFieldInfo': 5, 'UKIDSSDR8PLUS.lasSourceXStripe82PhotoObjAll': 5, 'BestDR9.PhotoTag': 5, 'BestDR9.Columns': 5, 'BestDR9.Mask': 5, 'UKIDSSDR4PLUS.lasSourceXtwomass_xsc': 5, 'UKIDSSDR4PLUS.gcsDetection': 5, 'BestDR9.emissionLinesPort': 5, 'UKIDSSDR8PLUS.gpsSourceRemeasurement': 0, 'BestDR5.FieldMask': 5, 'UKIDSSDR4PLUS.dxsJKsource': 5, 'BestDR9.zooMirrorBias': 5, 'UKIDSSDR8PLUS.lasSourceRemeasurement': 0, 'UKIDSSDR4PLUS.lasSourceXrosat_fsc': 5, 'BestDR5.RunShift': 5, 'BestDR9.LoadHistory': 5, 'BestDR5.Rosat': 5, 'UKIDSSDR8PLUS.gcsSource': 5, 'BestDR9.RunShift': 5, 'UKIDSSDR4PLUS.Programme': 5, 'UKIDSSDR8PLUS.gcsFrameSets': 5, 'BestDR9.Star': 5, 'UKIDSSDR4PLUS.gpsSourceXtwomass_psc': 5, 'BestDR5.DBColumns': 5, 'BestDR9.DataConstants': 5, 'UKIDSSDR4PLUS.MultiframeDetector': 5, 'BestDR5.History': 5, 'UKIDSSDR4PLUS.UKIDSSDetection': 5, 'BestDR9.DBColumns': 5, 'BestDR5.TargetInfo': 5, 'BestDR5.PspStatus': 5, 'BestDR9.ProfileDefs': 5, 'BestDR9.PhotoFlags': 5, 'BestDR9.PhotoFamily': 5, 'UKIDSSDR4PLUS.RequiredStack': 5, 'BestDR5.Sector2Tile': 0, 'UKIDSSDR8PLUS.gcsSourceXtwomass_psc': 5, 'BestDR5.Field': 5, 'BestDR5.FramesStatus': 4, 'BestDR9.PhotozRF': 5, 'BestDR5.TargRunQA': 5, 'BestDR9.zooConfidence': 5, 'UKIDSSDR8PLUS.RequiredStack': 5, 'BestDR9.FramesStatus': 4, 'UKIDSSDR8PLUS.ExternalSurvey': 3, 'UKIDSSDR8PLUS.dxsSourceXDetectionBestMatch': 5, 'BestDR9.PhotoObjDR7': 5, 'BestDR9.QueryResults': 5, 'BestDR9.sdssSector': 0, 'BestDR9.SiteDiagnostics': 5, 'BestDR5.MaskedObject': 5, 'UKIDSSDR4PLUS.dxsDetection': 5, 'UKIDSSDR4PLUS.gcsListRemeasurement': 0, 'UKIDSSDR4PLUS.lasMergeLog': 5, 'UKIDSSDR8PLUS.gcsDetection': 5, 'UKIDSSDR8PLUS.gpsPointSource': 5, 'UKIDSSDR8PLUS.RequiredMosaic': 3, 'BestDR9.TargetInfo': 0, 'UKIDSSDR8PLUS.RequiredNeighbours': 5, 'UKIDSSDR4PLUS.Provenance': 5, 'BestDR9.zooMonochromeBias': 5, 'BestDR9.stellarMassPassivePort': 5, 'BestDR5.TiledTargetAll': 5, 'UKIDSSDR4PLUS.dxsListRemeasurement': 0, 'BestDR9.stellarMassStarformingPort': 5, 'BestDR9.SpecPhotoAll': 5, 'UKIDSSDR4PLUS.udsFrameSets': 3, 'BestDR9.sppParams': 5, 'UKIDSSDR4PLUS.AstrCalVers': 0, 'UKIDSSDR4PLUS.gpsListRemeasurement': 0, 'BestDR5.PhotoType': 5, 'BestDR5.SpecPhoto': 5, 'BestDR5.Glossary': 0, 'UKIDSSDR8PLUS.reliableGcsPointSource': 5, 'BestDR5.SpecZWarning': 5, 'UKIDSSDR4PLUS.gcsMergeLog': 5, 'BestDR5.Inventory': 5, 'UKIDSSDR8PLUS.ProductLinks': 3, 'UKIDSSDR8PLUS.dxsSourceRemeasurement': 0, 'UKIDSSDR4PLUS.lasDetection': 5, 'BestDR9.SpecDR7': 5, 'BestDR5.SpecLineNames': 5, 'UKIDSSDR8PLUS.dxsListRemeasurement': 0, 'BestDR9.RegionPatch': 5, 'BestDR5.LoadHistory': 0, 'UKIDSSDR8PLUS.lasSourceXfirstSource': 5, 'UKIDSSDR8PLUS.gcsSourceXDR7PhotoObj': 5, 'UKIDSSDR4PLUS.gcsFrameSets': 5, 'BestDR9.Segue2Target1': 5, 'BestDR9.TiMask': 5, 'UKIDSSDR8PLUS.lasYJHKmergeLog': 5, 'UKIDSSDR4PLUS.gpsSourceNeighbours': 5, 'BestDR5.QsoSpec': 5, 'UKIDSSDR4PLUS.dxsJKmergeLog': 5, 'UKIDSSDR4PLUS.lasSourceXiras_psc': 5, 'UKIDSSDR4PLUS.dxsSourceXDetectionBestMatch': 0, 'UKIDSSDR4PLUS.Multiframe': 5, 'UKIDSSDR4PLUS.gpsJHKsource': 5, 'BestDR5.SpecLineAll': 5, 'UKIDSSDR8PLUS.udsDetection': 5, 'BestDR5.ObjType': 5, 'BestDR9.ProperMotions': 5, 'UKIDSSDR8PLUS.udsVarFrameSetInfo': 1, 'UKIDSSDR4PLUS.dxsMergeLog': 5, 'BestDR5.RegionConvex': 0, 'UKIDSSDR4PLUS.PreviousAstrometry': 0, 'UKIDSSDR8PLUS.RequiredDiffImage': 1, 'UKIDSSDR8PLUS.udsSourceRemeasurement': 0, 'UKIDSSDR8PLUS.ProgrammeCurationHistory': 5, 'UKIDSSDR4PLUS.lasSourceXmgcDetection': 5, 'BestDR5.Algorithm': 0, 'UKIDSSDR4PLUS.reliableGpsPointSource': 5, 'UKIDSSDR4PLUS.dxsVariability': 0, 'UKIDSSDR8PLUS.lasSourceXrosat_fsc': 5, 'UKIDSSDR8PLUS.gcsPointSource': 5, 'UKIDSSDR4PLUS.udsDetection': 0, 'UKIDSSDR8PLUS.gcsSourceNeighbours': 5, 'BestDR9.PhotoObjAll': 5, 'BestDR9.ResolveStatus': 5, 'BestDR9.PhotozRFTemplateCoeff': 5, 'UKIDSSDR8PLUS.Programme': 5, 'BestDR5.Columns': 5, 'BestDR5.Photoz': 5, 'BestDR9.detectionIndex': 5, 'UKIDSSDR4PLUS.lasListRemeasurement': 0, 'BestDR5.TilingRun': 5, 'UKIDSSDR4PLUS.RequiredListDrivenProduct': 5, 'UKIDSSDR4PLUS.RequiredNeighbours': 5, 'UKIDSSDR8PLUS.udsListRemeasurement': 0, 'BestDR5.QsoBunch': 5, 'BestDR9.Dependency': 5, 'UKIDSSDR8PLUS.lasExtendedSource': 5, 'BestDR5.HoleObj': 5, 'BestDR5.TableDesc': 0, 'UKIDSSDR4PLUS.gcsPointSource': 5, 'UKIDSSDR4PLUS.udsListRemeasurement': 0, 'UKIDSSDR8PLUS.lasSourceXtwomass_xsc': 5}
+------------
+Exceptions: 
+{'BestDR9.segue1SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segue1SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42866: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000d0d0d1212121b1b1b0000362323232a2a2a3535353c3c3c0001540100630100684141414e4e4e5353535d5d5d6161616a6a6a777777787 (in row 0, col 'column.509305')", 'BestDR5.PlateX': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.PlateX&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:17840: ValueError: invalid literal for int() with base 10: '5749920055223000574992005522300057499200552230005749920055223000583264805522300058326480552230005832648055223000583264805522300057e4c9005522300057e4c9005522300057e4c9005522300057e4c900552230005872648 (in row 0, col 'column.501715')", 'BestDR5.QsoCatalogAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoCatalogAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4246: E04: Invalid bit value 'true'", 'BestDR9.segue2SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segue2SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42903: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000300504c54450000000100000001000101010000020202020303030404040505050606060707070808080909090a0a0a0b0b0b0c0c0c0d0d0d0e0e0e0f0f0f010 (in row 0, col 'column.521975')", 'BestDR5.PhotoProfile': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.PhotoProfile&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:1521: ValueError: invalid literal for int() with base 10: '0000000b' (in row 0, col 'column.496553')", 'BestDR5.Frame': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6912: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c75449544c452020203d202753445353203734352d34302d312d353138206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2f7 (in row 0, col 'column.492643')", 'UKIDSSDR4PLUS.RequiredMosaic': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR4PLUS.RequiredMosaic&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:5858: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.538623')", 'BestDR9.SpecObj': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42908: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000b0b0b1212121b1b1b2121212929293434343636383a3a3a4343434949495252525c5c5c6464646a6a6a76767679797901008a0000ba282 (in row 0, col 'column.509765')", 'BestDR9.Frame': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6955: ValueError: invalid literal for int() with base 10: '0000000c6a5020200d0a870a00000014667479706a703220000000006a703220000000476a7032680000001669686472000000af000000f80003070701000000000f636f6c72010000000000100000001a7265732000000012726573632449800024498 (in row 0, col 'column.509899')", 'BestDR5.SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13573: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.489597')", 'BestDR5.QsoCatalog': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoCatalog&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4246: E04: Invalid bit value 'true'", 'BestDR5.SpecObj': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13559: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.491499')", 'BestDR5.QsoConcordance': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoConcordance&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:27760: E04: Invalid bit value 'true'", 'BestDR5.QsoConcordanceAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoConcordanceAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:27760: E04: Invalid bit value 'true'", 'BestDR9.SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42908: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000b0b0b1212121b1b1b2121212929293434343636383a3a3a4343434949495252525c5c5c6464646a6a6a76767679797901008a0000ba282 (in row 0, col 'column.505379')", 'BestDR9.segueSpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segueSpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42866: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000d0d0d1212121b1b1b0000362323232a2a2a3535353c3c3c0001540100630100684141414e4e4e5353535d5d5d6161616a6a6a777777787 (in row 0, col 'column.520661')", 'BestDR5.QsoTarget': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:11974: E04: Invalid bit value 'false'", 'BestDR9."Region"': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.%22Region%22&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2280: ValueError: invalid literal for int() with base 10: '560100000001dd352a374500303f0100000043040000000101dd352a374500303f04000000779f801fa46c22bf97970526c78b01bf113465faffffef3f0020054bb3ee213f78b6f9faffffef3f75a51f8b8f98ecbfdf1f528a6fb9dc3f5d8740f2cf651 (in row 0, col 'column.511711')"}
+------------
+{'BestDR9.segue1SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segue1SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42866: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000d0d0d1212121b1b1b0000362323232a2a2a3535353c3c3c0001540100630100684141414e4e4e5353535d5d5d6161616a6a6a777777787 (in row 0, col 'column.509305')", 'BestDR5.PlateX': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.PlateX&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:17840: ValueError: invalid literal for int() with base 10: '5749920055223000574992005522300057499200552230005749920055223000583264805522300058326480552230005832648055223000583264805522300057e4c9005522300057e4c9005522300057e4c9005522300057e4c900552230005872648 (in row 0, col 'column.501715')", 'BestDR5.QsoCatalogAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoCatalogAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4246: E04: Invalid bit value 'true'", 'BestDR9.segue2SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segue2SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42903: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000300504c54450000000100000001000101010000020202020303030404040505050606060707070808080909090a0a0a0b0b0b0c0c0c0d0d0d0e0e0e0f0f0f010 (in row 0, col 'column.521975')", 'BestDR5.PhotoProfile': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.PhotoProfile&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:1521: ValueError: invalid literal for int() with base 10: '0000000b' (in row 0, col 'column.496553')", 'BestDR5.Frame': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6912: ValueError: invalid literal for int() with base 10: 'ffd8ffe000104a46494600010101004800480000fffe01c75449544c452020203d202753445353203734352d34302d312d353138206772692d746f2d42475220636f6d706f7369746520696d616765270a494e464f202020203d2027687474703a2f2f7 (in row 0, col 'column.492643')", 'UKIDSSDR4PLUS.RequiredMosaic': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+UKIDSSDR4PLUS.RequiredMosaic&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:5858: ValueError: invalid literal for int() with base 10: '0000000a' (in row 0, col 'column.538623')", 'BestDR9.SpecObj': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42908: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000b0b0b1212121b1b1b2121212929293434343636383a3a3a4343434949495252525c5c5c6464646a6a6a76767679797901008a0000ba282 (in row 0, col 'column.509765')", 'BestDR9.Frame': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.Frame&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:6955: ValueError: invalid literal for int() with base 10: '0000000c6a5020200d0a870a00000014667479706a703220000000006a703220000000476a7032680000001669686472000000af000000f80003070701000000000f636f6c72010000000000100000001a7265732000000012726573632449800024498 (in row 0, col 'column.509899')", 'BestDR5.SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13573: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.489597')", 'BestDR5.QsoCatalog': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoCatalog&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:4246: E04: Invalid bit value 'true'", 'BestDR5.SpecObj': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:13559: ValueError: invalid literal for int() with base 10: '4749463837615203a802a20000ffffff000000ff000000ff000000ff00ffffff00ffffff002c000000005203a8020003fe08badcfe30ca49abbd38ebcdbbff60288e64699e68aaae6cebbe702ccf746ddf78aeef7cefffc0a070482c1a8fc8a472c96c3 (in row 0, col 'column.491499')", 'BestDR5.QsoConcordance': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoConcordance&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:27760: E04: Invalid bit value 'true'", 'BestDR5.QsoConcordanceAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoConcordanceAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:27760: E04: Invalid bit value 'true'", 'BestDR9.SpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42908: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000b0b0b1212121b1b1b2121212929293434343636383a3a3a4343434949495252525c5c5c6464646a6a6a76767679797901008a0000ba282 (in row 0, col 'column.505379')", 'BestDR9.segueSpecObjAll': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.segueSpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:42866: ValueError: invalid literal for int() with base 10: '89504e470d0a1a0a0000000d494844520000046e0000032a0803000000e47df7ac00000180504c54450000000d0d0d1212121b1b1b0000362323232a2a2a3535353c3c3c0001540100630100684141414e4e4e5353535d5d5d6161616a6a6a777777787 (in row 0, col 'column.520661')", 'BestDR5.QsoTarget': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR5.QsoTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:11974: E04: Invalid bit value 'false'", 'BestDR9."Region"': "http://localhost:8081/firethorn/tap/77265/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.%22Region%22&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE:1:2280: ValueError: invalid literal for int() with base 10: '560100000001dd352a374500303f0100000043040000000101dd352a374500303f04000000779f801fa46c22bf97970526c78b01bf113465faffffef3f0020054bb3ee213f78b6f9faffffef3f75a51f8b8f98ecbfdf1f528a6fb9dc3f5d8740f2cf651 (in row 0, col 'column.511711')"}
+
+
+## Test Completed, No timeouts
+
+
+
+## --------------------------------------------------------------
+
+
+
+## Test 4
+## Testing a query on a result table, then deleting that table and testing query again
+
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+
+#
+firethorn = ftpy.Firethorn(
+    endpoint = "http://localhost:8081/firethorn"
+    )
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )	
+
+# Select a specific resource by Identity (url)
+
+resource=firethorn.firethorn_engine.select_adql_resource_by_ident(
+    "http://localhost:8081/firethorn/adql/resource/331854"
+    )
+
+
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+# Select schema by Identity
+schema=resource.select_schema_by_ident("http://localhost:8081/firethorn/adql/schema/331904")
+
+
+# Import the TAP_schema into our workspace
+workspace.import_adql_schema(
+     schema
+ )
+
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 10 * from temp.XX_NNJ6AQHHQ6EHSAAAAFVE7OVHQY"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+
+...
+
+	>>> print(
+	...     query_obj.table().count()
+	...     )
+
+	5
+
+
+## Delete Table and test again..
+
+>>> print(
+...     query_obj
+...     )
+{
+  "adql": "SELECT TOP 10 *\nFROM temp.XX_NNJ6AQHHQ6EHSAAAAFVE7OVHQY",
+  "input": "SELECT TOP 10 * from temp.XX_NNJ6AQHHQ6EHSAAAAFVE7OVHQY",
+  "osql": "SELECT TOP 10 [LIVEFirethornUserdataULOV20180719].[dbo].[XX_NNJ6AQHHQ6EHSAAAAFVE7OVHQY].[XX_7H5ZUKWCKGPW6AAAAFVE7OVHXY] AS \"name\",[LIVEFirethornUserdataULOV20180719].[dbo].[XX_NNJ6AQHHQ6EHSAAAAFVE7OVHQY].[XX_EDRVDLPIY4Z3IAAAAFVE7OVHYA] AS \"value\",[LIVEFirethornUserdataULOV20180719].[dbo].[XX_NNJ6AQHHQ6EHSAAAAFVE7OVHQY].[XX_2EC4AOEJLUSXMAAAAFVE7OVHYI] AS \"description\"\nFROM [LIVEFirethornUserdataULOV20180719].[dbo].[XX_NNJ6AQHHQ6EHSAAAAFVE7OVHQY]",
+  "created": "2019-04-24T14:30:55.805",
+  "ident": "355334",
+  "resources": [
+    "http://localhost:8081/firethorn/jdbc/resource/52"
+  ],
+  "url": "http://localhost:8081/firethorn/blue/query/355334",
+  "columns": [],
+  "tables": [],
+  "results": {
+    "count": 0,
+    "state": "PARTIAL",
+    "formats": {
+      "votable": "http://localhost:8081/firethorn/adql/table/357267/votable",
+      "datatable": "http://localhost:8081/firethorn/adql/table/357267/datatable"
+    },
+    "table": "http://localhost:8081/firethorn/adql/table/357267"
+  },
+  "syntax": {
+    "status": "VALID",
+    "friendly": null,
+    "message": null
+  },
+  "mode": "DIRECT",
+  "name": "XX_UIOHPRQJKQWI6AAAAFVE7QNUHU",
+  "history": [
+    {
+      "task": "http://localhost:8081/firethorn/blue/query/355334",
+      "owner": "http://localhost:8081/firethorn/community-member/357323",
+      "level": "INFO",
+      "modified": "2019-04-24T14:30:56.225",
+      "created": "2019-04-24T14:30:56.225",
+      "ident": "356928",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/356928",
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/356928",
+      "state": "FAILED",
+      "message": null
+    },
+    {
+      "task": "http://localhost:8081/firethorn/blue/query/355334",
+      "owner": "http://localhost:8081/firethorn/community-member/338400",
+      "level": "INFO",
+      "modified": "2019-04-24T14:30:55.904",
+      "created": "2019-04-24T14:30:55.903",
+      "ident": "356927",
+      "url": "http://localhost:8081/firethorn/blue/log/entry/356927",
+      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+      "self": "http://localhost:8081/firethorn/blue/log/entry/356927",
+      "state": "READY",
+      "message": "Executing query"
+    }
+  ],
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+  "delays": {
+    "first": null,
+    "last": null,
+    "every": null
+  },
+  "callback": "http://localhost:8081/firethorn/callback/355334",
+  "workspace": "http://localhost:8081/firethorn/adql/resource/336278",
+  "status": "FAILED",
+  "owner": "http://localhost:8081/firethorn/community-member/338400",
+  "modified": "2019-04-24T14:30:56.266",
+  "fields": [],
+  "limits": {
+    "time": null,
+    "cells": null,
+    "rows": 1000000
+  },
+  "resource": "http://localhost:8081/firethorn/adql/resource/336278",
+  "text": null,
+  "self": "http://localhost:8081/firethorn/blue/query/355334"
+}
+>>> print(
+...     query_obj.table()
+...     )
+{
+  "schema": "http://localhost:8081/firethorn/adql/schema/336342",
+  "url": "http://localhost:8081/firethorn/adql/table/357267",
+  "query": "http://localhost:8081/firethorn/blue/query/355334",
+  "metadata": {
+    "adql": {
+      "status": "PARTIAL",
+      "count": -1
+    }
+  },
+  "depth": "PARTIAL",
+  "parent": "http://localhost:8081/firethorn/adql/schema/336342",
+  "columns": "http://localhost:8081/firethorn/adql/table/357267/columns/select",
+  "base": "http://localhost:8081/firethorn/jdbc/table/357266",
+  "name": "XX_ID4CNUWTDCVF4AAAAFVE7QNUX4",
+  "owner": "http://localhost:8081/firethorn/community-member/338400",
+  "created": "2019-04-24T14:30:55.936",
+  "modified": "2019-04-24T14:30:55.936",
+  "formats": {
+    "votable": "http://localhost:8081/firethorn/adql/table/357267/votable",
+    "datatable": "http://localhost:8081/firethorn/adql/table/357267/datatable"
+  },
+  "fullname": "temp.XX_ID4CNUWTDCVF4AAAAFVE7QNUX4",
+  "resource": "http://localhost:8081/firethorn/adql/resource/336292",
+  "ident": "357267",
+  "self": "http://localhost:8081/firethorn/adql/table/357267",
+  "root": "http://localhost:8081/firethorn/jdbc/table/357266",
+  "text": null,
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json"
+}
+>>> print(
+...     query_obj.table().count()
+...     )
+-1
+
+
+## Test Completed:
+## Query Failed, and Fail correctly propagated to Firethorn
+
+
+	 

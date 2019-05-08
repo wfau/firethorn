@@ -1,0 +1,50 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Working Query [Completed]
+
+2019-04-18 18:09:32,532 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,preprocess:202] ** preprocess *** Line 201 - Before callback
+2019-04-18 18:09:32,542 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:262] ** processIteration *** Line 250
+2019-04-18 18:09:32,542 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:296] ** processIteration *** Line 280
+2019-04-18 18:09:32,542 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,550 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,550 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,552 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,552 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,552 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,553 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,555 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,555 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,555 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:307] ** processIteration *** Line 285
+2019-04-18 18:09:32,556 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:372] ** processIteration *** Line 349
+2019-04-18 18:09:32,559 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-27,processIteration:491] ** processIteration *** Line 465
+
+
+## Failing Query [FAILED], propagated to Firethorn
+
+2019-04-18 18:11:17,831 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-33,preprocess:202] ** preprocess *** Line 201 - Before callback
+
+
+## Failing Query [RUNNING], NOT propagated to Firethorn
+
+2019-04-18 18:14:43,707 WARN  jdbc.JdbcInsertDataActivity [pool-1-thread-6,preprocess:202] ** preprocess *** Line 201 - Before callback
+

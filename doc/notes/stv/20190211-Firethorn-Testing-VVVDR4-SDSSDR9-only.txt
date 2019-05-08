@@ -1,0 +1,1427 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+#
+
+## Date: 11 Feb 2019
+
+## BestDR9 and VVVDR4 seem to appear in failing queries or just before VM crashes, so lets test just those
+## Also VVVDR4 is currently not on ramses19 for some reason, so this is expected to fail, but lets see if it will crash the server or cause loop
+
+## Modify firethorn-utils.validator to filter for those two only:
+
+...
+for schema in  list(filter(lambda x: x.name().lower() in ["bestdr9", "vvvdr4"], resource.get_schemas())):
+..
+
+
+/usr/bin/python3 -c "import firethorn_utils.validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 
+
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [BestDR9.SpecObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658668
+ 
+Table query completed after 5.611361503601074 seconds
+Testing [BestDR9.TwoMass]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658669
+ 
+Table query completed after 4.54631233215332 seconds
+Testing [BestDR9.ResolveStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658670
+ 
+Table query completed after 4.496347665786743 seconds
+Testing [BestDR9.HoleType]
+Rowcount:6
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658671
+ 
+Table query completed after 4.51399564743042 seconds
+Testing [BestDR9.PhotoStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658672
+ 
+Table query completed after 4.454743146896362 seconds
+Testing [BestDR9.SDSSConstants]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658673
+ 
+Table query completed after 4.6232452392578125 seconds
+Testing [BestDR9.SiteDiagnostics]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658674
+ 
+Table query completed after 4.7623655796051025 seconds
+Testing [BestDR9.PubHistory]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658675
+ 
+Table query completed after 4.663285493850708 seconds
+Testing [BestDR9.ProfileDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658676
+ 
+Table query completed after 4.70927095413208 seconds
+Testing [BestDR9.sdssTilingRun]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658677
+ 
+Table query completed after 4.71704363822937 seconds
+Testing [BestDR9.sppTargets]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658678
+ 
+Table query completed after 6.246712923049927 seconds
+Testing [BestDR9.sdssTile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658679
+ 
+Table query completed after 4.665351867675781 seconds
+Testing [BestDR9.AtlasOutline]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658680
+ 
+Table query completed after 14.09310245513916 seconds
+Testing [BestDR9.SpecDR7]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658681
+ 
+Table query completed after 5.316026926040649 seconds
+Testing [BestDR9.SecTarget]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658682
+ 
+Table query completed after 4.573185682296753 seconds
+Testing [BestDR9.SpecialTarget1]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658683
+ 
+Table query completed after 4.575045824050903 seconds
+Testing [BestDR9.emissionLinesPort]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658684
+ 
+Table query completed after 10.48093843460083 seconds
+Testing [BestDR9.galSpecIndx]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658685
+ 
+Table query completed after 5.966870307922363 seconds
+Testing [BestDR9.sdssTilingGeometry]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658686
+ 
+Table query completed after 4.991025686264038 seconds
+Testing [BestDR9.PhotoPrimary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658687
+ 
+Table query completed after 7.485877752304077 seconds
+Testing [BestDR9.History]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658688
+ 
+Table query completed after 4.59643292427063 seconds
+Testing [BestDR9.Plate2Target]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658689
+ 
+Table query completed after 4.519866466522217 seconds
+Testing [BestDR9.PrimTarget]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658690
+ 
+Table query completed after 4.4613471031188965 seconds
+Testing [BestDR9.detectionIndex]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658691
+ 
+Table query completed after 4.460431098937988 seconds
+Testing [BestDR9.segue1SpecObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658692
+ 
+Table query completed after 5.8589253425598145 seconds
+Testing [BestDR9.thingIndex]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658693
+ 
+Table query completed after 4.611023187637329 seconds
+Testing [BestDR9.PhotoFlags]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658694
+ 
+Table query completed after 4.572536945343018 seconds
+Testing [BestDR9.FieldQuality]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658695
+ 
+Table query completed after 4.598945140838623 seconds
+Testing [BestDR9.SpecObj]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658696
+ 
+Table query completed after 5.730530500411987 seconds
+Testing [BestDR9.sdssSector2Tile]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658697
+ 
+Table query completed after 4.464234352111816 seconds
+Testing [BestDR9.RunShift]
+Rowcount:9
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658698
+ 
+Table query completed after 4.488460063934326 seconds
+Testing [BestDR9.FieldProfile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658699
+ 
+Table query completed after 7.705833911895752 seconds
+Testing [BestDR9.Frame]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658700
+ 
+Table query completed after 11.084176063537598 seconds
+Testing [BestDR9.Region2Box]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9658701
+ 
+Table query completed after 1.6089015007019043 seconds
+Testing [BestDR9.Sky]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665752
+ 
+Table query completed after 94.86572623252869 seconds
+Testing [BestDR9.TiMask]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665753
+ 
+Table query completed after 4.428204774856567 seconds
+Testing [BestDR9.StripeDefs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665754
+ 
+Table query completed after 5.24935245513916 seconds
+Testing [BestDR9.sdssTilingBoundary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665755
+ 
+Table query completed after 5.336070775985718 seconds
+Testing [BestDR9.sdssTileAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665756
+ 
+Table query completed after 4.7118494510650635 seconds
+Testing [BestDR9.ImageStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665757
+ 
+Table query completed after 4.673639535903931 seconds
+Testing [BestDR9.galSpecExtra]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665758
+ 
+Table query completed after 4.795832395553589 seconds
+Testing [BestDR9.PhotoPrimaryDR7]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665759
+ 
+Table query completed after 4.960727691650391 seconds
+Testing [BestDR9.segueTargetAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665760
+ 
+Table query completed after 4.683068752288818 seconds
+Testing [BestDR9.Photoz]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665761
+ 
+Table query completed after 4.581610202789307 seconds
+Testing [BestDR9.galSpecInfo]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665762
+ 
+Table query completed after 4.579820394515991 seconds
+Testing [BestDR9.SiteConstants]
+Rowcount:8
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665763
+ 
+Table query completed after 4.482348680496216 seconds
+Testing [BestDR9.PhotoMode]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665764
+ 
+Table query completed after 4.475780248641968 seconds
+Testing [BestDR9.SourceType]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665765
+ 
+Table query completed after 4.618412494659424 seconds
+Testing [BestDR9."Region"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665766
+ 
+Table query completed after 7.765871524810791 seconds
+Testing [BestDR9.Segue1Target1]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665767
+ 
+Table query completed after 4.403221845626831 seconds
+Testing [BestDR9.PhotozTemplateCoeff]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665768
+ 
+Table query completed after 5.060783863067627 seconds
+Testing [BestDR9.CoordType]
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665769
+ 
+Table query completed after 4.660607576370239 seconds
+Testing [BestDR9.zooVotes]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665770
+ 
+Table query completed after 4.737181663513184 seconds
+Testing [BestDR9.zooConfidence]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665771
+ 
+Table query completed after 4.695778846740723 seconds
+Testing [BestDR9.zooMirrorBias]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665772
+ 
+Table query completed after 4.753998517990112 seconds
+Testing [BestDR9.PspStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665773
+ 
+Table query completed after 4.627811908721924 seconds
+Testing [BestDR9.Versions]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665774
+ 
+Table query completed after 4.660719633102417 seconds
+Testing [BestDR9.stellarMassPassivePort]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665775
+ 
+Table query completed after 4.868222236633301 seconds
+Testing [BestDR9.StarTag]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665776
+ 
+Table query completed after 5.2057578563690186 seconds
+Testing [BestDR9.PhotoType]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665777
+ 
+Table query completed after 4.557090759277344 seconds
+Testing [BestDR9.Inventory]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665778
+ 
+Table query completed after 4.735823392868042 seconds
+Testing [BestDR9.Rmatrix]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665779
+ 
+Table query completed after 4.820225477218628 seconds
+Testing [BestDR9.LoadHistory]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665780
+ 
+Table query completed after 4.485137701034546 seconds
+Testing [BestDR9.PhotozRFTemplateCoeff]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665781
+ 
+Table query completed after 7.525714874267578 seconds
+Testing [BestDR9.neighbors]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665782
+ 
+Table query completed after 7.710952997207642 seconds
+Testing [BestDR9.sdssTilingMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665783
+ 
+Table query completed after 4.698111295700073 seconds
+Testing [BestDR9.Mask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665784
+ 
+Table query completed after 4.6200621128082275 seconds
+Testing [BestDR9.sdssTiledTargetAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665785
+ 
+Table query completed after 4.671319246292114 seconds
+Testing [BestDR9.FramesStatus]
+Rowcount:4
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665786
+ 
+Table query completed after 4.852734804153442 seconds
+Testing [BestDR9.Target]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665787
+ 
+Table query completed after 1.6619195938110352 seconds
+Testing [BestDR9.SpecPhotoAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665788
+ 
+Table query completed after 5.296317100524902 seconds
+Testing [BestDR9.DBObjects]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665789
+ 
+Table query completed after 4.616231441497803 seconds
+Testing [BestDR9.DBColumns]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665790
+ 
+Table query completed after 4.381353139877319 seconds
+Testing [BestDR9.sdssSector]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665791
+ 
+Table query completed after 4.52577805519104 seconds
+Testing [BestDR9.RecentQueries]
+Rowcount:1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665792
+ 
+Table query completed after 4.555772542953491 seconds
+Testing [BestDR9.SpecPixMask]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665793
+ 
+Table query completed after 4.679768800735474 seconds
+Testing [BestDR9.TwoMassXSC]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665794
+ 
+Table query completed after 6.937075138092041 seconds
+Testing [BestDR9.MaskedObject]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665795
+ 
+Table query completed after 4.601794958114624 seconds
+Testing [BestDR9.PhotoProfile]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665796
+ 
+Table query completed after 7.529966592788696 seconds
+Testing [BestDR9.USNO]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665797
+ 
+Table query completed after 4.707111835479736 seconds
+Testing [BestDR9.TableDesc]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665798
+ 
+Table query completed after 4.41019868850708 seconds
+Testing [BestDR9.DBViewCols]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665799
+ 
+Table query completed after 4.478645324707031 seconds
+Testing [BestDR9.ROSAT]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665800
+ 
+Table query completed after 4.733562231063843 seconds
+Testing [BestDR9.FileGroupMap]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9665801
+ 
+Table query completed after 4.556554555892944 seconds
+Testing [BestDR9.sdssImagingHalfSpaces]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671152
+ 
+Table query completed after 4.654983997344971 seconds
+Testing [BestDR9.sdssPolygon2Field]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671153
+ 
+Table query completed after 5.007993221282959 seconds
+Testing [BestDR9.PhotoSecondary]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671154
+ 
+Table query completed after 7.54378604888916 seconds
+Testing [BestDR9."Diagnostics"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671155
+ 
+Table query completed after 4.445537805557251 seconds
+Testing [BestDR9.Field]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671156
+ 
+Table query completed after 10.10983681678772 seconds
+Testing [BestDR9.TargetInfo]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671157
+ 
+Table query completed after 4.4534125328063965 seconds
+Testing [BestDR9.DataConstants]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671158
+ 
+Table query completed after 4.382700681686401 seconds
+Testing [BestDR9.sdssTargetParam]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671159
+ 
+Table query completed after 4.476454257965088 seconds
+Testing [BestDR9.RegionArcs]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671160
+ 
+Table query completed after 7.582053184509277 seconds
+Testing [BestDR9.GalaxyTag]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671161
+ 
+Table query completed after 5.115588188171387 seconds
+Testing [BestDR9.galSpecLine]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671162
+ 
+Table query completed after 5.653623342514038 seconds
+Testing [BestDR9.Run]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671163
+ 
+Table query completed after 4.562516689300537 seconds
+Testing [BestDR9.Segue2Target1]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671164
+ 
+Table query completed after 4.4088287353515625 seconds
+Testing [BestDR9.ProperMotions]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671165
+ 
+Table query completed after 13.779286623001099 seconds
+Testing [BestDR9.stellarMassPCAWisc]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671166
+ 
+Table query completed after 4.645490646362305 seconds
+Testing [BestDR9.RegionPatch]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671167
+ 
+Table query completed after 4.63087010383606 seconds
+Testing [BestDR9.IndexMap]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671168
+ 
+Table query completed after 4.446398973464966 seconds
+Testing [BestDR9.sdssBestTarget2Sector]
+Rowcount:0
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671169
+ 
+Table query completed after 4.557427406311035 seconds
+Testing [BestDR9.Galaxy]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671170
+ 
+Table query completed after 7.657969951629639 seconds
+Testing [BestDR9.PhotoTag]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671171
+ 
+Table query completed after 5.2297682762146 seconds
+Testing [BestDR9.Columns]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671172
+ 
+Table query completed after 4.727148056030273 seconds
+Testing [BestDR9.SiteDBs]
+Rowcount:6
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671173
+ 
+Table query completed after 5.3640687465667725 seconds
+Testing [BestDR9.sdssPolygons]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671174
+ 
+Table query completed after 4.995860815048218 seconds
+Testing [BestDR9.stellarMassStarformingPort]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671175
+ 
+Table query completed after 4.836404323577881 seconds
+Testing [BestDR9.zooSpec]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671176
+ 
+Table query completed after 4.634147882461548 seconds
+Testing [BestDR9.Star]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671177
+ 
+Table query completed after 7.600650787353516 seconds
+Testing [BestDR9.QueryResults]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671178
+ 
+Table query completed after 4.573237419128418 seconds
+Testing [BestDR9.SpecZWarning]
+Rowcount:9
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671179
+ 
+Table query completed after 4.441479921340942 seconds
+Testing [BestDR9."FIRST"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671180
+ 
+Table query completed after 10.745318174362183 seconds
+Testing [BestDR9.RegionConvex]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671181
+ 
+Table query completed after 4.5432398319244385 seconds
+Testing [BestDR9.MaskType]
+Rowcount:5
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671182
+ 
+Table query completed after 4.480840682983398 seconds
+Testing [BestDR9.segueSpecObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671183
+ 
+Table query completed after 5.623749017715454 seconds
+Testing [BestDR9.sppLines]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671184
+ 
+Table query completed after 6.668242692947388 seconds
+Testing [BestDR9."Zone"]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671185
+ 
+Table query completed after 4.576918601989746 seconds
+Testing [BestDR9.ProgramType]
+Rowcount:3
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671186
+ 
+Table query completed after 4.545243263244629 seconds
+Testing [BestDR9.PhotozRF]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671187
+ 
+Table query completed after 4.6807167530059814 seconds
+Testing [BestDR9.segue2SpecObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671188
+ 
+Table query completed after 5.727505445480347 seconds
+Testing [BestDR9.sppParams]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671189
+ 
+Table query completed after 5.378142356872559 seconds
+Testing [BestDR9.PhotoObjAll]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671190
+ 
+Table query completed after 7.137109041213989 seconds
+Testing [BestDR9.RC3]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671191
+ 
+Table query completed after 5.294265031814575 seconds
+Testing [BestDR9.PartitionMap]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671192
+ 
+Table query completed after 4.586821556091309 seconds
+Testing [BestDR9.zooNoSpec]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671193
+ 
+Table query completed after 4.561811685562134 seconds
+Testing [BestDR9.HalfSpace]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671194
+ 
+Table query completed after 4.451738119125366 seconds
+Testing [BestDR9.PlateX]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671195
+ 
+Table query completed after 6.493964672088623 seconds
+Testing [BestDR9.PhotoObjDR7]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671196
+ 
+Table query completed after 11.211370468139648 seconds
+Testing [BestDR9.sdssTilingInfo]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671197
+ 
+Table query completed after 4.503936290740967 seconds
+Testing [BestDR9.SpecPhoto]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671198
+ 
+Table query completed after 5.193664312362671 seconds
+Testing [BestDR9.Unknown]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671199
+ 
+Table query completed after 7.573807716369629 seconds
+Testing [BestDR9.zooMonochromeBias]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671200
+ 
+Table query completed after 4.55980920791626 seconds
+Testing [BestDR9.PhotoFamily]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9671201
+ 
+Table query completed after 7.664041042327881 seconds
+Testing [BestDR9.CalibStatus]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684202
+ 
+Table query completed after 4.484022617340088 seconds
+Testing [BestDR9.Dependency]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684203
+ 
+Table query completed after 4.525922536849976 seconds
+Testing [BestDR9.PhotoObj]
+Rowcount:10
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684204
+ 
+Table query completed after 7.472429037094116 seconds
+Testing [BestDR9.InsideMask]
+Rowcount:7
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684205
+ 
+Table query completed after 4.506155967712402 seconds
+Testing [VVVDR4.ArchiveCurationHistory]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684206
+ 
+Table query completed after 1.4559977054595947 seconds
+Testing [VVVDR4.AstrCalVers]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684207
+ 
+Table query completed after 1.5668010711669922 seconds
+Testing [VVVDR4.CurationTask]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684208
+ 
+Table query completed after 1.4846527576446533 seconds
+Testing [VVVDR4.CurrentAstrometry]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684209
+ 
+Table query completed after 1.8932678699493408 seconds
+Testing [VVVDR4.EpochFrameStatus]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684210
+ 
+Table query completed after 1.4106700420379639 seconds
+Testing [VVVDR4.ExternalProduct]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684211
+ 
+Table query completed after 1.68782639503479 seconds
+Testing [VVVDR4.ExternalProductCatalogue]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684212
+ 
+Table query completed after 1.5293900966644287 seconds
+Testing [VVVDR4.ExternalSurvey]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684213
+ 
+Table query completed after 1.505279302597046 seconds
+Testing [VVVDR4.ExternalSurveyTable]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684214
+ 
+Table query completed after 1.6549479961395264 seconds
+Testing [VVVDR4.Filter]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684215
+ 
+Table query completed after 1.7435402870178223 seconds
+Testing [VVVDR4.FilterSections]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684216
+ 
+Table query completed after 1.6035082340240479 seconds
+Testing [VVVDR4.Multiframe]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684217
+ 
+Table query completed after 2.3096752166748047 seconds
+Testing [VVVDR4.MultiframeDetector]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684218
+ 
+Table query completed after 2.379945993423462 seconds
+Testing [VVVDR4.MultiframeDetectorEsoKeys]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684219
+ 
+Table query completed after 2.477208375930786 seconds
+Testing [VVVDR4.MultiframeEsoKeys]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684220
+ 
+Table query completed after 3.2257871627807617 seconds
+Testing [VVVDR4.PhotCalVers]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684221
+ 
+Table query completed after 1.5515668392181396 seconds
+Testing [VVVDR4.PreviousMFDZP]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684222
+ 
+Table query completed after 1.5018258094787598 seconds
+Testing [VVVDR4.ProductLinks]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684223
+ 
+Table query completed after 1.423668384552002 seconds
+Testing [VVVDR4.Programme]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684224
+ 
+Table query completed after 1.5143964290618896 seconds
+Testing [VVVDR4.ProgrammeCurationHistory]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684225
+ 
+Table query completed after 1.395895004272461 seconds
+Testing [VVVDR4.ProgrammeFrame]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684226
+ 
+Table query completed after 1.4796183109283447 seconds
+Testing [VVVDR4.ProgrammeTable]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684227
+ 
+Table query completed after 1.4430406093597412 seconds
+Testing [VVVDR4.Provenance]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684228
+ 
+Table query completed after 1.515894889831543 seconds
+Testing [VVVDR4.Release]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684229
+ 
+Table query completed after 1.3455724716186523 seconds
+Testing [VVVDR4.RequiredDiffImage]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684230
+ 
+Table query completed after 1.6623141765594482 seconds
+Testing [VVVDR4.RequiredFilters]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684231
+ 
+Table query completed after 1.6494238376617432 seconds
+Testing [VVVDR4.RequiredMergeLogMultiEpoch]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684232
+ 
+Table query completed after 1.5127487182617188 seconds
+Testing [VVVDR4.RequiredMosaic]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684233
+ 
+Table query completed after 1.5425066947937012 seconds
+Testing [VVVDR4.RequiredNeighbours]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684234
+ 
+Table query completed after 1.4875822067260742 seconds
+Testing [VVVDR4.RequiredStack]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684235
+ 
+Table query completed after 1.5007529258728027 seconds
+Testing [VVVDR4.RequiredTile]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684236
+ 
+Table query completed after 1.4095935821533203 seconds
+Testing [VVVDR4.SectionDetectors]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684237
+ 
+Table query completed after 1.3985350131988525 seconds
+Testing [VVVDR4.Survey]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684238
+ 
+Table query completed after 1.5108139514923096 seconds
+Testing [VVVDR4.SurveyProgrammes]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684239
+ 
+Table query completed after 1.7960844039916992 seconds
+Testing [VVVDR4.vvvAstrometricInfo]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684240
+ 
+Table query completed after 2.948411703109741 seconds
+Testing [VVVDR4.vvvDetection]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684241
+ 
+Table query completed after 2.5788326263427734 seconds
+Testing [VVVDR4.vvvMergeLog]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684242
+ 
+Table query completed after 1.7350361347198486 seconds
+Testing [VVVDR4.vvvSource]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684243
+ 
+Table query completed after 2.252394199371338 seconds
+Testing [VVVDR4.vvvSourceExtinction]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684244
+ 
+Table query completed after 1.3542094230651855 seconds
+Testing [VVVDR4.vvvSourceXDR8gpsSource]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684245
+ 
+Table query completed after 1.297314167022705 seconds
+Testing [VVVDR4.vvvSourceXDetection]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684246
+ 
+Table query completed after 1.3210067749023438 seconds
+Testing [VVVDR4.vvvSourceXDetectionBestMatch]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684247
+ 
+Table query completed after 1.4349186420440674 seconds
+Testing [VVVDR4.vvvSourceXSSASource]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684248
+ 
+Table query completed after 1.3956220149993896 seconds
+Testing [VVVDR4.vvvSourceXSynopticSource]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684249
+ 
+Table query completed after 1.5893499851226807 seconds
+Testing [VVVDR4.vvvSourceXglimpse1_hrc]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9684250
+ 
+Table query completed after 1.3341343402862549 seconds
+Testing [VVVDR4.vvvSourceXglimpse1_mca]
+
+
+
+
+
+
+## Hangs Here..
+## should note that I was simultaneously running a TAPlint validation, where queries on VVVDR4 where timeing out..
+
+
+## ----------------------------------------------------------------------------------------------------------------
+
+
+## Kill Test as well as concurrent Taplint Validation test and try this again, but only VVVDR4..
+
+
+/usr/bin/python3 -c "import firethorn_utils.validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 
+--- Starting validation on Resource: http://localhost:8081/firethorn/adql/resource/1808---
+Testing [VVVDR4.ArchiveCurationHistory]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689655
+ 
+Table query completed after 1.4808361530303955 seconds
+Testing [VVVDR4.AstrCalVers]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689656
+ 
+Table query completed after 1.4089736938476562 seconds
+Testing [VVVDR4.CurationTask]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689657
+ 
+Table query completed after 1.4319615364074707 seconds
+Testing [VVVDR4.CurrentAstrometry]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689658
+ 
+Table query completed after 1.9017562866210938 seconds
+Testing [VVVDR4.EpochFrameStatus]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689659
+ 
+Table query completed after 1.4806349277496338 seconds
+Testing [VVVDR4.ExternalProduct]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689660
+ 
+Table query completed after 1.4770689010620117 seconds
+Testing [VVVDR4.ExternalProductCatalogue]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689661
+ 
+Table query completed after 1.4409253597259521 seconds
+Testing [VVVDR4.ExternalSurvey]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689662
+ 
+Table query completed after 1.5063114166259766 seconds
+Testing [VVVDR4.ExternalSurveyTable]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689663
+ 
+Table query completed after 1.4152300357818604 seconds
+Testing [VVVDR4.Filter]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689664
+ 
+Table query completed after 1.4649322032928467 seconds
+Testing [VVVDR4.FilterSections]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689665
+ 
+Table query completed after 1.5387613773345947 seconds
+Testing [VVVDR4.Multiframe]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689666
+ 
+Table query completed after 2.3705923557281494 seconds
+Testing [VVVDR4.MultiframeDetector]
+
+
+## Hangs..
+## Looking at the Firethorn logs this query looks like its running: 
+## http://localhost:8081/firethorn/blue/query/9689667
+## Check Job status
+## status": "RUNNING",
+## results -> state: "EMPTY",
+
+	"history": [
+	{
+	"type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json",
+	"task": "http://localhost:8081/firethorn/blue/query/9689667",
+	"level": "INFO",
+	"message": "Executing query",
+	"state": "READY",
+	"owner": "http://localhost:8081/firethorn/community-member/1657",
+	"self": "http://localhost:8081/firethorn/blue/log/entry/9688040",
+	"url": "http://localhost:8081/firethorn/blue/log/entry/9688040",
+	"ident": "9688040",
+	"created": "2019-02-11T13:52:33.123",
+	"modified": "2019-02-11T13:52:33.123"
+	}
+	],
+
+
+## Check OGSA-DAI Logs for clues:
+## Last Output is an Exception for that query:
+
+2019-02-11 13:52:33,910 DEBUG event.LoggingActivityListener [pool-1-thread-3850,debug:84] uk.org.ogsadai.activity.sql.ActivitySQLUserException: The activity encountered a problem while interacting with a relational database.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:322)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.sql.SQLException: Invalid object name 'VVVDR4.dbo.MultiframeDetector'.
+	at net.sourceforge.jtds.jdbc.SQLDiagnostic.addDiagnostic(SQLDiagnostic.java:372)
+	at net.sourceforge.jtds.jdbc.TdsCore.tdsErrorToken(TdsCore.java:2988)
+	at net.sourceforge.jtds.jdbc.TdsCore.nextToken(TdsCore.java:2421)
+	at net.sourceforge.jtds.jdbc.TdsCore.getMoreResults(TdsCore.java:671)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeSQLQuery(JtdsStatement.java:505)
+	at net.sourceforge.jtds.jdbc.JtdsStatement.executeQuery(JtdsStatement.java:1427)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at org.apache.commons.dbcp.DelegatingStatement.executeQuery(DelegatingStatement.java:208)
+	at uk.org.ogsadai.activity.sql.CallableStatement.call(CallableStatement.java:66)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:415)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement.call(SQLQueryActivity.java:404)
+
+
+## Hmm..Previous queries failed, but this one seems to be stuck in a RUNNING loop
+## For some reason FAIL message was not propagated correctly here?
+
+## Memory usage on Cadelicia shows 1.65GB/4GB used and swap is 415M/1024M
+
+## ----------------------------------------------------------------------------------------------------------------
+
+## Run same test a third time..
+
+/usr/bin/python3 -c "import firethorn_utils.validator as validator;validator.main()" -ft=http://localhost:8081/firethorn -r=1808 -u=Soopheef1AeKeeyohtos -p=Faew3yoohuechoo8eiT6 -g=iuquae2poG8yiph7agh3 
+
+..
+
+Testing [VVVDR4.ArchiveCurationHistory]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689668
+ 
+Table query completed after 1.5432765483856201 seconds
+Testing [VVVDR4.AstrCalVers]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689669
+ 
+Table query completed after 1.38258695602417 seconds
+Testing [VVVDR4.CurationTask]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689670
+ 
+Table query completed after 1.290374994277954 seconds
+Testing [VVVDR4.CurrentAstrometry]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689671
+ 
+Table query completed after 1.7448804378509521 seconds
+Testing [VVVDR4.EpochFrameStatus]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689672
+ 
+Table query completed after 1.5378482341766357 seconds
+Testing [VVVDR4.ExternalProduct]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689673
+ 
+Table query completed after 1.4198713302612305 seconds
+Testing [VVVDR4.ExternalProductCatalogue]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689674
+ 
+Table query completed after 1.4061613082885742 seconds
+Testing [VVVDR4.ExternalSurvey]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689675
+ 
+Table query completed after 1.307326078414917 seconds
+Testing [VVVDR4.ExternalSurveyTable]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689676
+ 
+Table query completed after 1.5236194133758545 seconds
+Testing [VVVDR4.Filter]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689677
+ 
+Table query completed after 2.201002597808838 seconds
+Testing [VVVDR4.FilterSections]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689678
+ 
+Table query completed after 1.6061656475067139 seconds
+Testing [VVVDR4.Multiframe]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689679
+ 
+Table query completed after 2.127237319946289 seconds
+Testing [VVVDR4.MultiframeDetector]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689680
+ 
+Table query completed after 2.0594482421875 seconds
+Testing [VVVDR4.MultiframeDetectorEsoKeys]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689681
+ 
+Table query completed after 2.1665198802948 seconds
+Testing [VVVDR4.MultiframeEsoKeys]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689682
+ 
+Table query completed after 3.1237950325012207 seconds
+Testing [VVVDR4.PhotCalVers]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689683
+ 
+Table query completed after 1.7947452068328857 seconds
+Testing [VVVDR4.PreviousMFDZP]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689684
+ 
+Table query completed after 1.46636962890625 seconds
+Testing [VVVDR4.ProductLinks]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689685
+ 
+Table query completed after 1.4190244674682617 seconds
+Testing [VVVDR4.Programme]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689686
+ 
+Table query completed after 1.7430012226104736 seconds
+Testing [VVVDR4.ProgrammeCurationHistory]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689687
+ 
+Table query completed after 1.4503490924835205 seconds
+Testing [VVVDR4.ProgrammeFrame]
+Rowcount:-1
+Query: None
+Query ID: http://localhost:8081/firethorn/blue/query/9689688
+ 
+Table query completed after 1.4523231983184814 seconds
+Testing [VVVDR4.ProgrammeTable]
+
+## Hangs here..
+
+
+## Basically every time test is run, it will hang at some Table query, which seems to be different everytime

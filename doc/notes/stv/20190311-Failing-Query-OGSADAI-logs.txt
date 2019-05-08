@@ -1,0 +1,346 @@
+2019-03-11 21:38:26,199 DEBUG context.RequestContextFactory [http-nio-8080-exec-8,createContext:62] createContext(HttpServletRequest)
+2019-03-11 21:38:26,200 DEBUG context.RequestContextFactory [http-nio-8080-exec-8,createContext:64] remote [172.18.0.5]
+2019-03-11 21:38:26,278 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:62] createContext(HttpServletRequest)
+2019-03-11 21:38:26,279 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:64] remote [172.18.0.5]
+2019-03-11 21:38:26,280 DEBUG drer.SimpleDRER [http-nio-8080-exec-3,debug:84] Entered execute(CandidateRequestDescriptor)
+2019-03-11 21:38:26,281 DEBUG drer.SimpleDRER [http-nio-8080-exec-3,debug:84] Workflow: Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb,source=uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14223866
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[ELRedShift].[elRedShiftID] AS "elRedShiftID",[BestDR1].[dbo].[ELRedShift].[z] AS "z",[BestDR1].[dbo].[ELRedShift].[zErr] AS "zErr",[BestDR1].[dbo].[ELRedShift].[zConf] AS "zConf",[BestDR1].[dbo].[ELRedShift].[nFit] AS "nFit",[BestDR1].[dbo].[ELRedShift].[wtFit] AS "wtFit",[BestDR1].[dbo].[ELRedShift].[specObjID] AS "specObjID"
+FROM [BestDR1].[dbo].[ELRedShift]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_QFDIXRQ22BD3AAAAAFUW5MKILA]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+
+Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55879c65-b6c8-4cd3-9298-b087feb5cee2
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c]
+    outputs:
+
+
+2019-03-11 21:38:26,282 DEBUG drer.SimpleDRER [http-nio-8080-exec-3,debug:84] Entered execute(activity.RequestDescriptor)
+2019-03-11 21:38:26,283 DEBUG activity.OGSADAIActivityFramework [http-nio-8080-exec-3,debug:84] Found Workflow in RequestDescriptor: Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb,source=uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14223866
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[ELRedShift].[elRedShiftID] AS "elRedShiftID",[BestDR1].[dbo].[ELRedShift].[z] AS "z",[BestDR1].[dbo].[ELRedShift].[zErr] AS "zErr",[BestDR1].[dbo].[ELRedShift].[zConf] AS "zConf",[BestDR1].[dbo].[ELRedShift].[nFit] AS "nFit",[BestDR1].[dbo].[ELRedShift].[wtFit] AS "wtFit",[BestDR1].[dbo].[ELRedShift].[specObjID] AS "specObjID"
+FROM [BestDR1].[dbo].[ELRedShift]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_QFDIXRQ22BD3AAAAAFUW5MKILA]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+
+Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55879c65-b6c8-4cd3-9298-b087feb5cee2
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c]
+    outputs:
+
+
+2019-03-11 21:38:26,284 DEBUG drer.SimpleDRER [http-nio-8080-exec-3,debug:84] Created engine.Request: uk.org.ogsadai.activity.request.WorkflowRequest@55bdadf9
+2019-03-11 21:38:26,285 DEBUG drer.SimpleDRER [http-nio-8080-exec-3,debug:84] About to submit request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@6b6dafe4
+2019-03-11 21:38:26,286 DEBUG drer.SimpleDRER [http-nio-8080-exec-3,debug:84] Sucessfully submitted request to engine: uk.org.ogsadai.engine.RequestQueueingEngine@6b6dafe4
+2019-03-11 21:38:26,286 DEBUG request.WorkflowRequest [pool-2-thread-25,debug:84] Did not get a workflow transformation from the context
+2019-03-11 21:38:26,287 DEBUG pipeline.AutomaticTee [pool-2-thread-25,debug:84] Graph before transformation: 
+2019-03-11 21:38:26,287 DEBUG pipeline.AutomaticTee [pool-2-thread-25,debug:84] Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb,source=uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14223866
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[ELRedShift].[elRedShiftID] AS "elRedShiftID",[BestDR1].[dbo].[ELRedShift].[z] AS "z",[BestDR1].[dbo].[ELRedShift].[zErr] AS "zErr",[BestDR1].[dbo].[ELRedShift].[zConf] AS "zConf",[BestDR1].[dbo].[ELRedShift].[nFit] AS "nFit",[BestDR1].[dbo].[ELRedShift].[wtFit] AS "wtFit",[BestDR1].[dbo].[ELRedShift].[specObjID] AS "specObjID"
+FROM [BestDR1].[dbo].[ELRedShift]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_QFDIXRQ22BD3AAAAAFUW5MKILA]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+
+Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55879c65-b6c8-4cd3-9298-b087feb5cee2
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c]
+    outputs:
+
+
+2019-03-11 21:38:26,288 DEBUG pipeline.AutomaticTee [pool-2-thread-25,debug:84] Transformed graph: 
+2019-03-11 21:38:26,288 DEBUG pipeline.AutomaticTee [pool-2-thread-25,debug:84] Activity:
+    activity name   = uk.org.ogsadai.SQLQuery
+    instance name   = uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+    target resource = ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+    inputs:
+        ActivityInputStream[name=expression,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269]
+    outputs:
+        ActivityOutputStream[name=data,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb,source=uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Context
+    instance name   = uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+    inputs:
+        Literal: callback.port.input : 8081
+        Literal: context.ident.input : 14223866
+        Literal: context.pipeline.input : SELECT TOP 5 [BestDR1].[dbo].[ELRedShift].[elRedShiftID] AS "elRedShiftID",[BestDR1].[dbo].[ELRedShift].[z] AS "z",[BestDR1].[dbo].[ELRedShift].[zErr] AS "zErr",[BestDR1].[dbo].[ELRedShift].[zConf] AS "zConf",[BestDR1].[dbo].[ELRedShift].[nFit] AS "nFit",[BestDR1].[dbo].[ELRedShift].[wtFit] AS "wtFit",[BestDR1].[dbo].[ELRedShift].[specObjID] AS "specObjID"
+FROM [BestDR1].[dbo].[ELRedShift]
+    outputs:
+        ActivityOutputStream[name=context.pipeline.output,pipeName=ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269,source=uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.JdbcInsertData
+    instance name   = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+    target resource = ogsadai-0839c23f-5686-48e8-872c-493238105e91
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81]
+        Literal: jdbc.insert.table.name : [FirethornUserdataZRQ20170621151245DEV].[dbo].[XX_QFDIXRQ22BD3AAAAAFUW5MKILA]
+    outputs:
+        ActivityOutputStream[name=jdbc.insert.results,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c,source=uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Delays
+    instance name   = uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+    inputs:
+        ActivityInputStream[name=tuples,pipeName=ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b,source=uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f
+
+Activity:
+    activity name   = uk.ac.roe.wfau.firethorn.Limits
+    instance name   = uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+    inputs:
+        Literal: limit.rows : 1000000
+        ActivityInputStream[name=tuples,pipeName=ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b]
+    outputs:
+        ActivityOutputStream[name=tuples,pipeName=ogsadai-57d30a64-c981-4a65-952d-309a6a824e81,source=uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14
+
+Activity:
+    activity name   = uk.org.ogsadai.DeliverToRequestStatus
+    instance name   = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55879c65-b6c8-4cd3-9298-b087feb5cee2
+    inputs:
+        ActivityInputStream[name=input,pipeName=ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c]
+    outputs:
+
+
+2019-03-11 21:38:26,290 DEBUG extension.InputsAndOutputsActivityInitialiser [pool-1-thread-164,debug:84] Activity uk.ac.roe.wfau.firethorn.Context hasInputAttributes: false
+2019-03-11 21:38:26,290 DEBUG extension.InputsAndOutputsActivityInitialiser [pool-1-thread-164,debug:84] Activity uk.ac.roe.wfau.firethorn.Delays hasInputAttributes: false
+2019-03-11 21:38:26,290 DEBUG io.BufferedPipe [pool-1-thread-164,debug:84] Created a BufferedPipe: ogsadai-ef200bd6-e329-4327-9d52-5a5972cac2cb
+2019-03-11 21:38:26,291 DEBUG extension.InputsAndOutputsActivityInitialiser [pool-1-thread-164,debug:84] Activity uk.org.ogsadai.DeliverToRequestStatus hasInputAttributes: false
+2019-03-11 21:38:26,291 DEBUG io.BufferedPipe [pool-1-thread-164,debug:84] Created a BufferedPipe: ogsadai-8bcd0210-31a9-44a7-85c3-87c3a218be1c
+2019-03-11 21:38:26,291 DEBUG extension.InputsAndOutputsActivityInitialiser [pool-1-thread-164,debug:84] Activity uk.ac.roe.wfau.firethorn.Limits hasInputAttributes: false
+2019-03-11 21:38:26,291 DEBUG io.BufferedPipe [pool-1-thread-164,debug:84] Created a BufferedPipe: ogsadai-a9bc52c8-ba52-46e9-939e-8548d827fb1b
+2019-03-11 21:38:26,292 DEBUG extension.InputsAndOutputsActivityInitialiser [pool-1-thread-164,debug:84] Activity uk.org.ogsadai.SQLQuery hasInputAttributes: false
+2019-03-11 21:38:26,292 DEBUG io.BufferedPipe [pool-1-thread-164,debug:84] Created a BufferedPipe: ogsadai-7fde0f91-1f8d-4f7a-8e40-4b424222c269
+2019-03-11 21:38:26,292 ERROR extension.ServiceAddressesActivityInitialiser [pool-1-thread-164,errorExceptionAndChildren:401] #1552340306292:5060# java.net.MalformedURLException: no protocol: ${ogsadai.endpoint}
+2019-03-11 21:38:26,293 DEBUG extension.InputsAndOutputsActivityInitialiser [pool-1-thread-164,debug:84] Activity uk.ac.roe.wfau.firethorn.JdbcInsertData hasInputAttributes: false
+2019-03-11 21:38:26,293 DEBUG io.BufferedPipe [pool-1-thread-164,debug:84] Created a BufferedPipe: ogsadai-57d30a64-c981-4a65-952d-309a6a824e81
+2019-03-11 21:38:26,293 DEBUG event.LoggingActivityListener [pool-1-thread-164,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd)
+2019-03-11 21:38:26,293 DEBUG event.LoggingActivityListener [pool-1-thread-164,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f)
+2019-03-11 21:38:26,294 DEBUG event.LoggingActivityListener [pool-1-thread-164,debug:84] PENDING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55879c65-b6c8-4cd3-9298-b087feb5cee2)
+2019-03-11 21:38:26,294 DEBUG event.LoggingActivityListener [pool-1-thread-164,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14)
+2019-03-11 21:38:26,294 DEBUG event.LoggingActivityListener [pool-1-thread-164,debug:84] PENDING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d)
+2019-03-11 21:38:26,294 DEBUG event.LoggingActivityListener [pool-1-thread-164,debug:84] PENDING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd)
+2019-03-11 21:38:26,295 DEBUG event.LoggingActivityListener [pool-1-thread-163,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14)
+2019-03-11 21:38:26,295 DEBUG activity.MatchedIterativeActivity [pool-1-thread-163,debug:84] performing first stage of processing
+2019-03-11 21:38:26,295 DEBUG event.LoggingActivityListener [pool-1-thread-166,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd)
+2019-03-11 21:38:26,295 DEBUG activity.MatchedIterativeActivity [pool-1-thread-166,debug:84] performing first stage of processing
+2019-03-11 21:38:26,296 DEBUG blue.ContextActivity [pool-1-thread-166,preprocess:126] preprocess()
+2019-03-11 21:38:26,296 DEBUG activity.MatchedIterativeActivity [pool-1-thread-166,debug:84] performing iterative stage of processing
+2019-03-11 21:38:26,296 DEBUG blue.ContextActivity [pool-1-thread-166,processIteration:150] processIteration(Object[])
+2019-03-11 21:38:26,297 DEBUG blue.ContextActivity [pool-1-thread-166,processIteration:194]  value [SELECT TOP 5 [BestDR1].[dbo].[ELRedShift].[elRedShiftID] AS "elRedShiftID",[BestDR1].[dbo].[ELRedShift].[z] AS "z",[BestDR1].[dbo].[ELRedShift].[zErr] AS "zErr",[BestDR1].[dbo].[ELRedShift].[zConf] AS "zConf",[BestDR1].[dbo].[ELRedShift].[nFit] AS "nFit",[BestDR1].[dbo].[ELRedShift].[wtFit] AS "wtFit",[BestDR1].[dbo].[ELRedShift].[specObjID] AS "specObjID"
+FROM [BestDR1].[dbo].[ELRedShift]]
+2019-03-11 21:38:26,297 DEBUG activity.MatchedIterativeActivity [pool-1-thread-166,debug:84] performing last stage of processing
+2019-03-11 21:38:26,295 DEBUG data.LimitsActivity [pool-1-thread-163,preprocess:144] preprocess()
+2019-03-11 21:38:26,297 DEBUG activity.MatchedIterativeActivity [pool-1-thread-163,debug:84] performing iterative stage of processing
+2019-03-11 21:38:26,297 DEBUG blue.ContextActivity [pool-1-thread-166,postprocess:227] postprocess()
+2019-03-11 21:38:26,298 DEBUG activity.MatchedIterativeActivity [pool-1-thread-166,debug:84] performing clean-up
+2019-03-11 21:38:26,295 DEBUG event.LoggingActivityListener [pool-1-thread-165,debug:84] PROCESSING: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55879c65-b6c8-4cd3-9298-b087feb5cee2)
+2019-03-11 21:38:26,299 DEBUG event.LoggingActivityListener [pool-1-thread-167,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd)
+2019-03-11 21:38:26,299 DEBUG activity.MatchedIterativeActivity [pool-1-thread-167,debug:84] performing first stage of processing
+2019-03-11 21:38:26,299 DEBUG event.LoggingActivityListener [pool-1-thread-162,debug:84] PROCESSING: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f)
+2019-03-11 21:38:26,300 DEBUG activity.MatchedIterativeActivity [pool-1-thread-162,debug:84] performing first stage of processing
+2019-03-11 21:38:26,300 DEBUG data.DelaysActivity [pool-1-thread-162,preprocess:102] preprocess()
+2019-03-11 21:38:26,300 DEBUG activity.MatchedIterativeActivity [pool-1-thread-162,debug:84] performing iterative stage of processing
+2019-03-11 21:38:26,300 DEBUG event.LoggingActivityListener [pool-1-thread-161,debug:84] PROCESSING: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d)
+2019-03-11 21:38:26,300 DEBUG activity.MatchedIterativeActivity [pool-1-thread-161,debug:84] performing first stage of processing
+2019-03-11 21:38:26,300 DEBUG file.SimpleFileLoginProvider [pool-1-thread-161,debug:84] In SimpleFileLogin:getLogin
+2019-03-11 21:38:26,300 DEBUG event.LoggingActivityListener [pool-1-thread-166,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Context (instance name = uk.ac.roe.wfau.firethorn.Context-ogsadai-14280062-c6ed-4bad-8618-16869e0719bd)
+2019-03-11 21:38:26,300 DEBUG file.SimpleFileLoginProvider [pool-1-thread-167,debug:84] In SimpleFileLogin:getLogin
+2019-03-11 21:38:26,301 DEBUG file.SimpleFileLoginProvider [pool-1-thread-161,debug:84] In getLogin: ResourceID:  User ID: null
+2019-03-11 21:38:26,301 DEBUG file.SimpleFileLoginProvider [pool-1-thread-161,debug:84] Found 4 lines that match
+2019-03-11 21:38:26,302 DEBUG file.SimpleFileLoginProvider [pool-1-thread-167,debug:84] In getLogin: ResourceID:  User ID: null
+2019-03-11 21:38:26,302 DEBUG file.SimpleFileLoginProvider [pool-1-thread-161,debug:84] Found a login for null
+2019-03-11 21:38:26,302 DEBUG file.SimpleFileLoginProvider [pool-1-thread-167,debug:84] Found 4 lines that match
+2019-03-11 21:38:26,303 DEBUG file.SimpleFileLoginProvider [pool-1-thread-167,debug:84] Found a login for null
+2019-03-11 21:38:26,302 DEBUG jdbc.JDBCDataResource [pool-1-thread-161,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ogsadai-ae59e366-3ff3-4c98-9dce-ff0ef1d3a586
+2019-03-11 21:38:26,304 DEBUG activity.MatchedIterativeActivity [pool-1-thread-161,debug:84] performing iterative stage of processing
+2019-03-11 21:38:26,304 DEBUG sql.SQLQueryActivity [pool-1-thread-161,processIteration:259] SQL QUERY: SELECT TOP 5 [BestDR1].[dbo].[ELRedShift].[elRedShiftID] AS "elRedShiftID",[BestDR1].[dbo].[ELRedShift].[z] AS "z",[BestDR1].[dbo].[ELRedShift].[zErr] AS "zErr",[BestDR1].[dbo].[ELRedShift].[zConf] AS "zConf",[BestDR1].[dbo].[ELRedShift].[nFit] AS "nFit",[BestDR1].[dbo].[ELRedShift].[wtFit] AS "wtFit",[BestDR1].[dbo].[ELRedShift].[specObjID] AS "specObjID"
+FROM [BestDR1].[dbo].[ELRedShift]
+2019-03-11 21:38:26,304 DEBUG sql.SQLQueryActivity [pool-1-thread-161,processIteration:262] Initialising query
+2019-03-11 21:38:26,304 DEBUG sql.SQLQueryActivity [pool-1-thread-161,processIteration:274] Executing query
+2019-03-11 21:38:26,304 DEBUG sql.SQLQueryActivity [pool-1-thread-161,executeQuery:362] Creating CallableStatement for query
+2019-03-11 21:38:26,305 DEBUG sql.SQLQueryActivity [pool-1-thread-161,executeQuery:367] Submitting CallableStatement to ExecutorService
+2019-03-11 21:38:26,303 DEBUG jdbc.JDBCDataResource [pool-1-thread-167,debug:84] Using JDBC URL : jdbc:apache:commons:dbcp:ogsadai-jdbcpool-ogsadai-0839c23f-5686-48e8-872c-493238105e91
+2019-03-11 21:38:26,305 DEBUG sql.SQLQueryActivity [pool-1-thread-161,executeQuery:374] Initiating CallableStatement and starting background execution
+2019-03-11 21:38:26,306 DEBUG activity.MatchedIterativeActivity [pool-1-thread-167,debug:84] performing iterative stage of processing
+2019-03-11 21:38:26,306 DEBUG sql.SQLQueryActivity [pool-1-thread-161,executeQuery:382] CallableStatement returned ResultSet
+2019-03-11 21:38:26,306 DEBUG sql.SQLQueryActivity [pool-1-thread-161,processIteration:277] Processing tuples
+2019-03-11 21:38:26,307 DEBUG data.DelaysActivity [pool-1-thread-162,processIteration:129] processIteration(Object[])
+2019-03-11 21:38:26,307 DEBUG sql.SQLQueryActivity [pool-1-thread-161,processIteration:296] Processing done
+2019-03-11 21:38:26,307 DEBUG sql.SQLQueryActivity [pool-1-thread-161,processIteration:298] Closing result set and statement
+2019-03-11 21:38:26,308 DEBUG sql.SQLQueryActivity [pool-1-thread-161,processIteration:316] Time taken [0]
+2019-03-11 21:38:26,308 DEBUG activity.MatchedIterativeActivity [pool-1-thread-161,debug:84] performing last stage of processing
+2019-03-11 21:38:26,308 DEBUG activity.MatchedIterativeActivity [pool-1-thread-161,debug:84] performing clean-up
+2019-03-11 21:38:26,307 DEBUG data.LimitsActivity [pool-1-thread-163,processIteration:173] processIteration(Object[])
+2019-03-11 21:38:26,308 DEBUG data.LimitsActivity [pool-1-thread-163,processIteration:181] Max rows  [1000000]
+2019-03-11 21:38:26,308 DEBUG data.LimitsActivity [pool-1-thread-163,processIteration:182] Max cells [-1]
+2019-03-11 21:38:26,309 DEBUG data.LimitsActivity [pool-1-thread-163,processIteration:183] Max time  [-1]
+2019-03-11 21:38:26,309 DEBUG data.LimitsActivity [pool-1-thread-163,start:222] Start
+2019-03-11 21:38:26,309 DEBUG data.LimitsActivity [pool-1-thread-163,inner:410] Starting inner
+2019-03-11 21:38:26,309 DEBUG data.LimitsActivity [pool-1-thread-163,inner:493] Finished inner
+2019-03-11 21:38:26,310 DEBUG activity.MatchedIterativeActivity [pool-1-thread-163,debug:84] performing last stage of processing
+2019-03-11 21:38:26,310 DEBUG data.LimitsActivity [pool-1-thread-163,postprocess:209] postprocess()
+2019-03-11 21:38:26,310 DEBUG activity.MatchedIterativeActivity [pool-1-thread-163,debug:84] performing clean-up
+2019-03-11 21:38:26,310 DEBUG event.LoggingActivityListener [pool-1-thread-163,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Limits (instance name = uk.ac.roe.wfau.firethorn.Limits-ogsadai-f06e08e7-594a-4dc9-a974-df4e24f0ad14)
+2019-03-11 21:38:26,310 DEBUG sql.SQLQueryActivity [pool-1-thread-161,cleanUp:463] Shutting down ExecutorService
+2019-03-11 21:38:26,311 DEBUG sql.SQLQueryActivity [pool-1-thread-161,cleanUp:468] Closing Statement
+2019-03-11 21:38:26,311 DEBUG sql.SQLQueryActivity [pool-1-thread-161,cleanUp:475] Releasing Connection
+2019-03-11 21:38:26,311 DEBUG event.LoggingActivityListener [pool-1-thread-161,debug:84] COMPLETED: Activity uk.org.ogsadai.SQLQuery (instance name = uk.org.ogsadai.SQLQuery-ogsadai-b5c6b05c-cd18-4b8e-999d-0970dd29e06d)
+2019-03-11 21:38:26,311 DEBUG activity.MatchedIterativeActivity [pool-1-thread-162,debug:84] performing last stage of processing
+2019-03-11 21:38:26,312 DEBUG data.DelaysActivity [pool-1-thread-162,postprocess:198] postprocess()
+2019-03-11 21:38:26,312 DEBUG activity.MatchedIterativeActivity [pool-1-thread-162,debug:84] performing clean-up
+2019-03-11 21:38:26,313 DEBUG event.LoggingActivityListener [pool-1-thread-162,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-f8f3bebd-a7dd-4ed1-8675-56467ba4b22f)
+2019-03-11 21:38:26,319 DEBUG jdbc.JdbcInsertDataActivity [pool-1-thread-167,processIteration:352] Finally
+2019-03-11 21:38:26,319 DEBUG jdbc.JdbcInsertDataActivity [pool-1-thread-167,processIteration:353] Total [5]
+2019-03-11 21:38:26,320 DEBUG jdbc.JdbcInsertDataActivity [pool-1-thread-167,processIteration:354] Count [2]
+2019-03-11 21:38:26,320 DEBUG jdbc.JdbcInsertDataActivity [pool-1-thread-167,processIteration:355] Block [4]
+2019-03-11 21:38:26,321 DEBUG jdbc.JdbcInsertDataActivity [pool-1-thread-167,processIteration:356] Large [65536]
+2019-03-11 21:38:26,323 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:157] callback(String, Long)
+2019-03-11 21:38:26,323 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:158]   task    [COMPLETED]
+2019-03-11 21:38:26,323 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:159]   results [COMPLETED]
+2019-03-11 21:38:26,324 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:160]   count   [5]
+2019-03-11 21:38:26,324 DEBUG context.RequestContextFactory [pool-1-thread-167,endpoint:130] endpoint [http://172.18.0.5:8081/firethorn]
+2019-03-11 21:38:26,325 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:178] Before callback
+2019-03-11 21:38:26,325 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:179]   Ident    [14223866]
+2019-03-11 21:38:26,326 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:180]   Endpoint [http://172.18.0.5:8081/firethorn/blue/query/callback/14223866]
+2019-03-11 21:38:26,365 DEBUG context.RequestContextFactory [http-nio-8080-exec-1,createContext:62] createContext(HttpServletRequest)
+2019-03-11 21:38:26,365 DEBUG context.RequestContextFactory [http-nio-8080-exec-1,createContext:64] remote [172.18.0.5]
+2019-03-11 21:38:26,402 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:215] Response bean
+2019-03-11 21:38:26,403 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:216]   Ident [14223866]
+2019-03-11 21:38:26,403 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:217]   Name  [XX_LYLPRDOGJAGB6AAAAFUW5MKF4A]
+2019-03-11 21:38:26,403 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:218]   State [COMPLETED]
+2019-03-11 21:38:26,404 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:219]   Self  [http://172.18.0.5:8081/firethorn/blue/query/14223866]
+2019-03-11 21:38:26,404 DEBUG blue.CallbackHandler [pool-1-thread-167,callback:226] After callback
+2019-03-11 21:38:26,404 DEBUG activity.MatchedIterativeActivity [pool-1-thread-167,debug:84] performing last stage of processing
+2019-03-11 21:38:26,405 DEBUG activity.MatchedIterativeActivity [pool-1-thread-167,debug:84] performing clean-up
+2019-03-11 21:38:26,405 DEBUG event.LoggingActivityListener [pool-1-thread-167,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-0ba968eb-63d7-4cec-b758-980ff409e7dd)
+2019-03-11 21:38:26,406 DEBUG event.LoggingActivityListener [pool-1-thread-165,debug:84] COMPLETED: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-55879c65-b6c8-4cd3-9298-b087feb5cee2)
+

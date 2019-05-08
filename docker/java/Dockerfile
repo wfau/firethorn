@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.28
+FROM firethorn/fedora:2.1.29
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-ENV JAVA_VERSION=10.0.2.13
+ENV JAVA_VERSION=12.0.0.33
 
 #
 # Install Java

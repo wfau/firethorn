@@ -57,4 +57,11 @@ public interface MonkeyParam
     public void sqlException(final Object owner, final Object value)
         throws SQLException;
 
+    /**
+     * Check the parameters and throw a SQLException.
+     * This method matches Object.getClass().getName() against the parameter name. 
+     *
+     */
+	void sqlException(final Object owner, final Object value, final String message) throws SQLException;
+
     }

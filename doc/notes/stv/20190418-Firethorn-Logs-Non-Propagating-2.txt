@@ -1,0 +1,273 @@
+ 2019-04-18 16:26:44,255 DEBUG [FireThornTaskExecutor-4] [SQLServerOperator] SQL statement [CREATE TABLE [FirethornUserdataTAP20181212LIVE].[dbo].[XX_ARUX2DPOG7Y5WAAAAFVDCRMRNI] ([XX_SKFVOWAZYPD64AAAAFVDCRMSFM] VARBINARY(MAX) , [XX_YCRUDNPWICGY2AAAAFVDCRMSGQ] CHAR(10) , [XX_PHJSEYFU5TUPQAAAAFVDCRMSHE] CHAR(16) , [XX_UYWEQ3XZSHKJCAAAAFVDCRMSH4] CHAR(256) , [XX_46BXG6AC2432YAAAAFVDCRMSIQ] FLOAT , [XX_L2FTC64NBC4KSAAAAFVDCRMSJE] FLOAT , [XX_VGN3OBCSRUOEKAAAAFVDCRMSJY] FLOAT , [XX_3NOZLBSOUPDCYAAAAFVDCRMSKM] FLOAT , [XX_BL7PIDLEEEXNEAAAAFVDCRMSLA] FLOAT , [XX_T7YS4GJMDRRIEAAAAFVDCRMSLU] VARBINARY(MAX) )] 
+2019-04-18 16:26:44,256 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,256 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://ramses2/FirethornUserdataTAP20181212LIVE][1] 
+2019-04-18 16:26:44,257 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,257 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/FirethornUserdataTAP20181212LIVE] 
+2019-04-18 16:26:44,257 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,257 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://ramses2/FirethornUserdataTAP20181212LIVE] 
+2019-04-18 16:26:44,258 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,258 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://ramses2/FirethornUserdataTAP20181212LIVE] 
+2019-04-18 16:26:44,258 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2019-04-18 16:26:44,258 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] State is READY, initialising Connection 
+2019-04-18 16:26:44,259 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] With user/pass 
+2019-04-18 16:26:44,259 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] connecting .... 
+2019-04-18 16:26:44,265 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] .... connected 
+2019-04-18 16:26:44,271 DEBUG [FireThornTaskExecutor-4] [SQLServerOperator] SQL result [0] 
+2019-04-18 16:26:44,271 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,271 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://ramses2/FirethornUserdataTAP20181212LIVE][1] 
+2019-04-18 16:26:44,271 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,271 DEBUG [FireThornTaskExecutor-4] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/FirethornUserdataTAP20181212LIVE] 
+2019-04-18 16:26:44,272 INFO  [FireThornTaskExecutor-4] [AdqlQueryTimings] TIMING - jdbcdone() 
+2019-04-18 16:26:44,276 DEBUG [FireThornTaskExecutor-4] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:44,294 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] before refresh() 
+2019-04-18 16:26:44,306 DEBUG [FireThornTaskExecutor-3] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:44,307 DEBUG [FireThornTaskExecutor-3] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:44,308 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] after refresh() 
+2019-04-18 16:26:44,308 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Getting base BaseResource 
+2019-04-18 16:26:44,309 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Found base BaseResource [OSA JDBC] 
+2019-04-18 16:26:44,309 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Getting direct resource 
+2019-04-18 16:26:44,321 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [2102] 
+2019-04-18 16:26:44,331 DEBUG [FireThornTaskExecutor-3] [OgsaServiceEntity] primary() 
+2019-04-18 16:26:44,339 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService, JdbcResource) [22702][2102] 
+2019-04-18 16:26:44,346 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [69602] 
+2019-04-18 16:26:44,346 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Checking ogsaid ... 
+2019-04-18 16:26:44,346 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6] 
+2019-04-18 16:26:44,346 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] scan for [69602][XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,347 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scantest() 
+2019-04-18 16:26:44,347 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,347 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69602] 
+2019-04-18 16:26:44,347 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6] 
+2019-04-18 16:26:44,347 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] prevscan   [2019-04-18T16:20:47.730Z] 
+2019-04-18 16:26:44,347 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] start time [2019-04-18T16:25:19.338Z] 
+2019-04-18 16:26:44,348 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] prev scan is before startup - scanning 
+2019-04-18 16:26:44,348 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Checking for existing lock [69602][XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,348 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] No existing lock found [69602][XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,348 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Adding new lock [69602][XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y][2019-04-18T16:26:44.348Z] 
+2019-04-18 16:26:44,348 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Running scan [69602][XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,348 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scanimpl() 
+2019-04-18 16:26:44,348 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,349 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69602] 
+2019-04-18 16:26:44,349 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6] 
+2019-04-18 16:26:44,349 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ping() 
+2019-04-18 16:26:44,349 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,349 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69602] 
+2019-04-18 16:26:44,349 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6] 
+2019-04-18 16:26:44,361 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Service request [69602][http://jarmila:8080/ogsadai/services/dataResources/ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6] 
+2019-04-18 16:26:44,404 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Service response [69602][null] 
+2019-04-18 16:26:44,405 ERROR [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Ping test failed [69602][ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6][404] 
+2019-04-18 16:26:44,406 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] status(status) 
+2019-04-18 16:26:44,406 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,406 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69602] 
+2019-04-18 16:26:44,406 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6] 
+2019-04-18 16:26:44,406 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   status [ERROR] 
+2019-04-18 16:26:44,412 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Releasing locks [69602][XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y] 
+2019-04-18 16:26:44,412 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Found existing lock [69602][XX_QHRA4VEJ6UAUKAAAAFVDB3OF2Y][2019-04-18T16:26:44.348Z] 
+2019-04-18 16:26:44,412 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Removing .... 
+2019-04-18 16:26:44,412 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Notifying .... 
+2019-04-18 16:26:44,413 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Found ogsaid [ogsadai-b0a4219c-7ef8-40ea-9c3d-2f482313d0a6][ERROR] 
+2019-04-18 16:26:44,413 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Primary OgsaJdbcResource failed ping test, creating a new one 
+2019-04-18 16:26:44,413 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] create(OgsaService, JdbcResource) [22702][2102] 
+2019-04-18 16:26:44,415 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Using direct resource [XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,415 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Getting source OgsaService 
+2019-04-18 16:26:44,415 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Found source OgsaService [http://jarmila:8080/ogsadai/services] 
+2019-04-18 16:26:44,415 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Getting target table 
+2019-04-18 16:26:44,421 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,421 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Found target table [[FirethornUserdataTAP20181212LIVE].[dbo].[XX_ARUX2DPOG7Y5WAAAAFVDCRMRNI]] 
+2019-04-18 16:26:44,421 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Getting target OgsaBaseResource 
+2019-04-18 16:26:44,421 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [52] 
+2019-04-18 16:26:44,422 DEBUG [FireThornTaskExecutor-3] [OgsaServiceEntity] primary() 
+2019-04-18 16:26:44,424 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService, JdbcResource) [22702][52] 
+2019-04-18 16:26:44,431 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [69603] 
+2019-04-18 16:26:44,431 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Checking ogsaid ... 
+2019-04-18 16:26:44,431 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-0cec79d0-76da-4cba-b586-689d8d367817] 
+2019-04-18 16:26:44,431 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] scan for [69603][XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,431 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scantest() 
+2019-04-18 16:26:44,431 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,432 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69603] 
+2019-04-18 16:26:44,432 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-0cec79d0-76da-4cba-b586-689d8d367817] 
+2019-04-18 16:26:44,432 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] prevscan   [2019-04-18T16:20:47.753Z] 
+2019-04-18 16:26:44,432 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] start time [2019-04-18T16:25:19.338Z] 
+2019-04-18 16:26:44,432 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] prev scan is before startup - scanning 
+2019-04-18 16:26:44,432 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Checking for existing lock [69603][XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,432 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] No existing lock found [69603][XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,433 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Adding new lock [69603][XX_UDKY4JFC63UWMAAAAFVDB3OF54][2019-04-18T16:26:44.433Z] 
+2019-04-18 16:26:44,433 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Running scan [69603][XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,433 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scanimpl() 
+2019-04-18 16:26:44,433 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,433 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69603] 
+2019-04-18 16:26:44,433 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-0cec79d0-76da-4cba-b586-689d8d367817] 
+2019-04-18 16:26:44,433 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ping() 
+2019-04-18 16:26:44,434 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,434 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69603] 
+2019-04-18 16:26:44,434 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-0cec79d0-76da-4cba-b586-689d8d367817] 
+2019-04-18 16:26:44,435 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Service request [69603][http://jarmila:8080/ogsadai/services/dataResources/ogsadai-0cec79d0-76da-4cba-b586-689d8d367817] 
+2019-04-18 16:26:44,444 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Service response [69603][null] 
+2019-04-18 16:26:44,444 ERROR [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Ping test failed [69603][ogsadai-0cec79d0-76da-4cba-b586-689d8d367817][404] 
+2019-04-18 16:26:44,445 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] status(status) 
+2019-04-18 16:26:44,445 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,445 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [69603] 
+2019-04-18 16:26:44,445 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-0cec79d0-76da-4cba-b586-689d8d367817] 
+2019-04-18 16:26:44,446 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   status [ERROR] 
+2019-04-18 16:26:44,446 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Releasing locks [69603][XX_UDKY4JFC63UWMAAAAFVDB3OF54] 
+2019-04-18 16:26:44,446 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Found existing lock [69603][XX_UDKY4JFC63UWMAAAAFVDB3OF54][2019-04-18T16:26:44.433Z] 
+2019-04-18 16:26:44,446 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Removing .... 
+2019-04-18 16:26:44,446 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Notifying .... 
+2019-04-18 16:26:44,447 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Found ogsaid [ogsadai-0cec79d0-76da-4cba-b586-689d8d367817][ERROR] 
+2019-04-18 16:26:44,447 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] Primary OgsaJdbcResource failed ping test, creating a new one 
+2019-04-18 16:26:44,447 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity$EntityFactory] create(OgsaService, JdbcResource) [22702][52] 
+2019-04-18 16:26:44,448 DEBUG [FireThornTaskExecutor-3] [BlueQueryEntity] Found target OgsaBaseResource [XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:44,448 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity] transition(TaskState) 
+2019-04-18 16:26:44,448 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   ident [71452] 
+2019-04-18 16:26:44,449 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   state [READY][RUNNING] 
+2019-04-18 16:26:44,449 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity] accept(TaskState) 
+2019-04-18 16:26:44,449 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   ident [71452] 
+2019-04-18 16:26:44,449 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   state [READY][RUNNING] 
+2019-04-18 16:26:44,449 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity] handle() [] 
+2019-04-18 16:26:44,451 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity$Handle] event() [71452]:[RUNNING]->[RUNNING]:[false]->[true] 
+2019-04-18 16:26:44,464 DEBUG [FireThornTaskExecutor-3] [OgsaExecResourceEntity$EntityFactory] primary(OgsaService) [22702] 
+2019-04-18 16:26:44,469 DEBUG [FireThornTaskExecutor-3] [OgsaExecResourceEntity$EntityFactory] No primary OgsaExecResource, creating a new one 
+2019-04-18 16:26:44,469 DEBUG [FireThornTaskExecutor-3] [OgsaExecResourceEntity$EntityFactory] simple(OgsaService) [22702] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ogsaid [CREATED][DataRequestExecutionResource] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] scan for [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scantest() 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71654] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] prevscan   [null] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] start time [2019-04-18T16:25:19.338Z] 
+2019-04-18 16:26:44,470 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] scantest for [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,471 DEBUG [FireThornTaskExecutor-3] [OgsaExecResourceEntity] factory() 
+2019-04-18 16:26:44,471 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity$EntityFactory] scanperiod() 
+2019-04-18 16:26:44,471 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity$EntityFactory]   value [PT11M] 
+2019-04-18 16:26:44,471 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Factory scanperiod  [PT11M] 
+2019-04-18 16:26:44,471 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] prevscan   [null] 
+2019-04-18 16:26:44,471 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] scanperiod [PT11M] 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] prev scan is null - scanning 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Checking for existing lock [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] No existing lock found [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Adding new lock [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU][2019-04-18T16:26:44.472Z] 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Running scan [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scanimpl() 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71654] 
+2019-04-18 16:26:44,472 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-18 16:26:44,473 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ping() 
+2019-04-18 16:26:44,473 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,473 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71654] 
+2019-04-18 16:26:44,473 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-18 16:26:44,473 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Service request [71654][http://jarmila:8080/ogsadai/services/dataResources/DataRequestExecutionResource] 
+2019-04-18 16:26:44,543 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Service response [71654][null] 
+2019-04-18 16:26:44,544 ERROR [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] Ping test failed [71654][DataRequestExecutionResource][404] 
+2019-04-18 16:26:44,544 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] status(status) 
+2019-04-18 16:26:44,544 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,544 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71654] 
+2019-04-18 16:26:44,544 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [DataRequestExecutionResource] 
+2019-04-18 16:26:44,544 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   status [ERROR] 
+2019-04-18 16:26:44,545 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Releasing locks [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU] 
+2019-04-18 16:26:44,545 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Found existing lock [71654][XX_XCUY4JJS7FNKSAAAAFVDCRMTOU][2019-04-18T16:26:44.472Z] 
+2019-04-18 16:26:44,545 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Removing .... 
+2019-04-18 16:26:44,545 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Notifying .... 
+2019-04-18 16:26:44,545 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ogsaid [CREATED][null] 
+2019-04-18 16:26:44,545 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] scan for [71652][XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scantest() 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71652] 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Checking for existing lock [71652][XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] No existing lock found [71652][XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Adding new lock [71652][XX_AKTPZQZVBTO3MAAAAFVDCRMTHU][2019-04-18T16:26:44.546Z] 
+2019-04-18 16:26:44,546 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Running scan [71652][XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scanimpl() 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71652] 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] init() 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity]   name   [XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity]   ident  [71652] 
+2019-04-18 16:26:44,547 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:44,556 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Creating OGSA-DAI JDBC resource 
+2019-04-18 16:26:44,556 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Executing JdbcCreateResourceWorkflow 
+2019-04-18 16:26:44,569 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,569 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,572 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:44,572 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:45,785 DEBUG [FireThornTaskExecutor-3] [SimpleWorkflowResult] RequestExecutionStatus [uk.org.ogsadai.resource.request.status.COMPLETED] 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Status  [COMPLETED] 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Created [ogsadai-5bd2ced1-8a31-4c9c-88cd-ab82e352f8f2] 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ogsaid(status, ogsaid) 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71652] 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   status [ACTIVE] 
+2019-04-18 16:26:45,786 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-5bd2ced1-8a31-4c9c-88cd-ab82e352f8f2] 
+2019-04-18 16:26:45,787 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Releasing locks [71652][XX_AKTPZQZVBTO3MAAAAFVDCRMTHU] 
+2019-04-18 16:26:45,787 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Found existing lock [71652][XX_AKTPZQZVBTO3MAAAAFVDCRMTHU][2019-04-18T16:26:44.546Z] 
+2019-04-18 16:26:45,787 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Removing .... 
+2019-04-18 16:26:45,787 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Notifying .... 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ogsaid [CREATED][null] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] scan for [71653][XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scantest() 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71653] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Checking for existing lock [71653][XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] No existing lock found [71653][XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Adding new lock [71653][XX_YAKU2KDQJRYPUAAAAFVDCRMTL4][2019-04-18T16:26:45.788Z] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Running scan [71653][XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] scanimpl() 
+2019-04-18 16:26:45,788 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71653] 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] init() 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity]   name   [XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity]   ident  [71653] 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Creating OGSA-DAI JDBC resource 
+2019-04-18 16:26:45,789 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Executing JdbcCreateResourceWorkflow 
+2019-04-18 16:26:45,790 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:45,790 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:45,790 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:45,790 DEBUG [FireThornTaskExecutor-3] [JdbcConnectionEntity] operator() for [mssql] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [SimpleWorkflowResult] RequestExecutionStatus [uk.org.ogsadai.resource.request.status.COMPLETED] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Status  [COMPLETED] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaJdbcResourceEntity] Created [ogsadai-f1f124f4-59ec-4843-956d-416a48923eb0] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity] ogsaid(status, ogsaid) 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   name   [XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ident  [71653] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [null] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   status [ACTIVE] 
+2019-04-18 16:26:46,019 DEBUG [FireThornTaskExecutor-3] [OgsaBaseResourceEntity]   ogsaid [ogsadai-f1f124f4-59ec-4843-956d-416a48923eb0] 
+2019-04-18 16:26:46,020 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Releasing locks [71653][XX_YAKU2KDQJRYPUAAAAFVDCRMTL4] 
+2019-04-18 16:26:46,020 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Found existing lock [71653][XX_YAKU2KDQJRYPUAAAAFVDCRMTL4][2019-04-18T16:26:45.788Z] 
+2019-04-18 16:26:46,020 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Removing .... 
+2019-04-18 16:26:46,020 DEBUG [FireThornTaskExecutor-3] [BaseComponentEntity] Notifying .... 
+2019-04-18 16:26:46,103 DEBUG [FireThornTaskExecutor-3] [OgsaContextClient] monkey(MonkeyParam) 
+2019-04-18 16:26:46,384 DEBUG [FireThornTaskExecutor-3] [SimpleWorkflowResult] RequestExecutionStatus [uk.org.ogsadai.resource.request.status.PROCESSING] 
+2019-04-18 16:26:46,394 DEBUG [FireThornTaskExecutor-3] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:46,395 DEBUG [FireThornTaskExecutor-3] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:46,398 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity] transition(TaskState) 
+2019-04-18 16:26:46,398 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   ident [71452] 
+2019-04-18 16:26:46,398 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   state [READY][RUNNING] 
+2019-04-18 16:26:46,398 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity] accept(TaskState) 
+2019-04-18 16:26:46,398 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   ident [71452] 
+2019-04-18 16:26:46,398 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   state [READY][RUNNING] 
+2019-04-18 16:26:46,399 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity] After execute() 
+2019-04-18 16:26:46,399 DEBUG [FireThornTaskExecutor-3] [BlueTaskEntity]   state [RUNNING] 
+2019-04-18 16:26:46,405 DEBUG [FireThornTaskExecutor-3] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:46,412 DEBUG [FireThornTaskExecutor-2] [BlueTaskEntity] Finished thread() 
+2019-04-18 16:26:46,412 DEBUG [FireThornTaskExecutor-2] [BlueTaskEntity]   state [READY] 
+2019-04-18 16:26:46,412 DEBUG [FireThornTaskExecutor-2] [BlueTaskEntity] Refreshing state 
+2019-04-18 16:26:46,417 DEBUG [FireThornTaskExecutor-2] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:46,418 DEBUG [FireThornTaskExecutor-2] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:46,419 DEBUG [FireThornTaskExecutor-2] [BlueTaskEntity] Finished running() 
+2019-04-18 16:26:46,419 DEBUG [FireThornTaskExecutor-2] [BlueTaskEntity]   state [RUNNING] 
+2019-04-18 16:26:46,420 DEBUG [main-interface-5] [BlueQueryEntity] Converting current instance [71452] 
+2019-04-18 16:26:46,429 DEBUG [main-interface-5] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:46,429 DEBUG [main-interface-5] [AdqlQueryTimings] AdqlQueryTimings() 
+2019-04-18 16:26:46,430 DEBUG [main-interface-5] [BlueTaskEntity] waitfor() [71452]:[RUNNING]->[RUNNING]->[COMPLETED]:[3000000] 
+2019-04-18 16:26:46,430 DEBUG [main-interface-5] [BlueTaskEntity] handle() [] 
+2019-04-18 16:26:46,436 DEBUG [main-interface-5] [BlueTaskEntity$BaseEventListener] waitfor(Handle) [71452][RUNNING] 
+2019-04-18 16:26:46,437 DEBUG [main-interface-5] [BlueTaskEntity$StatusEventListener] test() [71452][RUNNING]->[RUNNING]->[COMPLETED] 
+2019-04-18 16:26:46,437 DEBUG [main-interface-5] [BlueTaskEntity$BaseEventListener] test() [71452][1][3000000] 
+
+
