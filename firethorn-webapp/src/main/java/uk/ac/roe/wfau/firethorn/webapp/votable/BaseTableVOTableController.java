@@ -151,14 +151,27 @@ extends AbstractTableController
         public String format(final ResultSet results)
         throws SQLException
             {
+        		String byteArrayString = "";
     		
 	        	if (results.getObject(index())!=null){
-	        		return results.getString(
+	        		byte[] bytes = results.getBytes(
 	                            index()
 	                            );
-		   		} else {
-		   			return "";
-		   		}
+	        		
+                    int aux;
+   	                final StringBuilder builder = new StringBuilder();
+			        for (byte b : bytes) {
+		                 if(b<0) aux=256+b; else aux=b; 
+		    	         builder.append(aux  + " ");
+			        }
+		
+			        byteArrayString = builder.toString();
+
+				
+				} 
+					    
+			    return byteArrayString.trim();
+
             
             }
         }
