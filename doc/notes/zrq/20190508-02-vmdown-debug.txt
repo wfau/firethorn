@@ -1,0 +1,89 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Re-booted the virtual machine
+#[user@virtual]
+
+    sudo reboot
+
+# -----------------------------------------------------
+# Run the Python client to bring the services back up.
+#[user@virtual]
+
+    export buildtag=2.1.28
+
+    source "${HOME:?}/chain.properties"
+    docker-compose --file "docker-compose.yml" run firethorn-py
+
+--START--
+Starting stevedore_bethany_1  ... done
+Starting stevedore_jarmila_1  ... done
+Starting stevedore_carolina_1 ... done
+Starting stevedore_gillian_1  ... done
+Python 3.5.2 (default, Nov 12 2018, 13:43:14)
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+--END--
+
+# -----------------------------------------------------
+# Check the key resources.
+#[user@desktop]
+
+    http://tap.roe.ac.uk/firethorn/adql/resource/54
+
+    http://tap.roe.ac.uk/firethorn/adql/resource/54/schemas/select
+
+    http://tap.roe.ac.uk/firethorn/adql/schema/544
+    http://tap.roe.ac.uk/firethorn/adql/schema/544/tables/select
+
+    http://tap.roe.ac.uk/firethorn/adql/table/45388
+    http://tap.roe.ac.uk/firethorn/adql/table/45388/columns/select
+
+    http://tap.roe.ac.uk/firethorn/adql/column/45578
+
+# -----------------------------------------------------
+# Check the system status.
+#[user@desktop]
+
+    http://tap.roe.ac.uk/firethorn/system/info
+
+        {
+        ....
+        "memory" : {
+            "total" : 756547584,
+            "free" : 329556456,
+            "max" : 919076864
+            },
+        "disk" : {
+            "total" : 33016512512,
+            "free" : 9335693312,
+            "usable" : 8263639040
+            }
+        ....
+        }
+
+
+
+
+
+
