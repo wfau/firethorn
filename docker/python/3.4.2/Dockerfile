@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.29
+FROM firethorn/ubuntu:2.1.29-stv-tap-fix
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
