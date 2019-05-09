@@ -82,8 +82,30 @@ Type "help", "copyright", "credits" or "license" for more information.
         ....
         }
 
+# -----------------------------------------------------
+# Check the system status.
+#[user@virtual]
 
+    free -h
 
+--START--
+              total        used        free      shared  buff/cache   available
+Mem:           3.9G        1.8G        245M        156M        1.8G        1.7G
+Swap:          1.0G         71M        952M
+--END--
 
+    df -h
+
+--START--
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  844K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        31G   23G  7.7G  75% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1001
+--END--
 
 
