@@ -176,6 +176,33 @@ extends AbstractTableController
             }
         }
     
+    
+    public static class BitFormatter
+    extends AbstractFormatter
+        {
+        public BitFormatter(final BaseColumn<?> column)
+            {
+            super(
+                column
+                );
+            }
+
+        @Override
+        public String format(final ResultSet results)
+        throws SQLException
+            {
+        		System.out.println(results.getString(index()));
+        		System.out.println(String.valueOf(results.getInt(index())));
+
+	    		if (results.getObject(index())!=null){
+	    			return  results.getString(index());
+	    		} else {
+	    			return "";
+	    		}
+	        	
+            }
+        }
+    
     @Override
     public void head(final PrintWriter writer, final BaseTable<?,?> table)
     throws ProtectionException
@@ -436,6 +463,10 @@ extends AbstractTableController
                     );
             case BYTE:
                 return new ByteFormatter(
+                    column
+                    );
+            case BIT:
+                return new BitFormatter(
                     column
                     );
             case DATE :
