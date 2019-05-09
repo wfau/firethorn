@@ -1399,12 +1399,12 @@ ValueError: http://tap.roe.ac.uk/firethorn/adql/table/57699211/votable:1:21910: 
 
 
 
-# -----------------------------------------------------
-# Service is working and responding to simple queries ...
-#[user@virtual]
+    #
+    # Service is working and responding to simple queries ...
+    #
 
     #
-    # Requesting list of queries for the main resource causes an Exception.
+    # Requesting the large (171,174) list of queries for the main resource causes an Exception.
     # http://tap.roe.ac.uk/firethorn/adql/resource/54/queries/select
 
 --START--
@@ -1442,4 +1442,42 @@ java.lang.OutOfMemoryError: GC overhead limit exceeded
 	org.springframework.transaction.interceptor.TransactionInterceptor$$Lambda$157/756591810.proceedWithInvocation(Unknown Source)
 	org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:294)
 --END--
+
+
+    #
+    # Login to the postgresql tapschema database didn't seem to find anything.
+    #
+
+    \dt
+
+--START--
+Did not find any relations.
+--END--
+
+    #
+    # But these resources all work.
+    #
+
+    http://tap.roe.ac.uk/firethorn/jdbc/column/65220
+
+        {"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-column-1.0.json","meta":{"jdbc":{"type":"INTEGER","size":0},"adql":{"ucd":null,"utype":null,"arraySize":0,"units":null,"type":"INTEGER"}},"base":"http://tap.roe.ac.uk/firethorn/jdbc/column/65220","fullname":"postgres.TAP_SCHEMA_54.columns.ts_column_id","depth":"FULL","parent":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378","root":"http://tap.roe.ac.uk/firethorn/jdbc/column/65220","table":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378","text":null,"name":"ts_column_id","owner":"http://tap.roe.ac.uk/firethorn/community-member/163","ident":"65220","created":"2018-12-12T19:16:03.468","modified":"2018-12-12T19:16:03.469","url":"http://tap.roe.ac.uk/firethorn/jdbc/column/65220","self":"http://tap.roe.ac.uk/firethorn/jdbc/column/65220"}
+
+    http://tap.roe.ac.uk/firethorn/jdbc/table/58378
+
+        {"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-table-1.0.json","formats":{"datatable":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378/datatable","votable":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378/votable"},"metadata":{"jdbc":{"count":-1,"status":"CREATED","type":"TABLE"},"adql":{"count":-1,"status":"CREATED"}},"query":null,"schema":"http://tap.roe.ac.uk/firethorn/jdbc/schema/546","base":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378","fullname":"postgres.TAP_SCHEMA_54.columns","depth":"FULL","columns":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378/columns/select","resource":"http://tap.roe.ac.uk/firethorn/jdbc/resource/55","parent":"http://tap.roe.ac.uk/firethorn/jdbc/schema/546","root":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378","text":null,"name":"columns","owner":"http://tap.roe.ac.uk/firethorn/community-member/163","ident":"58378","created":"2018-12-12T19:16:03.129","modified":"2018-12-12T19:16:03.129","url":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378","self":"http://tap.roe.ac.uk/firethorn/jdbc/table/58378"}
+
+    http://tap.roe.ac.uk/firethorn/jdbc/schema/546
+
+        {"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-schema-1.0.json","tables":"http://tap.roe.ac.uk/firethorn/jdbc/schema/546/tables/select","base":"http://tap.roe.ac.uk/firethorn/jdbc/schema/546","fullname":"postgres.TAP_SCHEMA_54","depth":"FULL","resource":"http://tap.roe.ac.uk/firethorn/jdbc/resource/55","parent":"http://tap.roe.ac.uk/firethorn/jdbc/resource/55","root":"http://tap.roe.ac.uk/firethorn/jdbc/schema/546","text":null,"name":"postgres.TAP_SCHEMA_54","owner":"http://tap.roe.ac.uk/firethorn/community-member/163","ident":"546","created":"2018-12-12T19:16:02.756","modified":"2018-12-12T19:16:02.756","url":"http://tap.roe.ac.uk/firethorn/jdbc/schema/546","self":"http://tap.roe.ac.uk/firethorn/jdbc/schema/546"}
+
+    http://tap.roe.ac.uk/firethorn/jdbc/resource/55
+
+        {"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/jdbc-resource-1.0.json","connection":{"pass":"########","uri":"jdbc:postgresql://carolina:5432/postgres","user":"ieW7oomei7Laebuu9Ax7"},"schemas":"http://tap.roe.ac.uk/firethorn/jdbc/resource/55/schemas/select","fullname":"TAP_RESOURCE_54","queries":"http://tap.roe.ac.uk/firethorn/jdbc/resource/55/queries/select","text":null,"name":"TAP_RESOURCE_54","owner":"http://tap.roe.ac.uk/firethorn/community-member/163","ident":"55","created":"2018-12-12T19:16:02.316","modified":"2018-12-12T19:16:02.317","url":"http://tap.roe.ac.uk/firethorn/jdbc/resource/55","self":"http://tap.roe.ac.uk/firethorn/jdbc/resource/55"}
+
+    #
+    # Including votable of the JdbcTable.
+    # ** takes time for FireFox to render, but curl is instant.
+
+    http://tap.roe.ac.uk/firethorn/jdbc/table/58378/votable
+
 
