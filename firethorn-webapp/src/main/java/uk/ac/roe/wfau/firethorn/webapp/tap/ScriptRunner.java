@@ -12,6 +12,7 @@ import java.sql.Statement;
 
 /**
 * Tool to run database scripts
+* Original : https://github.com/mybatis/ibatis-2/blob/master/src/main/java/com/ibatis/common/jdbc/ScriptRunner.java
 */
 public class ScriptRunner {
 
