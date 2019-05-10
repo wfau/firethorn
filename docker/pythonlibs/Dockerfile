@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.30
+FROM firethorn/python:2.1.31
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
