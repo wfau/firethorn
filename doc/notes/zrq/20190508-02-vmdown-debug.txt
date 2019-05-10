@@ -109,3 +109,297 @@ tmpfs           395M     0  395M   0% /run/user/1001
 --END--
 
 
+# -----------------------------------------------------
+# Check the system status.
+#[user@desktop]
+
+    http://tap.roe.ac.uk/firethorn/system/info
+
+    {
+    ....
+    "memory" : {
+        "total" : 800063488,
+        "free" : 271500784,
+        "max" : 919076864
+        },
+    "disk" : {
+        "total" : 33016512512,
+        "free" : 9332752384,
+        "usable" : 8260763648
+        }
+    ....
+    "time" : "2019-05-09T13:22:43.488Z"
+    ....
+    }
+
+
+# -----------------------------------------------------
+# Check the system status.
+#[user@desktop]
+
+    http://tap.roe.ac.uk/firethorn/system/info
+
+    {
+    ....
+    "memory" : {
+        "total" : 788529152,
+        "free" : 277734984,
+        "max" : 919076864
+        },
+    "disk" : {
+        "total" : 33016512512,
+        "free" : 9326923776,
+        "usable" : 8255049728
+        }
+    ....
+    "time" : "2019-05-09T15:51:46.214Z",
+    ....
+    }
+
+    {
+    ....
+    "memory" : {
+        "total" : 791674880,
+        "free" : 306134816,
+        "max" : 919076864
+        },
+    "disk" : {
+        "total" : 33016512512,
+        "free" : 9319641088,
+        "usable" : 8247816192
+        }
+    ....
+    "time" : "2019-05-09T17:23:06.860Z",
+    ....
+    }
+
+    {
+    ....
+    "memory" : {
+        "total" : 791150592,
+        "free" : 303769264,
+        "max" : 919076864
+        },
+    "disk" : {
+        "total" : 33016512512,
+        "free" : 9320611840,
+        "usable" : 8248885248
+        }
+    ....
+    "time" : "2019-05-09T18:34:11.381Z",
+    ....
+    }
+
+
+22:40 - fails
+
+
+
+# -----------------------------------------------------
+# Check the system status.
+#[user@virtual]
+
+    date
+
+--START--
+Thu  9 May 22:45:35 BST 2019
+--END--
+
+free
+
+--START--
+              total        used        free      shared  buff/cache   available
+Mem:        4038224     1776084      220624      159980     2041516     1871952
+Swap:       1048572       88320      960252
+--END--
+
+free -h
+
+--START--
+              total        used        free      shared  buff/cache   available
+Mem:           3.9G        1.7G        172M        156M        2.0G        1.8G
+Swap:          1.0G         86M        937M
+--END--
+
+    df -h
+
+--START--
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  828K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/vda3        31G   23G  7.7G  75% /
+tmpfs           2.0G  4.0K  2.0G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           395M     0  395M   0% /run/user/1001
+--END--
+
+    #
+    # Memory not an issue (1.8G available).
+    # Disc space not an issue (7.7G available).
+    #
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                      PORTS                    NAMES
+058615fbf37e        firethorn/firethorn-py:2.1.28   "python3"                18 hours ago        Exited (0) 17 hours ago                              stevedore_firethorn-py_run_7
+e6deacef850b        firethorn/firethorn-py:2.1.28   "python3"                26 hours ago        Exited (137) 18 hours ago                            stevedore_firethorn-py_run_6
+16d4c87bc6c3        firethorn/firethorn-py:2.1.28   "python3"                13 days ago         Exited (137) 13 days ago                             stevedore_firethorn-py_run_5
+2fe430d3956d        firethorn/firethorn-py:2.1.28   "python3"                7 weeks ago         Exited (255) 13 days ago                             stevedore_firethorn-py_run_4
+659eaacbdddc        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (0) 2 months ago                              stevedore_firethorn-py_run_3
+cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (255) 2 months ago                            stevedore_firethorn-py_run_2
+ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                4 months ago        Exited (137) 4 months ago                            stevedore_firethorn-py_run_1
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   4 months ago        Up 18 hours (unhealthy)     0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4 months ago        Up 18 hours (healthy)       8080/tcp                 stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Up 18 hours                 5432/tcp                 stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Up 18 hours                 5432/tcp                 stevedore_bethany_1
+--END--
+
+    #
+    # Tomcat is unhealthy because it is not responding to HTTP requests for system status.
+    # Vitriual machine is still healthy because it accepted my ssh login.
+    #
+
+# -----------------------------------------------------
+# Check the firethorn logs.
+#[user@virtual]
+
+    docker exec -it stevedore_gillian_1 bash
+
+        tail -n 100 logs/firethorn-debug.log
+
+--START--
+2019-05-09 21:48:00,017 DEBUG [FireThornTaskScheduler-84] [BaseProtector] isAdmin(Identity) [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]]
+2019-05-09 21:48:00,017 DEBUG [FireThornTaskScheduler-84] [IdentityEntity] admin()
+2019-05-09 21:48:00,018 DEBUG [FireThornTaskScheduler-84] [IdentityEntity] find (Community, String) [Jo9keiRu7moo6ooNee1s]
+2019-05-09 21:48:00,019 DEBUG [FireThornTaskScheduler-84] [IdentityEntity]   found [entity[class[uk.ac.roe.wfau.firethorn.identity.IdentityEntity] ident[163]]]
+2019-05-09 21:48:00,022 DEBUG [FireThornTaskScheduler-84] [UserDataCleaner]   schema [252][FirethornUserdataTAP20181212LIVE.dbo]
+2019-05-09 21:48:00,022 DEBUG [FireThornTaskScheduler-84] [JdbcSchemaEntity] tables() for [252][FirethornUserdataTAP20181212LIVE.dbo]
+2019-05-09 21:48:00,022 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] scan for [252][FirethornUserdataTAP20181212LIVE.dbo]
+2019-05-09 21:48:00,022 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] scantest for [252][FirethornUserdataTAP20181212LIVE.dbo]
+....
+....
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [JdbcSchemaEntity] factory()
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity$EntityFactory] scanperiod()
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] prevscan   [2019-05-09T20:30:08.178Z]
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] scanperiod [PT25H]
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] prev scan is recent - skipping
+2019-05-09 21:50:00,026 DEBUG [FireThornTaskScheduler-84] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataTAP20181212LIVE.dbo] [2019-05-08T21:50:00.017Z]
+--END--
+
+
+        tail -n 200 logs/firethorn-trace.log
+
+--START--
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity$EntityFactory] scanperiod()
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] prevscan   [2019-05-09T20:28:00.081Z]
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] scanperiod [PT25H]
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseComponentEntity] prev scan is recent - skipping
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseProtector] affirm(Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@1c69285]
+2019-05-09 21:49:00,008 DEBUG [FireThornTaskScheduler-84] [BaseProtector] affirm(Authentications, Action) [uk.ac.roe.wfau.firethorn.access.BaseAction@1c69285]
+....
+....
+2019-05-09 21:52:00,023 DEBUG [FireThornTaskScheduler-93] [BaseComponentEntity$EntityFactory] scanperiod()
+2019-05-09 21:52:00,023 DEBUG [FireThornTaskScheduler-93] [BaseComponentEntity$EntityFactory]   value [PT25H]
+2019-05-09 21:52:00,023 DEBUG [FireThornTaskScheduler-93] [BaseComponentEntity] Factory scanperiod  [PT25H]
+2019-05-09 21:52:00,023 DEBUG [FireThornTaskScheduler-93] [BaseComponentEntity] prevscan   [2019-05-09T20:30:08.178Z]
+2019-05-09 21:52:00,023 DEBUG [FireThornTaskScheduler-93] [BaseComponentEntity] scanperiod [PT25H]
+2019-05-09 21:52:00,023 DEBUG [FireThornTaskScheduler-93] [BaseComponentEntity] prev scan is recent - skipping
+2019-05-09 21:52:00,023 DEBUG [FireThornTaskScheduler-93] [JdbcTableEntity] pending(JdbcSchema, DateTime) [252][FirethornUserdataTAP20181212LIVE.dbo] [2019-05-08T21:52:00.014Z]
+2019-05-09 21:52:00,194 TRACE [FireThornTaskScheduler-93] [UserDataCleaner] -- DONE --
+
+    #
+    # Need to setup a ssh tunnel for the Java debugger to see if Threads are an issue.
+    #
+
+    #
+    # Reboot the VM ..
+    #
+
+# -----------------------------------------------------
+# Increase the virtual machine memory.
+#[user@trop02]
+
+    vmname=Araybwyn
+
+    source ${HOME}/libvirt.settings
+
+    virsh -c ${connection:?} \
+        dumpxml "${vmname}"
+
+--START--
+<domain type='kvm' id='9'>
+  <name>Araybwyn</name>
+  <uuid>a65ad4ca-0662-4c43-a32c-91e4180d87bc</uuid>
+  <memory unit='KiB'>4194304</memory>
+  <currentMemory unit='KiB'>4194304</currentMemory>
+  <vcpu placement='static'>4</vcpu>
+  <resource>
+    <partition>/machine</partition>
+  </resource>
+  ....
+</domain>
+--END--
+
+    virsh -c ${connection:?} \
+        shutdown "${vmname}"
+
+    virsh -c ${connection:?} \
+        setmaxmem "${vmname}" 8GB --config
+
+    virsh -c ${connection:?} \
+        setmem    "${vmname}" 8GB --config
+
+    virsh -c ${connection:?} \
+        start "${vmname}"
+
+# -----------------------------------------------------
+# Login to the virtual machine.
+#[user@trop02]
+
+    ssh "${vmname}"
+
+# -----------------------------------------------------
+# Check the Docker containers.
+#[user@virtual]
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                       PORTS               NAMES
+058615fbf37e        firethorn/firethorn-py:2.1.28   "python3"                19 hours ago        Exited (0) 18 hours ago                          stevedore_firethorn-py_run_7
+....
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   4 months ago        Exited (143) 2 minutes ago                       stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4 months ago        Exited (143) 2 minutes ago                       stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (0) 2 minutes ago                         stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (0) 2 minutes ago                         stevedore_bethany_1
+--END--
+
+# -----------------------------------------------------
+# Restart our services..
+#[user@virtual]
+
+    export buildtag=2.1.28
+
+    source "${HOME:?}/chain.properties"
+    docker-compose --file "docker-compose.yml" run firethorn-py
+
+--START--
+Starting stevedore_carolina_1 ... done
+Starting stevedore_jarmila_1  ... done
+Starting stevedore_bethany_1  ... done
+Starting stevedore_gillian_1  ... done
+Python 3.5.2 (default, Nov 12 2018, 13:43:14)
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+--END--
+
+
+
