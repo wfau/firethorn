@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.30
+FROM firethorn/ubuntu:2.1.30-stv-uws-fix
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #
