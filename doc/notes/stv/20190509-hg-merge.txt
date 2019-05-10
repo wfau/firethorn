@@ -21,7 +21,7 @@
 #
 
 
-## Notes are copied over from /zrq/
+## Notes are copied over from /zrq/20180712-02-hg-merge.txt
 ## Just Added comments where I had issues
 
 
