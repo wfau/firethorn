@@ -403,3 +403,86 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 
 
+
+
+
+# -----------------------------------------------------
+# Check the system status.
+#[user@virtual]
+
+    date
+
+--START--
+Fri 10 May 10:59:06 BST 2019
+--END--
+
+free
+
+--START--
+              total        used        free      shared  buff/cache   available
+Mem:        7599060     2001516     3392964      159900     2204580     5195720
+Swap:       1048572           0     1048572
+--END--
+
+free -h
+
+--START--
+              total        used        free      shared  buff/cache   available
+Mem:           7.2G        1.9G        3.2G        156M        2.1G        5.0G
+Swap:          1.0G          0B        1.0G
+--END--
+
+    df -h
+
+--START--
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        3.7G     0  3.7G   0% /dev
+tmpfs           3.7G     0  3.7G   0% /dev/shm
+tmpfs           3.7G  780K  3.7G   1% /run
+tmpfs           3.7G     0  3.7G   0% /sys/fs/cgroup
+/dev/vda3        31G   23G  7.6G  75% /
+tmpfs           3.7G  4.0K  3.7G   1% /tmp
+/dev/vda1       240M   89M  135M  40% /boot
+tmpfs           743M     0  743M   0% /run/user/1001
+--END--
+
+    #
+    # Memory not an issue (5G available).
+    # Disc space not an issue (7.6G available).
+    #
+
+    docker ps -a
+
+--START--
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                      PORTS                    NAMES
+....
+513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   4 months ago        Up 11 hours (healthy)       0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4 months ago        Up 11 hours (healthy)       8080/tcp                 stevedore_jarmila_1
+7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Up 11 hours                 5432/tcp                 stevedore_carolina_1
+80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Up 11 hours                 5432/tcp                 stevedore_bethany_1
+--END--
+
+# -----------------------------------------------------
+# Check the system status.
+#[user@desktop]
+
+    http://tap.roe.ac.uk/firethorn/system/info
+
+    {
+    ....
+    "memory" : {
+        "total" : 629145600,
+        "free" :  174393088,
+        "max" :  1730150400
+        },
+    "disk" : {
+        "total" : 33016512512,
+        "free" :   9214574592,
+        "usable" : 8145960960
+        }
+    ....
+    "time" : "2019-05-10T09:57:33.481Z",
+    ....
+    }
+
+
