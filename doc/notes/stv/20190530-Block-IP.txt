@@ -1,0 +1,43 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+## Block Validator from Japan on the WFAU TAP services proxy 
+
+ssh Stevedore@Acilamwen
+
+   docker exec -it apache bash
+
+
+   nano /etc/httpd/conf.d/tap.roe.ac.uk.conf
+   ...
+   ## Add line
+
+	    <Proxy *>
+		    order allow,deny
+		    Deny from 133.40.215.109
+		    Allow from all
+	    </Proxy>
+   ...
+
+exit
+docker kill --signal 'USR1' 'apache
