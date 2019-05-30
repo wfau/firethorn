@@ -478,21 +478,45 @@ public class SQLQueryActivity
     protected void cleanUp() throws Exception
     {
         super.cleanUp();
-        
-        logger.debug("Shutting down ExecutorService");
-        mExecutorService.shutdown();
-        
+
+        logger.debug("cleanUp()");
+        if (mExecutorService != null)
+        {
+            try {
+                logger.debug("Shutting down ExecutorService");
+                mContext.monkey().sqlException(this, "caiR6thi");
+                mExecutorService.shutdown();
+            }
+            catch (final Exception ouch)
+            {
+                logger.debug("Shutting down ExecutorService threw an Exception [" + ouch.getMessage() + "]");
+            }
+        }
         if (mStatement != null)
         {
-            logger.debug("Closing Statement");
-            mContext.monkey().sqlException(this, "baivahP0");
-            mStatement.close();
+            try {
+                logger.debug("Closing Statement");
+                mContext.monkey().sqlException(this, "baivahP0");
+                mStatement.close();
+            }
+            catch (final Exception ouch)
+            {
+                logger.debug("Closing Statement threw an Exception [" + ouch.getMessage() + "]");
+            }
         }
 
-        if (mResource != null)
+        if (mConnection != null)
         {
-            logger.debug("Releasing Connection");
-            mConnectionProvider.releaseConnection(mConnection);
+            try {
+                logger.debug("Releasing Connection");
+                mContext.monkey().sqlException(this, "echo4ieW");
+                mConnectionProvider.releaseConnection(mConnection);
+            }
+            catch (final Exception ouch)
+            {
+                logger.debug("Releasing Connection threw an Exception [" + ouch.getMessage() + "]");
+            }
         }
     }
+
 }
