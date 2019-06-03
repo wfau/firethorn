@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.32
+FROM firethorn/python:2.1.32-zrq-thread-pools
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
