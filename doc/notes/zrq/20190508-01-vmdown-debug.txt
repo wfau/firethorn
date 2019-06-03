@@ -26,18 +26,16 @@
 
     docker ps -a
 
---START--
-CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                       PORTS                    NAMES
-16d4c87bc6c3        firethorn/firethorn-py:2.1.28   "python3"                12 days ago         Exited (137) 12 days ago                              stevedore_firethorn-py_run_5
-2fe430d3956d        firethorn/firethorn-py:2.1.28   "python3"                7 weeks ago         Exited (255) 12 days ago                              stevedore_firethorn-py_run_4
-659eaacbdddc        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (0) 2 months ago                               stevedore_firethorn-py_run_3
-cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (255) 2 months ago                             stevedore_firethorn-py_run_2
-ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                4 months ago        Exited (137) 4 months ago                             stevedore_firethorn-py_run_1
-513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   4 months ago        Exited (255) 5 minutes ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
-f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4 months ago        Exited (255) 5 minutes ago   8080/tcp                 stevedore_jarmila_1
-7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (255) 5 minutes ago   5432/tcp                 stevedore_carolina_1
-80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (255) 5 minutes ago   5432/tcp                 stevedore_bethany_1
---END--
+    >   CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                       PORTS                    NAMES
+    >   16d4c87bc6c3        firethorn/firethorn-py:2.1.28   "python3"                12 days ago         Exited (137) 12 days ago                              stevedore_firethorn-py_run_5
+    >   2fe430d3956d        firethorn/firethorn-py:2.1.28   "python3"                7 weeks ago         Exited (255) 12 days ago                              stevedore_firethorn-py_run_4
+    >   659eaacbdddc        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (0) 2 months ago                               stevedore_firethorn-py_run_3
+    >   cc174a20a0c7        firethorn/firethorn-py:2.1.28   "python3"                2 months ago        Exited (255) 2 months ago                             stevedore_firethorn-py_run_2
+    >   ebed74a70e56        firethorn/firethorn-py:2.1.28   "python3"                4 months ago        Exited (137) 4 months ago                             stevedore_firethorn-py_run_1
+    >   513af3cb732e        firethorn/firethorn:2.1.28      "/bin/sh -c '/var/lo…"   4 months ago        Exited (255) 5 minutes ago   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+    >   f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4 months ago        Exited (255) 5 minutes ago   8080/tcp                 stevedore_jarmila_1
+    >   7ed501c87d8f        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (255) 5 minutes ago   5432/tcp                 stevedore_carolina_1
+    >   80da24dbaf6a        firethorn/postgres:2.1.28       "docker-entrypoint.s…"   4 months ago        Exited (255) 5 minutes ago   5432/tcp                 stevedore_bethany_1
 
 
 # -----------------------------------------------------
@@ -50,15 +48,13 @@ f057320941a1        firethorn/ogsadai:2.1.28        "/bin/sh -c '/var/lo…"   4
 
     docker-compose --file "docker-compose.yml" run firethorn-py
 
---START--
-Starting stevedore_bethany_1  ... done
-Starting stevedore_jarmila_1  ... done
-Starting stevedore_carolina_1 ... done
-Starting stevedore_gillian_1  ... done
-Python 3.5.2 (default, Nov 12 2018, 13:43:14)
-[GCC 5.4.0 20160609] on linux
-Type "help", "copyright", "credits" or "license" for more information.
---END--
+    >   Starting stevedore_bethany_1  ... done
+    >   Starting stevedore_jarmila_1  ... done
+    >   Starting stevedore_carolina_1 ... done
+    >   Starting stevedore_gillian_1  ... done
+    >   Python 3.5.2 (default, Nov 12 2018, 13:43:14)
+    >   [GCC 5.4.0 20160609] on linux
+    >   Type "help", "copyright", "credits" or "license" for more information.
 
 
 # -----------------------------------------------------
@@ -167,167 +163,165 @@ print(
 # *lots* of broken :-(
 #
 
---START--
-{
-  "resources": [],
-  "owner": "http://gillian:8080/firethorn/community-member/57698559",
-  "text": null,
-  "callback": "http://gillian:8081/firethorn/callback/57698652",
-  "modified": "2019-05-08T19:34:59.347",
-  "history": [],
-  "input": "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource",
-  "delays": {
-    "first": null,
-    "last": null,
-    "every": null
-  },
-  "url": "http://gillian:8080/firethorn/blue/query/57698652",
-  "ident": "57698652",
-  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
-  "columns": [],
-  "fields": [],
-  "tables": [],
-  "mode": "AUTO",
-  "created": "2019-05-08T19:34:59.210",
-  "name": "XX_5U5BMFLXCC4E4AAAAFVJR4I3RI",
-  "results": {
-    "count": 0,
-    "state": "NONE",
-    "formats": {
-      "datatable": null,
-      "votable": null
-    },
-    "table": null
-  },
-  "osql": null,
-  "adql": null,
-  "workspace": "http://gillian:8080/firethorn/adql/resource/57688319",
-  "limits": {
-    "cells": null,
-    "rows": 1000000,
-    "time": null
-  },
-  "resource": "http://gillian:8080/firethorn/adql/resource/57688319",
-  "status": "FAILED",
-  "syntax": {
-    "status": "PARSE_ERROR",
-    "friendly": "3 unresolved identifiers: atlasSource [l.1 c.30 - l.1 c.50], ra [l.1 c.17 - l.1 c.19], dec [l.1 c.21 - l.1 c.24]!\n  - Unknown table \"ATLASDR1.atlasSource\" !\n  - Unknown column \"ra\" !\n  - Unknown column \"dec\" !",
-    "message": "3 unresolved identifiers: atlasSource [l.1 c.30 - l.1 c.50], ra [l.1 c.17 - l.1 c.19], dec [l.1 c.21 - l.1 c.24]!\n  - Unknown table \"ATLASDR1.atlasSource\" !\n  - Unknown column \"ra\" !\n  - Unknown column \"dec\" !"
-  },
-  "self": "http://gillian:8080/firethorn/blue/query/57698652"
-}
->>> print(
-...     query_obj.table()
-...     )
-ERROR:root:unknown url type: 'None'
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
-    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
-  File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
-    self.full_url = url
-  File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
-    self._parse()
-  File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
-    raise ValueError("unknown url type: %r" % self.full_url)
-ValueError: unknown url type: 'None'
-ERROR:root:unknown url type: 'None'
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
-    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
-  File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
-    self.full_url = url
-  File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
-    self._parse()
-  File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
-    raise ValueError("unknown url type: %r" % self.full_url)
-ValueError: unknown url type: 'None'
-ERROR:root:unknown url type: 'None'
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
-    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
-  File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
-    self.full_url = url
-  File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
-    self._parse()
-  File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
-    raise ValueError("unknown url type: %r" % self.full_url)
-ValueError: unknown url type: 'None'
-null
->>> print(
-...     query_obj.table().count()
-...     )
-ERROR:root:unknown url type: 'None'
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
-    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
-  File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
-    self.full_url = url
-  File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
-    self._parse()
-  File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
-    raise ValueError("unknown url type: %r" % self.full_url)
-ValueError: unknown url type: 'None'
-ERROR:root:unknown url type: 'None'
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
-    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
-  File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
-    self.full_url = url
-  File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
-    self._parse()
-  File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
-    raise ValueError("unknown url type: %r" % self.full_url)
-ValueError: unknown url type: 'None'
-ERROR:root:unknown url type: 'None'
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
-    req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
-  File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
-    self.full_url = url
-  File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
-    self._parse()
-  File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
-    raise ValueError("unknown url type: %r" % self.full_url)
-ValueError: unknown url type: 'None'
-None
->>>
->>>
->>>
->>>
->>>
->>> resource = firethorn.firethorn_engine.select_adql_resources()[28]
-ERROR:root:IncompleteRead(9713032 bytes read)
-Traceback (most recent call last):
-  File "/usr/lib/python3.5/http/client.py", line 541, in _get_chunk_left
-    chunk_left = self._read_next_chunk_size()
-  File "/usr/lib/python3.5/http/client.py", line 508, in _read_next_chunk_size
-    return int(line, 16)
-ValueError: invalid literal for int() with base 16: b''
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/lib/python3.5/http/client.py", line 558, in _readall_chunked
-    chunk_left = self._get_chunk_left()
-  File "/usr/lib/python3.5/http/client.py", line 543, in _get_chunk_left
-    raise IncompleteRead(b'')
-http.client.IncompleteRead: IncompleteRead(0 bytes read)
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/core/firethorn_engine.py", line 238, in select_adql_resources
-    adqlresources =  json.loads(response.read().decode('utf-8'))
-  File "/usr/lib/python3.5/http/client.py", line 455, in read
-    return self._readall_chunked()
-  File "/usr/lib/python3.5/http/client.py", line 565, in _readall_chunked
-    raise IncompleteRead(b''.join(value))
-http.client.IncompleteRead: IncompleteRead(9713032 bytes read)
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-IndexError: list index out of range
->>>
---END--
+    >   {
+    >     "resources": [],
+    >     "owner": "http://gillian:8080/firethorn/community-member/57698559",
+    >     "text": null,
+    >     "callback": "http://gillian:8081/firethorn/callback/57698652",
+    >     "modified": "2019-05-08T19:34:59.347",
+    >     "history": [],
+    >     "input": "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource",
+    >     "delays": {
+    >       "first": null,
+    >       "last": null,
+    >       "every": null
+    >     },
+    >     "url": "http://gillian:8080/firethorn/blue/query/57698652",
+    >     "ident": "57698652",
+    >     "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+    >     "columns": [],
+    >     "fields": [],
+    >     "tables": [],
+    >     "mode": "AUTO",
+    >     "created": "2019-05-08T19:34:59.210",
+    >     "name": "XX_5U5BMFLXCC4E4AAAAFVJR4I3RI",
+    >     "results": {
+    >       "count": 0,
+    >       "state": "NONE",
+    >       "formats": {
+    >         "datatable": null,
+    >         "votable": null
+    >       },
+    >       "table": null
+    >     },
+    >     "osql": null,
+    >     "adql": null,
+    >     "workspace": "http://gillian:8080/firethorn/adql/resource/57688319",
+    >     "limits": {
+    >       "cells": null,
+    >       "rows": 1000000,
+    >       "time": null
+    >     },
+    >     "resource": "http://gillian:8080/firethorn/adql/resource/57688319",
+    >     "status": "FAILED",
+    >     "syntax": {
+    >       "status": "PARSE_ERROR",
+    >       "friendly": "3 unresolved identifiers: atlasSource [l.1 c.30 - l.1 c.50], ra [l.1 c.17 - l.1 c.19], dec [l.1 c.21 - l.1 c.24]!\n  - Unknown table \"ATLASDR1.atlasSource\" !\n  - Unknown column \"ra\" !\n  - Unknown column \"dec\" !",
+    >       "message": "3 unresolved identifiers: atlasSource [l.1 c.30 - l.1 c.50], ra [l.1 c.17 - l.1 c.19], dec [l.1 c.21 - l.1 c.24]!\n  - Unknown table \"ATLASDR1.atlasSource\" !\n  - Unknown column \"ra\" !\n  - Unknown column \"dec\" !"
+    >     },
+    >     "self": "http://gillian:8080/firethorn/blue/query/57698652"
+    >   }
+    >   >>> print(
+    >   ...     query_obj.table()
+    >   ...     )
+    >   ERROR:root:unknown url type: 'None'
+    >   Traceback (most recent call last):
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+    >       req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+    >     File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+    >       self.full_url = url
+    >     File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+    >       self._parse()
+    >     File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+    >       raise ValueError("unknown url type: %r" % self.full_url)
+    >   ValueError: unknown url type: 'None'
+    >   ERROR:root:unknown url type: 'None'
+    >   Traceback (most recent call last):
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+    >       req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+    >     File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+    >       self.full_url = url
+    >     File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+    >       self._parse()
+    >     File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+    >       raise ValueError("unknown url type: %r" % self.full_url)
+    >   ValueError: unknown url type: 'None'
+    >   ERROR:root:unknown url type: 'None'
+    >   Traceback (most recent call last):
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+    >       req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+    >     File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+    >       self.full_url = url
+    >     File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+    >       self._parse()
+    >     File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+    >       raise ValueError("unknown url type: %r" % self.full_url)
+    >   ValueError: unknown url type: 'None'
+    >   null
+    >   >>> print(
+    >   ...     query_obj.table().count()
+    >   ...     )
+    >   ERROR:root:unknown url type: 'None'
+    >   Traceback (most recent call last):
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+    >       req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+    >     File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+    >       self.full_url = url
+    >     File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+    >       self._parse()
+    >     File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+    >       raise ValueError("unknown url type: %r" % self.full_url)
+    >   ValueError: unknown url type: 'None'
+    >   ERROR:root:unknown url type: 'None'
+    >   Traceback (most recent call last):
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+    >       req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+    >     File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+    >       self.full_url = url
+    >     File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+    >       self._parse()
+    >     File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+    >       raise ValueError("unknown url type: %r" % self.full_url)
+    >   ValueError: unknown url type: 'None'
+    >   ERROR:root:unknown url type: 'None'
+    >   Traceback (most recent call last):
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 88, in get_json
+    >       req = urllib.request.Request( ident, headers=self.account.get_identity_as_headers())
+    >     File "/usr/lib/python3.5/urllib/request.py", line 269, in __init__
+    >       self.full_url = url
+    >     File "/usr/lib/python3.5/urllib/request.py", line 295, in full_url
+    >       self._parse()
+    >     File "/usr/lib/python3.5/urllib/request.py", line 324, in _parse
+    >       raise ValueError("unknown url type: %r" % self.full_url)
+    >   ValueError: unknown url type: 'None'
+    >   None
+    >   >>>
+    >   >>>
+    >   >>>
+    >   >>>
+    >   >>>
+    >   >>> resource = firethorn.firethorn_engine.select_adql_resources()[28]
+    >   ERROR:root:IncompleteRead(9713032 bytes read)
+    >   Traceback (most recent call last):
+    >     File "/usr/lib/python3.5/http/client.py", line 541, in _get_chunk_left
+    >       chunk_left = self._read_next_chunk_size()
+    >     File "/usr/lib/python3.5/http/client.py", line 508, in _read_next_chunk_size
+    >       return int(line, 16)
+    >   ValueError: invalid literal for int() with base 16: b''
+    >   
+    >   During handling of the above exception, another exception occurred:
+    >   
+    >   Traceback (most recent call last):
+    >     File "/usr/lib/python3.5/http/client.py", line 558, in _readall_chunked
+    >       chunk_left = self._get_chunk_left()
+    >     File "/usr/lib/python3.5/http/client.py", line 543, in _get_chunk_left
+    >       raise IncompleteRead(b'')
+    >   http.client.IncompleteRead: IncompleteRead(0 bytes read)
+    >   
+    >   During handling of the above exception, another exception occurred:
+    >   
+    >   Traceback (most recent call last):
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/core/firethorn_engine.py", line 238, in select_adql_resources
+    >       adqlresources =  json.loads(response.read().decode('utf-8'))
+    >     File "/usr/lib/python3.5/http/client.py", line 455, in read
+    >       return self._readall_chunked()
+    >     File "/usr/lib/python3.5/http/client.py", line 565, in _readall_chunked
+    >       raise IncompleteRead(b''.join(value))
+    >   http.client.IncompleteRead: IncompleteRead(9713032 bytes read)
+    >   Traceback (most recent call last):
+    >     File "<stdin>", line 1, in <module>
+    >   IndexError: list index out of range
+    >   >>>
 
 
 
@@ -339,212 +333,208 @@ IndexError: list index out of range
 
         tail -n 100 logs/firethorn-debug.log
 
---START--
-2019-05-08 19:48:30,592 DEBUG [callback-interface-1] [AnonymousAuthenticator] Adding anonymous Authentication
-2019-05-08 19:48:31,322 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   queryString [null]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   authType    [null]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug] Request headers
-2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   [host][localhost:8081]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   authType    [null]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug] Request headers
-2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   [host][localhost:8081]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   [user-agent][curl/7.59.0]
-2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   [accept][*/*]
-2019-05-08 19:48:32,659 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
-2019-05-08 19:48:34,236 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
-2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug] Request parameters
-2019-05-08 19:48:34,236 DEBUG [callback-interface-5] [HttpRequestDebug]   [user-agent][curl/7.59.0]
-2019-05-08 19:48:36,790 DEBUG [callback-interface-3] [HttpRequestDebug] ----
-2019-05-08 19:48:36,792 DEBUG [callback-interface-5] [HttpRequestDebug]   [accept][*/*]
-2019-05-08 19:48:36,792 DEBUG [callback-interface-5] [HttpRequestDebug] Request parameters
-2019-05-08 19:48:36,792 DEBUG [callback-interface-5] [HttpRequestDebug] ----
-2019-05-08 19:48:38,187 DEBUG [callback-interface-4] [HttpRequestDebug] Request properties
-2019-05-08 19:48:38,187 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info]
-2019-05-08 19:48:38,187 DEBUG [callback-interface-4] [HttpRequestDebug]   queryString [null]
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   authType    [null]
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug] Request headers
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   [host][localhost:8081]
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   [user-agent][curl/7.59.0]
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   [accept][*/*]
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug] Request parameters
-2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug] ----
-2019-05-08 19:48:43,346 DEBUG [main-interface-3] [AdqlQueryTimings] AdqlQueryTimings()
-2019-05-08 19:48:44,023 DEBUG [main-interface-3] [AdqlQueryTimings] AdqlQueryTimings()
-2019-05-08 19:48:45,865 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
-2019-05-08 19:49:27,372 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
-2019-05-08 19:49:27,372 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] com.mchange.v2.async.ThreadPoolAsynchronousRunner$DeadlockDetector@7e0b09b -- APPARENT DEADLOCK!!! Creating emergency threads for unassigned pending tasks!
-2019-05-08 19:51:34,886 DEBUG [callback-interface-3] [AnonymousAuthenticator] Adding anonymous Authentication
-2019-05-08 19:56:52,233 DEBUG [callback-interface-10] [HttpRequestDebug] Request properties
-2019-05-08 19:56:56,981 DEBUG [callback-interface-10] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info]
-2019-05-08 19:56:56,981 DEBUG [callback-interface-10] [HttpRequestDebug]   queryString [null]
-2019-05-08 19:56:58,423 DEBUG [callback-interface-10] [HttpRequestDebug]   authType    [null]
-2019-05-08 19:57:02,194 DEBUG [callback-interface-10] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
-2019-05-08 19:57:02,936 DEBUG [callback-interface-10] [HttpRequestDebug] Request headers
-2019-05-08 19:57:06,455 DEBUG [callback-interface-10] [HttpRequestDebug]   [host][localhost:8081]
-2019-05-08 19:57:06,455 DEBUG [callback-interface-10] [HttpRequestDebug]   [user-agent][curl/7.59.0]
-2019-05-08 19:57:07,149 DEBUG [callback-interface-10] [HttpRequestDebug]   [accept][*/*]
-2019-05-08 19:57:07,149 DEBUG [callback-interface-10] [HttpRequestDebug] Request parameters
-2019-05-08 19:57:07,149 DEBUG [callback-interface-10] [HttpRequestDebug] ----
-2019-05-08 19:57:10,840 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] com.mchange.v2.async.ThreadPoolAsynchronousRunner$DeadlockDetector@7e0b09b -- APPARENT DEADLOCK!!! Complete Status:
-	Managed Threads: 3
-	Active Threads: 3
-	Active Tasks:
-		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@481a442c (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0)
-		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@4a7c51dc (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1)
-		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@7998e972 (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2)
-	Pending Tasks:
-		com.mchange.v2.resourcepool.BasicResourcePool$1RefurbishCheckinResourceTask@3214a229
-		com.mchange.v2.resourcepool.BasicResourcePool$1RefurbishCheckinResourceTask@2835bb63
-Pool thread stack traces:
-	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0,5,main]
-		com.mchange.v2.resourcepool.BasicResourcePool.decrementPendingAcquires(BasicResourcePool.java:419)
-		com.mchange.v2.resourcepool.BasicResourcePool.access$900(BasicResourcePool.java:32)
-		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1887)
-		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
-	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1,5,main]
-		java.util.zip.ZipFile.getEntry(ZipFile.java:314)
-		java.util.jar.JarFile.getEntry(JarFile.java:240)
-		java.util.jar.JarFile.getJarEntry(JarFile.java:223)
-		org.apache.catalina.webresources.AbstractSingleArchiveResourceSet.getArchiveEntry(AbstractSingleArchiveResourceSet.java:98)
-		org.apache.catalina.webresources.AbstractArchiveResourceSet.getResource(AbstractArchiveResourceSet.java:256)
-		org.apache.catalina.webresources.StandardRoot.getResourceInternal(StandardRoot.java:281)
-		org.apache.catalina.webresources.Cache.getResource(Cache.java:62)
-		org.apache.catalina.webresources.StandardRoot.getResource(StandardRoot.java:216)
-		org.apache.catalina.webresources.StandardRoot.getClassLoaderResource(StandardRoot.java:225)
-		org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2241)
-		org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:833)
-		org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1278)
-		org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1138)
-		org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:250)
-		org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
-		org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:195)
-		org.postgresql.Driver.makeConnection(Driver.java:454)
-		org.postgresql.Driver.connect(Driver.java:256)
-		com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
-		com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
-		com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
-		com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
-		com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
-		com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
-		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
-		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
-	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2,5,main]
-		com.mchange.v2.resourcepool.BasicResourcePool.decrementPendingAcquires(BasicResourcePool.java:419)
-		com.mchange.v2.resourcepool.BasicResourcePool.access$900(BasicResourcePool.java:32)
-		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1887)
-		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
-
-2019-05-08 19:59:26,545 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] Task com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@4a7c51dc (in deadlocked PoolThread) failed to complete in maximum time 60000ms. Trying interrupt().
---END--
+    >   2019-05-08 19:48:30,592 DEBUG [callback-interface-1] [AnonymousAuthenticator] Adding anonymous Authentication
+    >   2019-05-08 19:48:31,322 DEBUG [callback-interface-5] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   queryString [null]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   authType    [null]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug] Request headers
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-5] [HttpRequestDebug]   [host][localhost:8081]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   authType    [null]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug] Request headers
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   [host][localhost:8081]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   [user-agent][curl/7.59.0]
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug]   [accept][*/*]
+    >   2019-05-08 19:48:32,659 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
+    >   2019-05-08 19:48:34,236 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
+    >   2019-05-08 19:48:34,235 DEBUG [callback-interface-3] [HttpRequestDebug] Request parameters
+    >   2019-05-08 19:48:34,236 DEBUG [callback-interface-5] [HttpRequestDebug]   [user-agent][curl/7.59.0]
+    >   2019-05-08 19:48:36,790 DEBUG [callback-interface-3] [HttpRequestDebug] ----
+    >   2019-05-08 19:48:36,792 DEBUG [callback-interface-5] [HttpRequestDebug]   [accept][*/*]
+    >   2019-05-08 19:48:36,792 DEBUG [callback-interface-5] [HttpRequestDebug] Request parameters
+    >   2019-05-08 19:48:36,792 DEBUG [callback-interface-5] [HttpRequestDebug] ----
+    >   2019-05-08 19:48:38,187 DEBUG [callback-interface-4] [HttpRequestDebug] Request properties
+    >   2019-05-08 19:48:38,187 DEBUG [callback-interface-4] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info]
+    >   2019-05-08 19:48:38,187 DEBUG [callback-interface-4] [HttpRequestDebug]   queryString [null]
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   authType    [null]
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug] Request headers
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   [host][localhost:8081]
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   [user-agent][curl/7.59.0]
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug]   [accept][*/*]
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug] Request parameters
+    >   2019-05-08 19:48:40,630 DEBUG [callback-interface-4] [HttpRequestDebug] ----
+    >   2019-05-08 19:48:43,346 DEBUG [main-interface-3] [AdqlQueryTimings] AdqlQueryTimings()
+    >   2019-05-08 19:48:44,023 DEBUG [main-interface-3] [AdqlQueryTimings] AdqlQueryTimings()
+    >   2019-05-08 19:48:45,865 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
+    >   2019-05-08 19:49:27,372 DEBUG [main-interface-3] [JdbcSchemaEntity] services()
+    >   2019-05-08 19:49:27,372 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] com.mchange.v2.async.ThreadPoolAsynchronousRunner$DeadlockDetector@7e0b09b -- APPARENT DEADLOCK!!! Creating emergency threads for unassigned pending tasks!
+    >   2019-05-08 19:51:34,886 DEBUG [callback-interface-3] [AnonymousAuthenticator] Adding anonymous Authentication
+    >   2019-05-08 19:56:52,233 DEBUG [callback-interface-10] [HttpRequestDebug] Request properties
+    >   2019-05-08 19:56:56,981 DEBUG [callback-interface-10] [HttpRequestDebug]   requestURL  [http://localhost:8081/firethorn/system/info]
+    >   2019-05-08 19:56:56,981 DEBUG [callback-interface-10] [HttpRequestDebug]   queryString [null]
+    >   2019-05-08 19:56:58,423 DEBUG [callback-interface-10] [HttpRequestDebug]   authType    [null]
+    >   2019-05-08 19:57:02,194 DEBUG [callback-interface-10] [HttpRequestDebug]   remoteAddr  [127.0.0.1]
+    >   2019-05-08 19:57:02,936 DEBUG [callback-interface-10] [HttpRequestDebug] Request headers
+    >   2019-05-08 19:57:06,455 DEBUG [callback-interface-10] [HttpRequestDebug]   [host][localhost:8081]
+    >   2019-05-08 19:57:06,455 DEBUG [callback-interface-10] [HttpRequestDebug]   [user-agent][curl/7.59.0]
+    >   2019-05-08 19:57:07,149 DEBUG [callback-interface-10] [HttpRequestDebug]   [accept][*/*]
+    >   2019-05-08 19:57:07,149 DEBUG [callback-interface-10] [HttpRequestDebug] Request parameters
+    >   2019-05-08 19:57:07,149 DEBUG [callback-interface-10] [HttpRequestDebug] ----
+    >   2019-05-08 19:57:10,840 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] com.mchange.v2.async.ThreadPoolAsynchronousRunner$DeadlockDetector@7e0b09b -- APPARENT DEADLOCK!!! Complete Status:
+    >   	Managed Threads: 3
+    >   	Active Threads: 3
+    >   	Active Tasks:
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@481a442c (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@4a7c51dc (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@7998e972 (com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2)
+    >   	Pending Tasks:
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$1RefurbishCheckinResourceTask@3214a229
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$1RefurbishCheckinResourceTask@2835bb63
+    >   Pool thread stack traces:
+    >   	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0,5,main]
+    >   		com.mchange.v2.resourcepool.BasicResourcePool.decrementPendingAcquires(BasicResourcePool.java:419)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool.access$900(BasicResourcePool.java:32)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1887)
+    >   		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+    >   	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1,5,main]
+    >   		java.util.zip.ZipFile.getEntry(ZipFile.java:314)
+    >   		java.util.jar.JarFile.getEntry(JarFile.java:240)
+    >   		java.util.jar.JarFile.getJarEntry(JarFile.java:223)
+    >   		org.apache.catalina.webresources.AbstractSingleArchiveResourceSet.getArchiveEntry(AbstractSingleArchiveResourceSet.java:98)
+    >   		org.apache.catalina.webresources.AbstractArchiveResourceSet.getResource(AbstractArchiveResourceSet.java:256)
+    >   		org.apache.catalina.webresources.StandardRoot.getResourceInternal(StandardRoot.java:281)
+    >   		org.apache.catalina.webresources.Cache.getResource(Cache.java:62)
+    >   		org.apache.catalina.webresources.StandardRoot.getResource(StandardRoot.java:216)
+    >   		org.apache.catalina.webresources.StandardRoot.getClassLoaderResource(StandardRoot.java:225)
+    >   		org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2241)
+    >   		org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:833)
+    >   		org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1278)
+    >   		org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1138)
+    >   		org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:250)
+    >   		org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49)
+    >   		org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:195)
+    >   		org.postgresql.Driver.makeConnection(Driver.java:454)
+    >   		org.postgresql.Driver.connect(Driver.java:256)
+    >   		com.mchange.v2.c3p0.DriverManagerDataSource.getConnection(DriverManagerDataSource.java:134)
+    >   		com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:182)
+    >   		com.mchange.v2.c3p0.WrapperConnectionPoolDataSource.getPooledConnection(WrapperConnectionPoolDataSource.java:171)
+    >   		com.mchange.v2.c3p0.impl.C3P0PooledConnectionPool$1PooledConnectionResourcePoolManager.acquireResource(C3P0PooledConnectionPool.java:137)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool.doAcquire(BasicResourcePool.java:1014)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool.access$800(BasicResourcePool.java:32)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1810)
+    >   		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+    >   	Thread[com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2,5,main]
+    >   		com.mchange.v2.resourcepool.BasicResourcePool.decrementPendingAcquires(BasicResourcePool.java:419)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool.access$900(BasicResourcePool.java:32)
+    >   		com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask.run(BasicResourcePool.java:1887)
+    >   		com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread.run(ThreadPoolAsynchronousRunner.java:547)
+    >   
+    >   2019-05-08 19:59:26,545 WARN  [Timer-0] [ThreadPoolAsynchronousRunner] Task com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@4a7c51dc (in deadlocked PoolThread) failed to complete in maximum time 60000ms. Trying interrupt().
 
     tail -n 100 logs/firethorn-trace.log
 
---START--
-2019-05-08 20:17:33,686 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:36,580 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754910]
-2019-05-08 20:17:36,580 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:37,363 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:37,363 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:40,212 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:17:40,213 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:42,353 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:43,793 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754909]
-2019-05-08 20:17:44,500 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:45,886 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:47,983 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:53,135 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:17:54,679 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:17:57,601 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:01,181 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754908]
-2019-05-08 20:18:01,897 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:03,326 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:04,806 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:09,791 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:18:12,605 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:24,786 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:27,672 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754907]
-2019-05-08 20:18:27,672 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:32,072 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:32,072 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:35,729 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:18:38,654 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:40,785 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:44,659 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754906]
-2019-05-08 20:18:44,659 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:47,137 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:49,387 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:53,563 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:18:54,255 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:54,255 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:18:58,588 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754905]
-2019-05-08 20:18:59,319 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:00,056 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:01,598 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:02,341 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:19:05,328 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:06,127 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:10,942 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754904]
-2019-05-08 20:19:14,163 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:17,369 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:26,151 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:30,374 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:19:32,527 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:34,588 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:37,357 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754903]
-2019-05-08 20:19:40,885 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:44,329 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:53,642 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:19:57,191 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:20:00,019 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:10,334 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:20,901 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754902]
-2019-05-08 20:20:21,729 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:24,094 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:24,873 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:28,789 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:20:29,581 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:39,949 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:47,558 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750801]
-2019-05-08 20:20:47,558 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:48,242 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:50,360 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:53,869 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:20:56,645 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:20:59,454 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:04,386 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750800]
-2019-05-08 20:21:04,386 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:06,581 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:09,381 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:12,257 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:21:13,696 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:16,517 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:21,786 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750799]
-2019-05-08 20:21:21,786 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:23,973 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:26,908 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:31,215 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:21:34,123 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:37,228 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:43,020 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750798]
-2019-05-08 20:21:45,862 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:47,251 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:50,799 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:21:54,968 TRACE [main-interface-2] [IdentityEntity] services()
-2019-05-08 20:21:59,238 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:22:02,876 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:22:19,458 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750797]
-2019-05-08 20:22:20,978 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:22:25,532 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:22:30,615 TRACE [main-interface-2] [AdqlResourceEntity] services()
-2019-05-08 20:24:14,090 TRACE [main-interface-2] [AnonymousAuthenticator] afterCompletion()
-2019-05-08 20:24:28,569 TRACE [main-interface-2] [OperationInterceptor] afterCompletion()
-2019-05-08 20:24:28,569 TRACE [main-interface-2] [OperationInterceptor] Operation [57698710][http://gillian:8080/firethorn/adql/resource/select]
-2019-05-08 20:24:28,569 DEBUG [main-interface-2] [OperationInterceptor] Exception [org.springframework.web.util.NestedServletException][Handler dispatch failed; nested exception is java.lang.OutOfMemoryError: Java heap space]
---END--
+    >   2019-05-08 20:17:33,686 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:36,580 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754910]
+    >   2019-05-08 20:17:36,580 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:37,363 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:37,363 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:40,212 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:17:40,213 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:42,353 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:43,793 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754909]
+    >   2019-05-08 20:17:44,500 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:45,886 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:47,983 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:53,135 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:17:54,679 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:17:57,601 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:01,181 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754908]
+    >   2019-05-08 20:18:01,897 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:03,326 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:04,806 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:09,791 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:18:12,605 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:24,786 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:27,672 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754907]
+    >   2019-05-08 20:18:27,672 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:32,072 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:32,072 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:35,729 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:18:38,654 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:40,785 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:44,659 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754906]
+    >   2019-05-08 20:18:44,659 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:47,137 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:49,387 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:53,563 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:18:54,255 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:54,255 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:18:58,588 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754905]
+    >   2019-05-08 20:18:59,319 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:00,056 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:01,598 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:02,341 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:19:05,328 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:06,127 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:10,942 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754904]
+    >   2019-05-08 20:19:14,163 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:17,369 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:26,151 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:30,374 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:19:32,527 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:34,588 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:37,357 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754903]
+    >   2019-05-08 20:19:40,885 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:44,329 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:53,642 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:19:57,191 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:20:00,019 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:10,334 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:20,901 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54754902]
+    >   2019-05-08 20:20:21,729 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:24,094 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:24,873 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:28,789 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:20:29,581 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:39,949 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:47,558 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750801]
+    >   2019-05-08 20:20:47,558 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:48,242 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:50,360 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:53,869 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:20:56,645 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:20:59,454 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:04,386 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750800]
+    >   2019-05-08 20:21:04,386 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:06,581 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:09,381 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:12,257 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:21:13,696 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:16,517 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:21,786 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750799]
+    >   2019-05-08 20:21:21,786 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:23,973 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:26,908 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:31,215 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:21:34,123 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:37,228 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:43,020 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750798]
+    >   2019-05-08 20:21:45,862 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:47,251 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:50,799 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:21:54,968 TRACE [main-interface-2] [IdentityEntity] services()
+    >   2019-05-08 20:21:59,238 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:22:02,876 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:22:19,458 TRACE [main-interface-2] [AbstractEntityBeanImpl] AbstractEntityBeanImpl [http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json][54750797]
+    >   2019-05-08 20:22:20,978 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:22:25,532 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:22:30,615 TRACE [main-interface-2] [AdqlResourceEntity] services()
+    >   2019-05-08 20:24:14,090 TRACE [main-interface-2] [AnonymousAuthenticator] afterCompletion()
+    >   2019-05-08 20:24:28,569 TRACE [main-interface-2] [OperationInterceptor] afterCompletion()
+    >   2019-05-08 20:24:28,569 TRACE [main-interface-2] [OperationInterceptor] Operation [57698710][http://gillian:8080/firethorn/adql/resource/select]
+    >   2019-05-08 20:24:28,569 DEBUG [main-interface-2] [OperationInterceptor] Exception [org.springframework.web.util.NestedServletException][Handler dispatch failed; nested exception is java.lang.OutOfMemoryError: Java heap space]
 
 # -----------------------------------------------------
 
@@ -561,23 +551,21 @@ Pool thread stack traces:
 
     df -h
 
---START--
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/sda2        92G   58G   30G  66% /
-udev             10M     0   10M   0% /dev
-tmpfs            26G  1.2G   25G   5% /run
-tmpfs            64G     0   64G   0% /dev/shm
-tmpfs           5.0M     0  5.0M   0% /run/lock
-tmpfs            64G     0   64G   0% /sys/fs/cgroup
-/dev/sda1       511M  132K  511M   1% /boot/efi
-/dev/sda4       9.1G   22M  8.6G   1% /tmp
-/dev/sda5        65G  5.4G   56G   9% /var
-/dev/sda6        53G   53M   50G   1% /home
-/dev/sdc1       3.6T   68M  3.4T   1% /data2
-/dev/sdb1       3.6T   74M  3.4T   1% /data1
-tmpfs            13G     0   13G   0% /run/user/1005
-tmpfs            13G     0   13G   0% /run/user/0
---END--
+    >   Filesystem      Size  Used Avail Use% Mounted on
+    >   /dev/sda2        92G   58G   30G  66% /
+    >   udev             10M     0   10M   0% /dev
+    >   tmpfs            26G  1.2G   25G   5% /run
+    >   tmpfs            64G     0   64G   0% /dev/shm
+    >   tmpfs           5.0M     0  5.0M   0% /run/lock
+    >   tmpfs            64G     0   64G   0% /sys/fs/cgroup
+    >   /dev/sda1       511M  132K  511M   1% /boot/efi
+    >   /dev/sda4       9.1G   22M  8.6G   1% /tmp
+    >   /dev/sda5        65G  5.4G   56G   9% /var
+    >   /dev/sda6        53G   53M   50G   1% /home
+    >   /dev/sdc1       3.6T   68M  3.4T   1% /data2
+    >   /dev/sdb1       3.6T   74M  3.4T   1% /data1
+    >   tmpfs            13G     0   13G   0% /run/user/1005
+    >   tmpfs            13G     0   13G   0% /run/user/0
 
 # -----------------------------------------------------
 # Memory on the host is not the issue (29G cached).
@@ -585,12 +573,10 @@ tmpfs            13G     0   13G   0% /run/user/0
 
     free -h
 
---START--
-             total       used       free     shared    buffers     cached
-Mem:          126G        39G        86G       1.1G       297M        29G
--/+ buffers/cache:       9.3G       116G
-Swap:         1.9G         0B       1.9G
---END--
+    >                total       used       free     shared    buffers     cached
+    >   Mem:          126G        39G        86G       1.1G       297M        29G
+    >   -/+ buffers/cache:       9.3G       116G
+    >   Swap:         1.9G         0B       1.9G
 
 
 # -----------------------------------------------------
@@ -599,17 +585,15 @@ Swap:         1.9G         0B       1.9G
 
     df -h
 
---START--
-Filesystem      Size  Used Avail Use% Mounted on
-devtmpfs        2.0G     0  2.0G   0% /dev
-tmpfs           2.0G     0  2.0G   0% /dev/shm
-tmpfs           2.0G  940K  2.0G   1% /run
-tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
-/dev/vda3        31G   23G  7.7G  75% /
-tmpfs           2.0G   25M  2.0G   2% /tmp
-/dev/vda1       240M   89M  135M  40% /boot
-tmpfs           395M     0  395M   0% /run/user/1001
---END--
+    >   Filesystem      Size  Used Avail Use% Mounted on
+    >   devtmpfs        2.0G     0  2.0G   0% /dev
+    >   tmpfs           2.0G     0  2.0G   0% /dev/shm
+    >   tmpfs           2.0G  940K  2.0G   1% /run
+    >   tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+    >   /dev/vda3        31G   23G  7.7G  75% /
+    >   tmpfs           2.0G   25M  2.0G   2% /tmp
+    >   /dev/vda1       240M   89M  135M  40% /boot
+    >   tmpfs           395M     0  395M   0% /run/user/1001
 
 
 # -----------------------------------------------------
@@ -618,11 +602,9 @@ tmpfs           395M     0  395M   0% /run/user/1001
 
     free -h
 
---START--
-              total        used        free      shared  buff/cache   available
-Mem:           3.9G        2.1G        125M        158M        1.7G        1.4G
-Swap:          1.0G        174M        849M
---END--
+    >                 total        used        free      shared  buff/cache   available
+    >   Mem:           3.9G        2.1G        125M        158M        1.7G        1.4G
+    >   Swap:          1.0G        174M        849M
 
 # -----------------------------------------------------
 # Disc space in the container is not the issue (75% used).
@@ -630,19 +612,17 @@ Swap:          1.0G        174M        849M
 
     df -h
 
---START--
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/vda3        31G   23G  7.7G  75% /
-tmpfs            64M     0   64M   0% /dev
-tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
-tmpfs           2.0G     0  2.0G   0% /run
-tmpfs           2.0G   32K  2.0G   1% /tmp
-/dev/vda3        31G   23G  7.7G  75% /etc/firethorn.properties
-shm              64M     0   64M   0% /dev/shm
-tmpfs           2.0G     0  2.0G   0% /proc/acpi
-tmpfs           2.0G     0  2.0G   0% /proc/scsi
-tmpfs           2.0G     0  2.0G   0% /sys/firmware
---END--
+    >   Filesystem      Size  Used Avail Use% Mounted on
+    >   /dev/vda3        31G   23G  7.7G  75% /
+    >   tmpfs            64M     0   64M   0% /dev
+    >   tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+    >   tmpfs           2.0G     0  2.0G   0% /run
+    >   tmpfs           2.0G   32K  2.0G   1% /tmp
+    >   /dev/vda3        31G   23G  7.7G  75% /etc/firethorn.properties
+    >   shm              64M     0   64M   0% /dev/shm
+    >   tmpfs           2.0G     0  2.0G   0% /proc/acpi
+    >   tmpfs           2.0G     0  2.0G   0% /proc/scsi
+    >   tmpfs           2.0G     0  2.0G   0% /sys/firmware
 
 
 # -----------------------------------------------------
@@ -656,12 +636,10 @@ tmpfs           2.0G     0  2.0G   0% /sys/firmware
             --username "${metauser:?}" \
             --dbname   "${metadata:?}"
 
---START--
-psql (10.6 (Debian 10.6-1.pgdg90+1))
-Type "help" for help.
-
-postgres=#
---END--
+    >   psql (10.6 (Debian 10.6-1.pgdg90+1))
+    >   Type "help" for help.
+    >   
+    >   postgres=#
 
 
 # -----------------------------------------------------
@@ -670,39 +648,37 @@ postgres=#
 
     \dt
 
---START--
-                                 List of relations
- Schema |                   Name                    | Type  |        Owner
---------+-------------------------------------------+-------+----------------------
- public | ft020116adqlcolumnentity                  | table | liengooXien1mooP0tae
- public | ft020116adqlresourceentity                | table | liengooXien1mooP0tae
- public | ft020116adqlschemaentity                  | table | liengooXien1mooP0tae
- public | ft020116adqltableentity                   | table | liengooXien1mooP0tae
- public | ft020116authmethodentity                  | table | liengooXien1mooP0tae
- public | ft020116bluequeryentity                   | table | liengooXien1mooP0tae
- public | ft020116bluequeryentityjointobaseresource | table | liengooXien1mooP0tae
- public | ft020116bluetaskentity                    | table | liengooXien1mooP0tae
- public | ft020116bluetasklogentity                 | table | liengooXien1mooP0tae
- public | ft020116bluetaskparam                     | table | liengooXien1mooP0tae
- public | ft020116communityentity                   | table | liengooXien1mooP0tae
- public | ft020116configproperty                    | table | liengooXien1mooP0tae
- public | ft020116identityentity                    | table | liengooXien1mooP0tae
- public | ft020116ivoacolumnentity                  | table | liengooXien1mooP0tae
- public | ft020116ivoaresourceentity                | table | liengooXien1mooP0tae
- public | ft020116ivoaschemaentity                  | table | liengooXien1mooP0tae
- public | ft020116ivoatableentity                   | table | liengooXien1mooP0tae
- public | ft020116jdbccolumnentity                  | table | liengooXien1mooP0tae
- public | ft020116jdbcresourceentity                | table | liengooXien1mooP0tae
- public | ft020116jdbcschemaentity                  | table | liengooXien1mooP0tae
- public | ft020116jdbctableentity                   | table | liengooXien1mooP0tae
- public | ft020116ogsadqpresourceentity             | table | liengooXien1mooP0tae
- public | ft020116ogsaexecresourceentity            | table | liengooXien1mooP0tae
- public | ft020116ogsaivoaresourceentity            | table | liengooXien1mooP0tae
- public | ft020116ogsajdbcresourceentity            | table | liengooXien1mooP0tae
- public | ft020116ogsaserviceentity                 | table | liengooXien1mooP0tae
- public | ft020116operationentity                   | table | liengooXien1mooP0tae
-(27 rows)
---END--
+    >                                    List of relations
+    >    Schema |                   Name                    | Type  |        Owner
+    >   --------+-------------------------------------------+-------+----------------------
+    >    public | ft020116adqlcolumnentity                  | table | liengooXien1mooP0tae
+    >    public | ft020116adqlresourceentity                | table | liengooXien1mooP0tae
+    >    public | ft020116adqlschemaentity                  | table | liengooXien1mooP0tae
+    >    public | ft020116adqltableentity                   | table | liengooXien1mooP0tae
+    >    public | ft020116authmethodentity                  | table | liengooXien1mooP0tae
+    >    public | ft020116bluequeryentity                   | table | liengooXien1mooP0tae
+    >    public | ft020116bluequeryentityjointobaseresource | table | liengooXien1mooP0tae
+    >    public | ft020116bluetaskentity                    | table | liengooXien1mooP0tae
+    >    public | ft020116bluetasklogentity                 | table | liengooXien1mooP0tae
+    >    public | ft020116bluetaskparam                     | table | liengooXien1mooP0tae
+    >    public | ft020116communityentity                   | table | liengooXien1mooP0tae
+    >    public | ft020116configproperty                    | table | liengooXien1mooP0tae
+    >    public | ft020116identityentity                    | table | liengooXien1mooP0tae
+    >    public | ft020116ivoacolumnentity                  | table | liengooXien1mooP0tae
+    >    public | ft020116ivoaresourceentity                | table | liengooXien1mooP0tae
+    >    public | ft020116ivoaschemaentity                  | table | liengooXien1mooP0tae
+    >    public | ft020116ivoatableentity                   | table | liengooXien1mooP0tae
+    >    public | ft020116jdbccolumnentity                  | table | liengooXien1mooP0tae
+    >    public | ft020116jdbcresourceentity                | table | liengooXien1mooP0tae
+    >    public | ft020116jdbcschemaentity                  | table | liengooXien1mooP0tae
+    >    public | ft020116jdbctableentity                   | table | liengooXien1mooP0tae
+    >    public | ft020116ogsadqpresourceentity             | table | liengooXien1mooP0tae
+    >    public | ft020116ogsaexecresourceentity            | table | liengooXien1mooP0tae
+    >    public | ft020116ogsaivoaresourceentity            | table | liengooXien1mooP0tae
+    >    public | ft020116ogsajdbcresourceentity            | table | liengooXien1mooP0tae
+    >    public | ft020116ogsaserviceentity                 | table | liengooXien1mooP0tae
+    >    public | ft020116operationentity                   | table | liengooXien1mooP0tae
+    >   (27 rows)
 
 # -----------------------------------------------------
 # Check the how big the tables are.
@@ -710,235 +686,183 @@ postgres=#
 
     SELECT COUNT(*) FROM ft020116adqlcolumnentity ;
 
---START--
-  count
----------
- 4431653
---END--
+    >     count
+    >   ---------
+    >    4431653
 
     SELECT COUNT(*) FROM ft020116adqlschemaentity ;
 
---START--
- count
---------
- 124803
-(1 row)
---END--
+    >    count
+    >   --------
+    >    124803
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116adqltableentity ;
 
---START--
- count
---------
- 166863
-(1 row)
---END--
+    >    count
+    >   --------
+    >    166863
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116authmethodentity ;
 
---START--
-  count
-----------
- 16020562
---END--
+    >     count
+    >   ----------
+    >    16020562
 
     SELECT COUNT(*) FROM ft020116bluequeryentity ;
 
---START--
- count
---------
- 171174
-(1 row)
---END--
+    >    count
+    >   --------
+    >    171174
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116bluequeryentityjointobaseresource ;
 
---START--
- count
---------
- 165455
-(1 row)
---END--
+    >    count
+    >   --------
+    >    165455
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116bluetaskentity ;
 
---START--
- count
---------
- 171174
-(1 row)
---END--
+    >    count
+    >   --------
+    >    171174
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116bluetasklogentity ;
 
---START--
- count
---------
- 552679
-(1 row)
---END--
+    >    count
+    >   --------
+    >    552679
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116bluetaskparam ;
 
---START--
- count
--------
-  2832
-(1 row)
---END--
+    >    count
+    >   -------
+    >     2832
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116communityentity ;
 
---START--
- count
--------
-     2
-(1 row)
---END--
+    >    count
+    >   -------
+    >        2
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116configproperty ;
 
---START--
- count
--------
-     0
-(1 row)
---END--
+    >    count
+    >   -------
+    >        0
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116identityentity ;
 
---START--
-  count
-----------
- 15313504
-(1 row)
---END--
+    >     count
+    >   ----------
+    >    15313504
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ivoacolumnentity ;
 
---START--
- count
--------
-     0
-(1 row)
---END--
+    >    count
+    >   -------
+    >        0
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ivoaresourceentity ;
 
---START--
- count
--------
-     0
-(1 row)
---END--
+    >    count
+    >   -------
+    >        0
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ivoaschemaentity ;
 
---START--
- count
--------
-     0
-(1 row)
---END--
+    >    count
+    >   -------
+    >        0
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ivoatableentity ;
 
---START--
- count
--------
-     0
-(1 row)
---END--
+    >    count
+    >   -------
+    >        0
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116jdbccolumnentity ;
 
---START--
-  count
----------
- 4431979
-(1 row)
---END--
+    >     count
+    >   ---------
+    >    4431979
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116jdbcresourceentity ;
 
---START--
- count
--------
-    15
-(1 row)
---END--
+    >    count
+    >   -------
+    >       15
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116jdbcschemaentity ;
 
---START--
- count
--------
-  1206
-(1 row)
---END--
+    >    count
+    >   -------
+    >     1206
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116jdbctableentity ;
 
---START--
- count
---------
- 167273
-(1 row)
---END--
+    >    count
+    >   --------
+    >    167273
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ogsadqpresourceentity ;
 
---START--
- count
--------
-     0
-(1 row)
---END--
+    >    count
+    >   -------
+    >        0
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ogsaexecresourceentity ;
 
---START--
- count
---------
- 165196
-(1 row)
---END--
+    >    count
+    >   --------
+    >    165196
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ogsaivoaresourceentity ;
 
---START--
- count
--------
-     0
-(1 row)
---END--
+    >    count
+    >   -------
+    >        0
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ogsajdbcresourceentity ;
 
---START--
- count
--------
-     4
-(1 row)
---END--
+    >    count
+    >   -------
+    >        4
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116ogsaserviceentity ;
 
---START--
- count
--------
-     1
-(1 row)
---END--
+    >    count
+    >   -------
+    >        1
+    >   (1 row)
 
     SELECT COUNT(*) FROM ft020116operationentity ;
 
---START--
-  count
-----------
- 16020567
-(1 row)
---END--
+    >     count
+    >   ----------
+    >    16020567
+    >   (1 row)
 
 
 # -----------------------------------------------------
@@ -1013,20 +937,18 @@ postgres=#
     # authmethodentity has way too many fields.
     # It is just a link from [identity] to [operation] with [method]
 
---START--
-                 Table "public.ft020116authmethodentity"
-  Column   |            Type             | Collation | Nullable | Default
------------+-----------------------------+-----------+----------+---------
- ident     | bigint                      |           | not null |
- created   | timestamp without time zone |           | not null |
- modified  | timestamp without time zone |           | not null |
- uidhi     | bigint                      |           | not null |
- uidlo     | bigint                      |           | not null |
- method    | character varying(255)      |           |          |
- owner     | bigint                      |           |          |
- identity  | bigint                      |           | not null |
- operation | bigint                      |           | not null |
---END--
+    >                    Table "public.ft020116authmethodentity"
+    >     Column   |            Type             | Collation | Nullable | Default
+    >   -----------+-----------------------------+-----------+----------+---------
+    >    ident     | bigint                      |           | not null |
+    >    created   | timestamp without time zone |           | not null |
+    >    modified  | timestamp without time zone |           | not null |
+    >    uidhi     | bigint                      |           | not null |
+    >    uidlo     | bigint                      |           | not null |
+    >    method    | character varying(255)      |           |          |
+    >    owner     | bigint                      |           |          |
+    >    identity  | bigint                      |           | not null |
+    >    operation | bigint                      |           | not null |
 
     #
     # Options for optimisation ... but nothing that would kill the service.
@@ -1044,12 +966,10 @@ postgres=#
             --username "${tapschemauser:?}" \
             --dbname   "${tapschemadata:?}"
 
---START--
-psql (10.6 (Debian 10.6-1.pgdg90+1))
-Type "help" for help.
-
-postgres=#
---END--
+    >   psql (10.6 (Debian 10.6-1.pgdg90+1))
+    >   Type "help" for help.
+    >   
+    >   postgres=#
 
 # -----------------------------------------------------
 # List the database tables.
@@ -1057,9 +977,7 @@ postgres=#
 
     \dt
 
---START--
-Did not find any relations.
---END--
+    >   Did not find any relations.
 
 
 # -----------------------------------------------------
@@ -1068,27 +986,23 @@ Did not find any relations.
 
     grep 'tapschema' chain.properties
 
---START--
-tapschemadata=postgres
-tapschemauser=ieW7oomei7Laebuu9Ax7
-tapschemapass=vamee3puChoomahz9Iek
-tapschemahost=carolina
-tapschemaport=5432
-tapschematype=pgsql
-tapschemajdbc=tapschemajdbc
---END--
+    >   tapschemadata=postgres
+    >   tapschemauser=ieW7oomei7Laebuu9Ax7
+    >   tapschemapass=vamee3puChoomahz9Iek
+    >   tapschemahost=carolina
+    >   tapschemaport=5432
+    >   tapschematype=pgsql
+    >   tapschemajdbc=tapschemajdbc
 
 
     grep 'tapschema' firethorn.properties
 
---START--
-firethorn.tapschema.resource.name=tapschemajdbc
-firethorn.tapschema.database.name=postgres
-firethorn.tapschema.database.host=carolina
-firethorn.tapschema.database.port=5432
-firethorn.tapschema.database.user=ieW7oomei7Laebuu9Ax7
-firethorn.tapschema.database.pass=vamee3puChoomahz9Iek
---END--
+    >   firethorn.tapschema.resource.name=tapschemajdbc
+    >   firethorn.tapschema.database.name=postgres
+    >   firethorn.tapschema.database.host=carolina
+    >   firethorn.tapschema.database.port=5432
+    >   firethorn.tapschema.database.user=ieW7oomei7Laebuu9Ax7
+    >   firethorn.tapschema.database.pass=vamee3puChoomahz9Iek
 
 
 # -----------------------------------------------------
@@ -1107,15 +1021,13 @@ firethorn.tapschema.database.pass=vamee3puChoomahz9Iek
 
     docker-compose --file "docker-compose.yml" run firethorn-py
 
---START--
-Starting stevedore_bethany_1  ... done
-Starting stevedore_jarmila_1  ... done
-Starting stevedore_carolina_1 ... done
-Starting stevedore_gillian_1  ... done
-Python 3.5.2 (default, Nov 12 2018, 13:43:14)
-[GCC 5.4.0 20160609] on linux
-Type "help", "copyright", "credits" or "license" for more information.
---END--
+    >   Starting stevedore_bethany_1  ... done
+    >   Starting stevedore_jarmila_1  ... done
+    >   Starting stevedore_carolina_1 ... done
+    >   Starting stevedore_gillian_1  ... done
+    >   Python 3.5.2 (default, Nov 12 2018, 13:43:14)
+    >   [GCC 5.4.0 20160609] on linux
+    >   Type "help", "copyright", "credits" or "license" for more information.
 
 
 # -----------------------------------------------------
@@ -1157,23 +1069,21 @@ resource = firethorn.firethorn_engine.select_adql_resource_by_ident(
     )
 
 print(resource)
---START--
-{
-  "name": "OSA ADQL resource",
-  "fullname": "OSA ADQL resource",
-  "owner": "http://tap.roe.ac.uk/firethorn/community-member/163",
-  "ident": "54",
-  "url": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
-  "modified": "2018-12-12T18:44:59.556",
-  "schemas": "http://tap.roe.ac.uk/firethorn/adql/resource/54/schemas/select",
-  "queries": "http://tap.roe.ac.uk/firethorn/adql/resource/54/queries/select",
-  "self": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
-  "created": "2018-12-12T18:44:59.555",
-  "vosi": "http://tap.roe.ac.uk/firethorn/adql/resource/54/vosi",
-  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
-  "text": null
-}
---END--
+    >   {
+    >     "name": "OSA ADQL resource",
+    >     "fullname": "OSA ADQL resource",
+    >     "owner": "http://tap.roe.ac.uk/firethorn/community-member/163",
+    >     "ident": "54",
+    >     "url": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
+    >     "modified": "2018-12-12T18:44:59.556",
+    >     "schemas": "http://tap.roe.ac.uk/firethorn/adql/resource/54/schemas/select",
+    >     "queries": "http://tap.roe.ac.uk/firethorn/adql/resource/54/queries/select",
+    >     "self": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
+    >     "created": "2018-12-12T18:44:59.555",
+    >     "vosi": "http://tap.roe.ac.uk/firethorn/adql/resource/54/vosi",
+    >     "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
+    >     "text": null
+    >   }
 
 #
 # Create and run a query on the resource.
@@ -1189,143 +1099,137 @@ print(
     query_obj
     )
 
---START--
-{
-  "columns": [],
-  "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698915",
-  "results": {
-    "state": "COMPLETED",
-    "count": 1000,
-    "formats": {
-      "votable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/votable",
-      "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/datatable"
-    },
-    "table": "http://tap.roe.ac.uk/firethorn/adql/table/57699203"
-  },
-  "modified": "2019-05-09T03:57:24.377",
-  "tables": [],
-  "syntax": {
-    "friendly": null,
-    "status": "VALID",
-    "message": null
-  },
-  "input": "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource",
-  "ident": "57699002",
-  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
-  "history": [
-    {
-      "state": "COMPLETED",
-      "task": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
-      "modified": "2019-05-09T03:57:24.327",
-      "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699054",
-      "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698919",
-      "ident": "57699054",
-      "created": "2019-05-09T03:57:24.324",
-      "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699054",
-      "level": "INFO",
-      "message": null,
-      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json"
-    },
-    {
-      "state": "RUNNING",
-      "task": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
-      "modified": "2019-05-09T03:57:23.988",
-      "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699053",
-      "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698918",
-      "ident": "57699053",
-      "created": "2019-05-09T03:57:23.984",
-      "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699053",
-      "level": "INFO",
-      "message": null,
-      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json"
-    },
-    {
-      "state": "READY",
-      "task": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
-      "modified": "2019-05-09T03:57:20.823",
-      "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699052",
-      "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698915",
-      "ident": "57699052",
-      "created": "2019-05-09T03:57:20.818",
-      "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699052",
-      "level": "INFO",
-      "message": "Executing query",
-      "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json"
-    }
-  ],
-  "name": "XX_5Y47JQZFGVHTOAAAAFVJVPIFRQ",
-  "text": null,
-  "fields": [],
-  "url": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
-  "limits": {
-    "rows": 1000000,
-    "time": null,
-    "cells": null
-  },
-  "delays": {
-    "every": null,
-    "first": null,
-    "last": null
-  },
-  "adql": "SELECT TOP 1000 ra , dec\nFROM ATLASDR1.atlasSource",
-  "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
-  "resources": [
-    "http://tap.roe.ac.uk/firethorn/jdbc/resource/53"
-  ],
-  "callback": "http://tap.roe.ac.uk:8081/firethorn/callback/57699002",
-  "mode": "DIRECT",
-  "created": "2019-05-09T03:57:20.140",
-  "osql": "SELECT TOP 1000 [ATLASDR1].[dbo].[atlasSource].[ra] AS [ra] , [ATLASDR1].[dbo].[atlasSource].[dec] AS [dec]\nFROM [ATLASDR1].[dbo].[atlasSource]",
-  "status": "COMPLETED",
-  "self": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
-  "workspace": "http://tap.roe.ac.uk/firethorn/adql/resource/54"
-}
---END--
+    >   {
+    >     "columns": [],
+    >     "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698915",
+    >     "results": {
+    >       "state": "COMPLETED",
+    >       "count": 1000,
+    >       "formats": {
+    >         "votable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/votable",
+    >         "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/datatable"
+    >       },
+    >       "table": "http://tap.roe.ac.uk/firethorn/adql/table/57699203"
+    >     },
+    >     "modified": "2019-05-09T03:57:24.377",
+    >     "tables": [],
+    >     "syntax": {
+    >       "friendly": null,
+    >       "status": "VALID",
+    >       "message": null
+    >     },
+    >     "input": "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource",
+    >     "ident": "57699002",
+    >     "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json",
+    >     "history": [
+    >       {
+    >         "state": "COMPLETED",
+    >         "task": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
+    >         "modified": "2019-05-09T03:57:24.327",
+    >         "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699054",
+    >         "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698919",
+    >         "ident": "57699054",
+    >         "created": "2019-05-09T03:57:24.324",
+    >         "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699054",
+    >         "level": "INFO",
+    >         "message": null,
+    >         "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json"
+    >       },
+    >       {
+    >         "state": "RUNNING",
+    >         "task": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
+    >         "modified": "2019-05-09T03:57:23.988",
+    >         "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699053",
+    >         "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698918",
+    >         "ident": "57699053",
+    >         "created": "2019-05-09T03:57:23.984",
+    >         "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699053",
+    >         "level": "INFO",
+    >         "message": null,
+    >         "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json"
+    >       },
+    >       {
+    >         "state": "READY",
+    >         "task": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
+    >         "modified": "2019-05-09T03:57:20.823",
+    >         "self": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699052",
+    >         "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698915",
+    >         "ident": "57699052",
+    >         "created": "2019-05-09T03:57:20.818",
+    >         "url": "http://tap.roe.ac.uk/firethorn/blue/log/entry/57699052",
+    >         "level": "INFO",
+    >         "message": "Executing query",
+    >         "type": "http://data.metagrid.co.uk/wfau/firethorn/types/log-entry-1.0.json"
+    >       }
+    >     ],
+    >     "name": "XX_5Y47JQZFGVHTOAAAAFVJVPIFRQ",
+    >     "text": null,
+    >     "fields": [],
+    >     "url": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
+    >     "limits": {
+    >       "rows": 1000000,
+    >       "time": null,
+    >       "cells": null
+    >     },
+    >     "delays": {
+    >       "every": null,
+    >       "first": null,
+    >       "last": null
+    >     },
+    >     "adql": "SELECT TOP 1000 ra , dec\nFROM ATLASDR1.atlasSource",
+    >     "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/54",
+    >     "resources": [
+    >       "http://tap.roe.ac.uk/firethorn/jdbc/resource/53"
+    >     ],
+    >     "callback": "http://tap.roe.ac.uk:8081/firethorn/callback/57699002",
+    >     "mode": "DIRECT",
+    >     "created": "2019-05-09T03:57:20.140",
+    >     "osql": "SELECT TOP 1000 [ATLASDR1].[dbo].[atlasSource].[ra] AS [ra] , [ATLASDR1].[dbo].[atlasSource].[dec] AS [dec]\nFROM [ATLASDR1].[dbo].[atlasSource]",
+    >     "status": "COMPLETED",
+    >     "self": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
+    >     "workspace": "http://tap.roe.ac.uk/firethorn/adql/resource/54"
+    >   }
 
 print(
     query_obj.table()
     )
 
---START--
-{
-  "base": "http://tap.roe.ac.uk/firethorn/jdbc/table/57699202",
-  "fullname": "temp.XX_GCMJ4MOE5F4LOAAAAFVJVPIIQI",
-  "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698915",
-  "name": "XX_GCMJ4MOE5F4LOAAAAFVJVPIIQI",
-  "url": "http://tap.roe.ac.uk/firethorn/adql/table/57699203",
-  "modified": "2019-05-09T03:57:20.903",
-  "ident": "57699203",
-  "depth": "PARTIAL",
-  "root": "http://tap.roe.ac.uk/firethorn/jdbc/table/57699202",
-  "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/57699102",
-  "created": "2019-05-09T03:57:20.903",
-  "formats": {
-    "votable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/votable",
-    "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/datatable"
-  },
-  "schema": "http://tap.roe.ac.uk/firethorn/adql/schema/57699152",
-  "columns": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/columns/select",
-  "parent": "http://tap.roe.ac.uk/firethorn/adql/schema/57699152",
-  "self": "http://tap.roe.ac.uk/firethorn/adql/table/57699203",
-  "query": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
-  "metadata": {
-    "adql": {
-      "count": 1000,
-      "status": "COMPLETED"
-    }
-  },
-  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
-  "text": null
-}
---END--
+    >   {
+    >     "base": "http://tap.roe.ac.uk/firethorn/jdbc/table/57699202",
+    >     "fullname": "temp.XX_GCMJ4MOE5F4LOAAAAFVJVPIIQI",
+    >     "owner": "http://tap.roe.ac.uk/firethorn/community-member/57698915",
+    >     "name": "XX_GCMJ4MOE5F4LOAAAAFVJVPIIQI",
+    >     "url": "http://tap.roe.ac.uk/firethorn/adql/table/57699203",
+    >     "modified": "2019-05-09T03:57:20.903",
+    >     "ident": "57699203",
+    >     "depth": "PARTIAL",
+    >     "root": "http://tap.roe.ac.uk/firethorn/jdbc/table/57699202",
+    >     "resource": "http://tap.roe.ac.uk/firethorn/adql/resource/57699102",
+    >     "created": "2019-05-09T03:57:20.903",
+    >     "formats": {
+    >       "votable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/votable",
+    >       "datatable": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/datatable"
+    >     },
+    >     "schema": "http://tap.roe.ac.uk/firethorn/adql/schema/57699152",
+    >     "columns": "http://tap.roe.ac.uk/firethorn/adql/table/57699203/columns/select",
+    >     "parent": "http://tap.roe.ac.uk/firethorn/adql/schema/57699152",
+    >     "self": "http://tap.roe.ac.uk/firethorn/adql/table/57699203",
+    >     "query": "http://tap.roe.ac.uk/firethorn/blue/query/57699002",
+    >     "metadata": {
+    >       "adql": {
+    >         "count": 1000,
+    >         "status": "COMPLETED"
+    >       }
+    >     },
+    >     "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+    >     "text": null
+    >   }
 
 print(
     query_obj.table().count()
     )
 
---START--
-1000
---END--
+    >   1000
 
 #
 # Iterate the metadata tree
@@ -1351,50 +1255,48 @@ for schema in resource.select_schemas():
         py_table = query_obj.table().as_astropy()
         py_table.pprint()
 
---START--
-....
-....
-....
-table  [ATLASDR1][CurrentAstrometry][-1]
-Downloading http://tap.roe.ac.uk/firethorn/adql/table/57699211/votable [Done]
-Traceback (most recent call last):
-  File "<stdin>", line 20, in <module>
-  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_table.py", line 97, in as_astropy
-    return astropy_Table.read(self.url + "/votable", format="votable",use_names_over_ids=True)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/table/table.py", line 2548, in read
-    out = io_registry.read(cls, *args, **kwargs)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/registry.py", line 517, in read
-    data = reader(*args, **kwargs)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/connect.py", line 73, in read_table_votable
-    input = parse(input, table_id=table_id)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/table.py", line 137, in parse
-    config=config, pos=(1, 1)).parse(iterator, config)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3390, in parse
-    iterator, tag, data, config, pos)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3319, in _add_resource
-    resource.parse(self, iterator, config)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3141, in parse
-    iterator, tag, data, config, pos)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3092, in _add_table
-    table.parse(iterator, config)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2382, in parse
-    iterator, colnumbers, fields, config)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2497, in _parse_tabledata
-    vo_reraise(e, config, pos)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/exceptions.py", line 116, in vo_reraise
-    raise exc
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2494, in _parse_tabledata
-    fields[i].ID))
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/exceptions.py", line 116, in vo_reraise
-    raise exc
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2488, in _parse_tabledata
-    data, config, pos)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/converters.py", line 543, in parse
-    value, mask = parse(x, config, pos)
-  File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/converters.py", line 815, in parse
-    value = int(value, 10)
-ValueError: http://tap.roe.ac.uk/firethorn/adql/table/57699211/votable:1:21910: ValueError: invalid literal for int() with base 10: '0000000a' (in row 9, col 'column.57699287')
---END--
+    >   ....
+    >   ....
+    >   ....
+    >   table  [ATLASDR1][CurrentAstrometry][-1]
+    >   Downloading http://tap.roe.ac.uk/firethorn/adql/table/57699211/votable [Done]
+    >   Traceback (most recent call last):
+    >     File "<stdin>", line 20, in <module>
+    >     File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_table.py", line 97, in as_astropy
+    >       return astropy_Table.read(self.url + "/votable", format="votable",use_names_over_ids=True)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/table/table.py", line 2548, in read
+    >       out = io_registry.read(cls, *args, **kwargs)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/registry.py", line 517, in read
+    >       data = reader(*args, **kwargs)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/connect.py", line 73, in read_table_votable
+    >       input = parse(input, table_id=table_id)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/table.py", line 137, in parse
+    >       config=config, pos=(1, 1)).parse(iterator, config)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3390, in parse
+    >       iterator, tag, data, config, pos)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3319, in _add_resource
+    >       resource.parse(self, iterator, config)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3141, in parse
+    >       iterator, tag, data, config, pos)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 3092, in _add_table
+    >       table.parse(iterator, config)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2382, in parse
+    >       iterator, colnumbers, fields, config)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2497, in _parse_tabledata
+    >       vo_reraise(e, config, pos)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/exceptions.py", line 116, in vo_reraise
+    >       raise exc
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2494, in _parse_tabledata
+    >       fields[i].ID))
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/exceptions.py", line 116, in vo_reraise
+    >       raise exc
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/tree.py", line 2488, in _parse_tabledata
+    >       data, config, pos)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/converters.py", line 543, in parse
+    >       value, mask = parse(x, config, pos)
+    >     File "/usr/local/lib/python3.5/dist-packages/astropy/io/votable/converters.py", line 815, in parse
+    >       value = int(value, 10)
+    >   ValueError: http://tap.roe.ac.uk/firethorn/adql/table/57699211/votable:1:21910: ValueError: invalid literal for int() with base 10: '0000000a' (in row 9, col 'column.57699287')
 
 
 
@@ -1407,41 +1309,39 @@ ValueError: http://tap.roe.ac.uk/firethorn/adql/table/57699211/votable:1:21910: 
     # Requesting the large (171,174) list of queries for the main resource causes an Exception.
     # http://tap.roe.ac.uk/firethorn/adql/resource/54/queries/select
 
---START--
-java.lang.OutOfMemoryError: GC overhead limit exceeded
-	org.hibernate.type.descriptor.sql.BigIntTypeDescriptor.getExtractor(BigIntTypeDescriptor.java:60)
-	org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:261)
-	org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:257)
-	org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:247)
-	org.hibernate.type.AbstractStandardBasicType.hydrate(AbstractStandardBasicType.java:333)
-	org.hibernate.type.ComponentType.hydrate(ComponentType.java:663)
-	org.hibernate.persister.entity.AbstractEntityPersister.hydrate(AbstractEntityPersister.java:2972)
-	org.hibernate.loader.Loader.loadFromResultSet(Loader.java:1746)
-	org.hibernate.loader.Loader.instanceNotYetLoaded(Loader.java:1672)
-	org.hibernate.loader.Loader.getRow(Loader.java:1561)
-	org.hibernate.loader.Loader.getRowFromResultSet(Loader.java:731)
-	org.hibernate.loader.Loader.processResultSet(Loader.java:990)
-	org.hibernate.loader.Loader.doQuery(Loader.java:948)
-	org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:340)
-	org.hibernate.loader.Loader.doList(Loader.java:2689)
-	org.hibernate.loader.Loader.doList(Loader.java:2672)
-	org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2506)
-	org.hibernate.loader.Loader.list(Loader.java:2501)
-	org.hibernate.loader.hql.QueryLoader.list(QueryLoader.java:504)
-	org.hibernate.hql.internal.ast.QueryTranslatorImpl.list(QueryTranslatorImpl.java:395)
-	org.hibernate.engine.query.spi.HQLQueryPlan.performList(HQLQueryPlan.java:221)
-	org.hibernate.internal.SessionImpl.list(SessionImpl.java:1508)
-	org.hibernate.query.internal.AbstractProducedQuery.doList(AbstractProducedQuery.java:1538)
-	org.hibernate.query.internal.AbstractProducedQuery.list(AbstractProducedQuery.java:1506)
-	uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.list(AbstractEntityFactory.java:259)
-	uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity$EntityFactory.select(BlueQueryEntity.java:535)
-	uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity$EntityFactory$$FastClassBySpringCGLIB$$598856d8.invoke(<generated>)
-	org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
-	org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:746)
-	org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
-	org.springframework.transaction.interceptor.TransactionInterceptor$$Lambda$157/756591810.proceedWithInvocation(Unknown Source)
-	org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:294)
---END--
+    >   java.lang.OutOfMemoryError: GC overhead limit exceeded
+    >   	org.hibernate.type.descriptor.sql.BigIntTypeDescriptor.getExtractor(BigIntTypeDescriptor.java:60)
+    >   	org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:261)
+    >   	org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:257)
+    >   	org.hibernate.type.AbstractStandardBasicType.nullSafeGet(AbstractStandardBasicType.java:247)
+    >   	org.hibernate.type.AbstractStandardBasicType.hydrate(AbstractStandardBasicType.java:333)
+    >   	org.hibernate.type.ComponentType.hydrate(ComponentType.java:663)
+    >   	org.hibernate.persister.entity.AbstractEntityPersister.hydrate(AbstractEntityPersister.java:2972)
+    >   	org.hibernate.loader.Loader.loadFromResultSet(Loader.java:1746)
+    >   	org.hibernate.loader.Loader.instanceNotYetLoaded(Loader.java:1672)
+    >   	org.hibernate.loader.Loader.getRow(Loader.java:1561)
+    >   	org.hibernate.loader.Loader.getRowFromResultSet(Loader.java:731)
+    >   	org.hibernate.loader.Loader.processResultSet(Loader.java:990)
+    >   	org.hibernate.loader.Loader.doQuery(Loader.java:948)
+    >   	org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:340)
+    >   	org.hibernate.loader.Loader.doList(Loader.java:2689)
+    >   	org.hibernate.loader.Loader.doList(Loader.java:2672)
+    >   	org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2506)
+    >   	org.hibernate.loader.Loader.list(Loader.java:2501)
+    >   	org.hibernate.loader.hql.QueryLoader.list(QueryLoader.java:504)
+    >   	org.hibernate.hql.internal.ast.QueryTranslatorImpl.list(QueryTranslatorImpl.java:395)
+    >   	org.hibernate.engine.query.spi.HQLQueryPlan.performList(HQLQueryPlan.java:221)
+    >   	org.hibernate.internal.SessionImpl.list(SessionImpl.java:1508)
+    >   	org.hibernate.query.internal.AbstractProducedQuery.doList(AbstractProducedQuery.java:1538)
+    >   	org.hibernate.query.internal.AbstractProducedQuery.list(AbstractProducedQuery.java:1506)
+    >   	uk.ac.roe.wfau.firethorn.entity.AbstractEntityFactory.list(AbstractEntityFactory.java:259)
+    >   	uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity$EntityFactory.select(BlueQueryEntity.java:535)
+    >   	uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity$EntityFactory$$FastClassBySpringCGLIB$$598856d8.invoke(<generated>)
+    >   	org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)
+    >   	org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:746)
+    >   	org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+    >   	org.springframework.transaction.interceptor.TransactionInterceptor$$Lambda$157/756591810.proceedWithInvocation(Unknown Source)
+    >   	org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:294)
 
 
     #
@@ -1450,9 +1350,7 @@ java.lang.OutOfMemoryError: GC overhead limit exceeded
 
     \dt
 
---START--
-Did not find any relations.
---END--
+    >   Did not find any relations.
 
     #
     # But these resources all work.

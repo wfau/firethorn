@@ -1,0 +1,577 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop01]
+
+    createvm
+
+    >   INFO : Node name [Astoalith]
+    >   INFO : Base name [fedora-28-docker-base-20180708.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+    >   INFO : Disc name [Astoalith.qcow]
+    >   INFO : Disc size [16GiB]
+
+    vmname=Astoalith
+
+
+# -----------------------------------------------------
+# Define a hosts lookup function.
+# https://askubuntu.com/questions/627906/why-is-my-etc-hosts-file-not-queried-when-nslookup-tries-to-resolve-an-address#comment1536517_627909
+#[user@trop01]
+
+    getipv4()
+        {
+        getent hosts "${1:?}" | cut -d ' ' -f 1
+        }
+
+
+#---------------------------------------------------------------------
+# Update the ssh keys for the VM.
+#[user@trop01]
+
+    # Remove the current key.
+    ssh-keygen -q -R "${vmname:?}"
+
+    # Add the host key(s) to known_hosts
+    ssh-keyscan "${vmname:?}" >> "${HOME}/.ssh/known_hosts"
+
+    # Add the IP address key(s) to known_hosts
+    ssh-keyscan -t ecdsa $(getipv4 "${vmname:?}") >> "${HOME}/.ssh/known_hosts"
+
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh "${vmname:?}"
+
+
+# -----------------------------------------------------
+# Install our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    cat > "${HOME:?}/bin/secret" << 'EOF'
+#!/bin/sh
+ssh -n \
+    'dave@shepseskaf.roe.ac.uk' \
+    "bin/secret '${1}'"
+EOF
+
+    chmod u+x "${HOME:?}/bin/secret"
+    secret 'frog'
+
+
+# -----------------------------------------------------
+# Download our builder compose file
+#[user@virtual]
+
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.23-zrq-update-depends
+    branch=2.1.24-zrq-userdata-drop
+    branch=2.1.25-zrq-tap-controller
+    branch=2.1.31-stv-cleanup
+
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    export secretsh=$(which secret)
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
+
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Merge our branch into main.
+    #[root@builder]
+
+        07.01-merge-start.sh
+
+    # -----------------------------------------------------
+    # Update our version number.
+    #[root@builder]
+
+        07.02-version-step.sh
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Tag this version of builder as latest.
+    #[root@builder]
+
+        source "${FIRETHORN_HOME}/merge.settings"
+
+        docker tag \
+            "firethorn/builder:${newversion}" "firethorn/builder:latest"
+
+    # -----------------------------------------------------
+    # Exit this version of builder.
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Run a new instance of the builder.
+#[user@virtual]
+
+    export branch
+    export secretsh=$(which secret)
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Fetch our Python code.
+    #[root@builder]
+
+        echo "Fetching client source"
+
+        ftpysrc='/var/local/build/client'
+       #ftpygit='https://github.com/Zarquan/firethorn.py.git'
+        ftpygit='https://github.com/stvoutsin/firethorn.py.git'
+
+        if [  -e "${ftpysrc:?}" ]
+        then
+            pushd "${ftpysrc:?}"
+
+                echo "Updating Python code"
+                git pull
+
+            popd
+        else
+            pushd "$(dirname ${ftpysrc:?})"
+
+                echo "Cloning Python code from [${ftpygit:?}]"
+                git clone "${ftpygit:?}" "$(basename ${ftpysrc:?})"
+
+            popd
+        fi
+
+    # -----------------------------------------------------
+    # Delete the embedded metadata.
+    #[root@builder]
+
+        pushd "${ftpysrc:?}"
+
+            du -h  firethorn/meta
+            rm -rf firethorn/meta
+
+        popd
+
+    # -----------------------------------------------------
+    # Build our Python container.
+    #[root@builder]
+
+        echo "Building client image"
+
+        pushd "${FIRETHORN_CODE:?}"
+
+            source 'bin/util.sh'
+            export buildtag=$(getbuildtag)
+            export buildsrc=$(pwd)
+            export ftpysrc
+
+            docker-compose \
+                --file docker/compose/client/firethorn-py.yml \
+                build
+
+        popd
+
+# -----------------------------------------------------
+# Run our Python tests, 20190601-02-merge-tests.txt
+# -----------------------------------------------------
+
+    # -----------------------------------------------------
+    # Update our Mercurial config.
+    #[root@builder]
+
+        07.02-mercurial-user.sh
+
+    >   /var/local/build/firethorn /
+    >   /
+
+
+    # -----------------------------------------------------
+    # Commit our merged code.
+    #[root@builder]
+
+        07.03-merge-commit.sh
+
+    >   /var/local/build/firethorn /
+    >   Merging [2.1.31-stv-cleanup] into [2.1.32] (Y/n)y
+    >   Close dev branch [2.1.31-stv-cleanup] (Y/n)y
+    >   51 files updated, 0 files merged, 0 files removed, 0 files unresolved
+    >   51 files updated, 0 files merged, 0 files removed, 0 files unresolved
+    >   /
+
+
+    # -----------------------------------------------------
+    # Push changes to Mercurial
+    #[root@builder]
+
+        08.03-mercurial-push.sh
+
+    >   /var/local/build/firethorn /
+    >   Push version [2.1.32] (Y/n)
+    >   pushing to ssh://Zarquan@data.metagrid.co.uk//var/local/wfau/projects/firethorn/code
+    >   The authenticity of host 'data.metagrid.co.uk (178.79.157.93)' can't be established.
+    >   RSA key fingerprint is SHA256:iTDlBuOqyiDYLFqdkLKZH4TWz7MlavLvkP2u3yFFVwo.
+    >   Are you sure you want to continue connecting (yes/no)? yes
+    >   remote: Warning: Permanently added 'data.metagrid.co.uk,178.79.157.93' (RSA) to the list of known hosts.
+    >   searching for changes
+    >   remote: adding changesets
+    >   remote: adding manifests
+    >   remote: adding file changes
+    >   remote: added 3 changesets with 52 changes to 52 files (+1 heads)
+    >   /
+
+
+    # -----------------------------------------------------
+    # Tag our new images
+    #[root@builder]
+
+        08.01-docker-latest.sh
+
+
+
+    # -----------------------------------------------------
+    # Push images to Docker.
+    #[root@builder]
+
+        08.02-docker-push.sh
+
+    >   WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+    >   WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+    >   Configure a credential helper to remove this warning. See
+    >   https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+    >   
+    >   Login Succeeded
+    >   The push refers to repository [docker.io/firethorn/fedora]
+    >   8bd87b3d77b4: Pushed
+    >   fc5a9c11c29d: Pushed
+    >   ....
+    >   ....
+    >   891e1e4ef82a: Layer already exists
+    >   2.1.32: digest: sha256:fb6357736d42559f8363223d9fe071749e3a119246da79825a08566fe84eb7ea size: 1791
+    >   The push refers to repository [docker.io/firethorn/java]
+    >   443d62749c73: Pushed
+    >   8bd87b3d77b4: Mounted from firethorn/fedora
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:6c309b9af82a7152050f47a41ea7ee9e2f442fe1bf1852fedcd46039bd62bdb9 size: 2004
+    >   The push refers to repository [docker.io/firethorn/tomcat]
+    >   8e535c0bd17d: Pushed
+    >   3cba4c50c98b: Pushed
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:1c3c6dcf8b9b7e5d2319f8bf7db3445e62a84224e4a37a7d30444303999e03ed size: 5754
+    >   The push refers to repository [docker.io/firethorn/firethorn]
+    >   a4ef9f2ca5dc: Pushed
+    >   8bda3c0737f5: Pushed
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:d7bcce38b5170d7253adb664e34795d35e644741cfab107410228abe813532c2 size: 6174
+    >   The push refers to repository [docker.io/firethorn/ogsadai]
+    >   1eb420ad7c0b: Pushed
+    >   369276ebc0e2: Pushed
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:5c090256a78574a1f75e21c245f34d8f9fb965bf1f740644188e36ba41bcd4cc size: 7210
+    >   The push refers to repository [docker.io/firethorn/builder]
+    >   be399e64df43: Pushed
+    >   1daf40c55403: Pushed
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:48e0ccd96945c6a9ffc747e6849112b4fa535b1e9c3934d21daf23e75a309950 size: 6617
+    >   The push refers to repository [docker.io/firethorn/tester]
+    >   cd575670e127: Pushed
+    >   2cb6a81a359e: Pushed
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:4765bb92d7eb36406b82ae590b764811de87b2c282c9e8d3c8bcf56e55a248f7 size: 2631
+    >   The push refers to repository [docker.io/firethorn/postgres]
+    >   9a56de1e814d: Pushed
+    >   44f595c1dcd2: Layer already exists
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:8efb9465b6dd7a22b62da18fb3d97d73926a1ffdec4c3e9448dd39e5cfbab5c1 size: 3453
+    >   The push refers to repository [docker.io/firethorn/sql-proxy]
+    >   635548d2e88f: Pushed
+    >   696c2bfb61d3: Pushed
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:4eedbc6d37e561bffcfa26f5bac99085ddd93522c8dbdc949ec8b263540c07e2 size: 3051
+    >   The push refers to repository [docker.io/firethorn/firethorn-py]
+    >   aaedb3375471: Pushed
+    >   4967f15b8200: Pushed
+    >   ....
+    >   ....
+    >   2.1.32: digest: sha256:4ce4b8a95c42b3ea6bfcf1a835b0c61ecc2b1a08e4b46ba80222763f85ae375f size: 3472
+    >   The push refers to repository [docker.io/firethorn/fedora]
+    >   8bd87b3d77b4: Layer already exists
+    >   fc5a9c11c29d: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:fb6357736d42559f8363223d9fe071749e3a119246da79825a08566fe84eb7ea size: 1791
+    >   The push refers to repository [docker.io/firethorn/java]
+    >   443d62749c73: Layer already exists
+    >   8bd87b3d77b4: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:6c309b9af82a7152050f47a41ea7ee9e2f442fe1bf1852fedcd46039bd62bdb9 size: 2004
+    >   The push refers to repository [docker.io/firethorn/tomcat]
+    >   8e535c0bd17d: Layer already exists
+    >   3cba4c50c98b: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:1c3c6dcf8b9b7e5d2319f8bf7db3445e62a84224e4a37a7d30444303999e03ed size: 5754
+    >   The push refers to repository [docker.io/firethorn/firethorn]
+    >   a4ef9f2ca5dc: Layer already exists
+    >   8bda3c0737f5: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:d7bcce38b5170d7253adb664e34795d35e644741cfab107410228abe813532c2 size: 6174
+    >   The push refers to repository [docker.io/firethorn/ogsadai]
+    >   1eb420ad7c0b: Layer already exists
+    >   369276ebc0e2: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:5c090256a78574a1f75e21c245f34d8f9fb965bf1f740644188e36ba41bcd4cc size: 7210
+    >   The push refers to repository [docker.io/firethorn/builder]
+    >   be399e64df43: Layer already exists
+    >   1daf40c55403: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:48e0ccd96945c6a9ffc747e6849112b4fa535b1e9c3934d21daf23e75a309950 size: 6617
+    >   The push refers to repository [docker.io/firethorn/tester]
+    >   cd575670e127: Layer already exists
+    >   2cb6a81a359e: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:4765bb92d7eb36406b82ae590b764811de87b2c282c9e8d3c8bcf56e55a248f7 size: 2631
+    >   The push refers to repository [docker.io/firethorn/postgres]
+    >   9a56de1e814d: Layer already exists
+    >   44f595c1dcd2: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:8efb9465b6dd7a22b62da18fb3d97d73926a1ffdec4c3e9448dd39e5cfbab5c1 size: 3453
+    >   The push refers to repository [docker.io/firethorn/sql-proxy]
+    >   635548d2e88f: Layer already exists
+    >   696c2bfb61d3: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:4eedbc6d37e561bffcfa26f5bac99085ddd93522c8dbdc949ec8b263540c07e2 size: 3051
+    >   The push refers to repository [docker.io/firethorn/firethorn-py]
+    >   aaedb3375471: Layer already exists
+    >   4967f15b8200: Layer already exists
+    >   ....
+    >   ....
+    >   latest: digest: sha256:4ce4b8a95c42b3ea6bfcf1a835b0c61ecc2b1a08e4b46ba80222763f85ae375f size: 3472
+
+
+    # -----------------------------------------------------
+    # Push binaries to Maven repo.
+    #[root@builder]
+
+        08.04-maven-push.sh
+
+    >   building file list ...
+    >   347 files to consider
+    >   uk/ac/roe/wfau/firethorn-admin-webapp/maven-metadata-local.xml
+    >               318 100%    0.00kB/s    0:00:00 (xfr#1, to-chk=340/347)
+    >   uk/ac/roe/wfau/firethorn-admin-webapp/maven-metadata-local.xml.md5
+    >                32 100%   31.25kB/s    0:00:00 (xfr#2, to-chk=339/347)
+    >   ....
+    >   ....
+    >   Number of files: 347 (reg: 278, dir: 69)
+    >   Number of created files: 214 (reg: 182, dir: 32)
+    >   Number of regular files transferred: 278
+    >   Total file size: 130.54M bytes
+    >   Total transferred file size: 130.54M bytes
+    >   Literal data: 130.54M bytes
+    >   Matched data: 0 bytes
+    >   File list size: 0
+    >   File list generation time: 0.446 seconds
+    >   File list transfer time: 0.000 seconds
+    >   Total bytes sent: 130.60M
+    >   Total bytes received: 5.97K
+    >   
+    >   sent 130.60M bytes  received 5.97K bytes  13.75M bytes/sec
+    >   total size is 130.54M  speedup is 1.00
+    >   
+    >   building file list ...
+    >   95 files to consider
+    >   uk/org/ogsadai/ogsadai-basic-client/4.2.2198/_remote.repositories
+    >               246 100%    0.00kB/s    0:00:00 (xfr#1, to-chk=88/95)
+    >   uk/org/ogsadai/ogsadai-basic-server/4.2.2198/_remote.repositories
+    >               246 100%  240.23kB/s    0:00:00 (xfr#2, to-chk=81/95)
+    >   ....
+    >   ....
+    >   Number of files: 95 (reg: 65, dir: 30)
+    >   Number of created files: 0
+    >   Number of regular files transferred: 13
+    >   Total file size: 29.41M bytes
+    >   Total transferred file size: 3.19K bytes
+    >   Literal data: 3.19K bytes
+    >   Matched data: 0 bytes
+    >   File list size: 0
+    >   File list generation time: 0.159 seconds
+    >   File list transfer time: 0.000 seconds
+    >   Total bytes sent: 7.33K
+    >   Total bytes received: 336
+    >   
+    >   sent 7.33K bytes  received 336 bytes  3.07K bytes/sec
+    >   total size is 29.41M  speedup is 3,836.53
+    >   
+    >   building file list ...
+    >   31 files to consider
+    >   uk/ac/starlink/stil-table/3.3.1/_remote.repositories
+    >               214 100%    0.00kB/s    0:00:00 (xfr#1, to-chk=24/31)
+    >   uk/ac/starlink/stil-table/3.3.1/stil-table-3.3.1.jar.lastUpdated
+    >               348 100%  339.84kB/s    0:00:00 (xfr#2, to-chk=22/31)
+    >   ....
+    >   ....
+    >   Number of files: 31 (reg: 21, dir: 10)
+    >   Number of created files: 0
+    >   Number of regular files transferred: 9
+    >   Total file size: 1.23M bytes
+    >   Total transferred file size: 2.73K bytes
+    >   Literal data: 2.73K bytes
+    >   Matched data: 0 bytes
+    >   File list size: 0
+    >   File list generation time: 0.012 seconds
+    >   File list transfer time: 0.000 seconds
+    >   Total bytes sent: 4.14K
+    >   Total bytes received: 236
+    >   
+    >   sent 4.14K bytes  received 236 bytes  8.75K bytes/sec
+    >   total size is 1.23M  speedup is 281.07
+    >   
+    >   building file list ...
+    >   3868 files to consider
+    >   antlr/antlr/2.7.7/_remote.repositories
+    >               204 100%    0.00kB/s    0:00:00 (xfr#1, to-chk=3863/3868)
+    >   antlr/antlr/2.7.7/antlr-2.7.7.jar.lastUpdated
+    >               348 100%  339.84kB/s    0:00:00 (xfr#2, to-chk=3861/3868)
+    >   ....
+    >   ....
+    >   ....
+    >   ....
+    >   Number of files: 3,868 (reg: 2,744, dir: 1,124)
+    >   Number of created files: 0
+    >   Number of regular files transferred: 880
+    >   Total file size: 107.40M bytes
+    >   Total transferred file size: 229.83K bytes
+    >   Literal data: 229.78K bytes
+    >   Matched data: 45 bytes
+    >   File list size: 131.06K
+    >   File list generation time: 1.002 seconds
+    >   File list transfer time: 0.000 seconds
+    >   Total bytes sent: 401.16K
+    >   Total bytes received: 22.37K
+    >   
+    >   sent 401.16K bytes  received 22.37K bytes  19.70K bytes/sec
+    >   total size is 107.40M  speedup is 253.57
+
+
+
+
+
