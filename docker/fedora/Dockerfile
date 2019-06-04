@@ -15,9 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# FROM fedora:28
-# https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedora28
-FROM fedora@sha256:7ae08e5637170eb47c01e315b6e64e0d48c6200d2942c695d0bee61b38c65b39
+# FROM latest (fedora:29)
+# https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedoralatest
+FROM fedora@sha256:2a60898a6dd7da9964b0c59fedcf652e24bfff04142e5488f793c9e8156afd33
+
 MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 
 #
@@ -35,6 +36,7 @@ RUN dnf install -y dnf-plugins-core
 #
 # Install common admin tools.
 RUN dnf install -y \
+    findutils  \
     gnupg \
     gzip  \
     less  \
@@ -47,7 +49,7 @@ RUN dnf install -y \
     zip
 
 #
-# Add our install scripts. 
+# Add our install scripts.
 COPY bin /usr/local/bin/
 RUN chmod a+x /usr/local/bin/*.sh
 
