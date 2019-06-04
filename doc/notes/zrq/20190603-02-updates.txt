@@ -102,7 +102,6 @@
     popd
 
 
-
 #---------------------------------------------------------------------
 # Update our Maven dependencies.
 #[user@desktop]
@@ -113,12 +112,6 @@
         mvn versions:display-plugin-updates
 
     popd
-
-
-
-
-
-
 
 
 #---------------------------------------------------------------------
@@ -150,32 +143,5 @@
         popd
 
     popd
-
-# -----------------------------------------------------
-# Build our Python client container.
-#[user@desktop]
-
-    source "${HOME:?}/projects.settings"
-    export ftpysrc=${EDINBURGH_PROJECTS}/ftpy/github.stv
-
-    pushd "${ftpysrc:?}"
-        git pull
-    popd
-
-    source "${HOME:?}/firethorn.settings"
-    pushd "${FIRETHORN_CODE:?}"
-
-        export buildtag=$(hg branch)
-        export buildsrc=$(pwd)
-
-        docker-compose \
-            --file "docker/compose/client/firethorn-py.yml" \
-            build \
-                firethorn-py
-
-    popd
-
-
-
 
 
