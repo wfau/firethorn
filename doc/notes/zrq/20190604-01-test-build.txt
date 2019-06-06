@@ -1,0 +1,758 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop01]
+
+    createvm
+
+    >   INFO : Node name [Astoalith]
+    >   INFO : Base name [fedora-28-docker-base-20180708.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+    >   INFO : Disc name [Astoalith.qcow]
+    >   INFO : Disc size [16GiB]
+
+    vmname=Astoalith
+
+
+# -----------------------------------------------------
+# Define a hosts lookup function.
+# https://askubuntu.com/questions/627906/why-is-my-etc-hosts-file-not-queried-when-nslookup-tries-to-resolve-an-address#comment1536517_627909
+#[user@trop01]
+
+    getipv4()
+        {
+        getent hosts "${1:?}" | cut -d ' ' -f 1
+        }
+
+
+#---------------------------------------------------------------------
+# Update the ssh keys for the VM.
+#[user@trop01]
+
+    # Remove the current key.
+    ssh-keygen -q -R "${vmname:?}"
+
+    # Add the host key(s) to known_hosts
+    ssh-keyscan "${vmname:?}" >> "${HOME}/.ssh/known_hosts"
+
+    # Add the IP address key(s) to known_hosts
+    ssh-keyscan -t ecdsa $(getipv4 "${vmname:?}") >> "${HOME}/.ssh/known_hosts"
+
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh "${vmname:?}"
+
+
+# -----------------------------------------------------
+# Install our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    cat > "${HOME:?}/bin/secret" << 'EOF'
+#!/bin/sh
+ssh -n \
+    'dave@shepseskaf.roe.ac.uk' \
+    "bin/secret '${1}'"
+EOF
+
+    chmod u+x "${HOME:?}/bin/secret"
+    secret 'frog'
+
+
+# -----------------------------------------------------
+# Download our builder compose file
+#[user@virtual]
+
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.23-zrq-update-depends
+    branch=2.1.24-zrq-userdata-drop
+    branch=2.1.25-zrq-tap-controller
+    branch=2.1.31-stv-cleanup
+    branch=2.1.32-zrq-thread-pools
+
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    export secretsh=$(which secret)
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
+
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Get the buildtag from our branch.
+    #[root@builder]
+
+        pushd "${FIRETHORN_CODE:?}"
+
+            source 'bin/util.sh'
+            export buildtag=$(getbuildtag)
+
+        popd
+
+
+
+#
+# OGSA-DAI webapp fails to initialize.
+# Lots of ArrayIndexOutOfBoundsException ..
+# 2019-06-04 01:48:36,506 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-5,debug:84] **** inside initializeWebapp
+# 2019-06-04 01:48:36,507 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-5,debug:84] genericCtx = org.springframework.context.support.GenericApplicationContext@562ec1f6: startup date [Thu Jan 01 00:00:00 UTC 1970]; root of context hierarchy
+# 2019-06-04 01:48:36,511 DEBUG context.OGSADAIContext [http-nio-8080-exec-5,debug:84] Initializing context...
+# 2019-06-04 01:48:36,531 FATAL rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-5,fatalExceptionAndChildren:458] #1559612916531:10# java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+
+    # -----------------------------------------------------
+    # Revert the base image ?
+    #[root@builder]
+
+        vi /var/local/build/firethorn/docker/fedora/Dockerfile
+
+        -   # FROM latest (fedora:29)
+        -   # https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedoralatest
+        -   FROM fedora@sha256:2a60898a6dd7da9964b0c59fedcf652e24bfff04142e5488f793c9e8156afd33
+
+        +   # FROM fedora:28
+        +   # https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedora28
+        +   FROM fedora@sha256:7ae08e5637170eb47c01e315b6e64e0d48c6200d2942c695d0bee61b38c65b39
+
+
+    # -----------------------------------------------------
+    # Revert the Tomcat version ?
+    #[root@builder]
+
+        vi /var/local/build/firethorn/docker/tomcat/Dockerfile
+
+        -   ENV TOMCAT_VERSION 9.0.20
+        +   ENV TOMCAT_VERSION 9.0.10
+
+
+        vi /var/local/build/firethorn/pom.xml
+
+        -   <tomcat.version>9.0.20</tomcat.version>
+        +   <tomcat.version>9.0.20</tomcat.version>
+
+
+    # -----------------------------------------------------
+    # Revert the Java dependencies ?
+    #[root@builder]
+
+        vi /var/local/build/firethorn/pom.xml
+
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+        -       <version>1.12</version>
+        +       <version>1.11</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+        -       <version>3.9</version>
+        +       <version>3.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+        -       <version>1.4</version>
+        +       <version>1.3.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+        -       <version>4.5.8</version>
+        +       <version>4.5.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+        -       <version>27.1-jre</version>
+        +       <version>26.0-jre</version>
+            </dependency>
+
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+        -       <version>2.12</version>
+        +       <version>2.10</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jasypt</groupId>
+                <artifactId>jasypt</artifactId>
+        -       <version>1.9.3</version>
+        +       <version>1.9.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+        -       <version>1.18.8</version>
+        +       <version>1.18.2</version>
+            </dependency>
+
+    # -----------------------------------------------------
+    # Revert the Spring dependencies ?
+    #[root@builder]
+
+        vi /var/local/build/firethorn/firethorn-spring/pom.xml
+
+            <properties>
+
+        -       <spring.version>5.1.7.RELEASE</spring.version>
+        +       <spring.version>5.0.8.RELEASE</spring.version>
+
+        -       <hibernate.version>5.4.3.Final</hibernate.version>
+        +       <hibernate.version>5.3.1.Final</hibernate.version>
+
+        -       <hibernate.validator>6.0.16.Final</hibernate.validator>
+        +       <hibernate.validator>6.0.11.Final</hibernate.validator>
+
+        -       <aspectj.version>1.9.4</aspectj.version>
+        +       <aspectj.version>1.9.1</aspectj.version>
+
+        -       <jackson.version>2.9.9</jackson.version>
+        +       <jackson.version>2.9.6</jackson.version>
+
+            </properties>
+
+            ....
+            ....
+
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+        -       <version>3.2.12</version>
+        +       <version>3.2.7</version>
+            </dependency>
+
+
+    # -----------------------------------------------------
+    # Revert the logging dependencies ?
+    #[root@builder]
+
+        vi /var/local/build/firethorn/firethorn-logging/pom.xml
+
+            <properties>
+                ....
+
+        -       <org.slf4j.version>1.7.26</org.slf4j.version>
+        +       <org.slf4j.version>1.7.25</org.slf4j.version>
+
+                ....
+            </properties>
+
+
+    # -----------------------------------------------------
+    # Revert the JDBC dependencies ?
+    #[root@builder]
+
+        vi /var/local/build/firethorn/firethorn-jdbc/pom.xml
+
+            <properties>
+                ....
+
+                <dependency>
+                    <groupId>org.hsqldb</groupId>
+                    <artifactId>hsqldb</artifactId>
+        -           <version>2.5.0</version>
+        +           <version>2.4.1</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+        -           <version>42.2.5</version>
+        +           <version>42.2.4</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+        -           <version>8.0.16</version>
+        +           <version>8.0.12</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.mariadb.jdbc</groupId>
+                    <artifactId>mariadb-java-client</artifactId>
+        +           <version>2.4.1</version>
+        -           <version>2.2.6</version>
+                </dependency>
+
+                ....
+            </properties>
+
+    # -----------------------------------------------------
+    # Edit the webapp Thread pools.
+    #[root@builder]
+
+        vi /var/local/build/firethorn/firethorn-webapp/src/main/docker/firethorn/conf/server.xml
+
+            <Executor
+                name="main-interface"
+                namePrefix="main-interface-"
+        -       maxThreads="20"
+        +       maxThreads="10"
+                minSpareThreads="5"
+                />
+
+            <Executor
+                name="callback-interface"
+                namePrefix="callback-interface-"
+                maxThreads="20"
+                minSpareThreads="5"
+                />
+
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Fetch our Python code.
+    #[root@builder]
+
+        echo "Fetching client source"
+
+        ftpysrc='/var/local/build/client'
+       #ftpygit='https://github.com/Zarquan/firethorn.py.git'
+        ftpygit='https://github.com/stvoutsin/firethorn.py.git'
+
+        if [  -e "${ftpysrc:?}" ]
+        then
+            pushd "${ftpysrc:?}"
+
+                echo "Updating Python code"
+                git pull
+
+            popd
+        else
+            pushd "$(dirname ${ftpysrc:?})"
+
+                echo "Cloning Python code from [${ftpygit:?}]"
+                git clone "${ftpygit:?}" "$(basename ${ftpysrc:?})"
+
+            popd
+        fi
+
+    # -----------------------------------------------------
+    # Delete the embedded metadata.
+    #[root@builder]
+
+        pushd "${ftpysrc:?}"
+
+            du -h  firethorn/meta
+            rm -rf firethorn/meta
+
+        popd
+
+    # -----------------------------------------------------
+    # Build our Python container.
+    #[root@builder]
+
+        echo "Building client image"
+
+        pushd "${FIRETHORN_CODE:?}"
+
+            export buildsrc=$(pwd)
+            export ftpysrc
+
+            docker-compose \
+                --file docker/compose/client/firethorn-py.yml \
+                build
+
+        popd
+
+
+    # -----------------------------------------------------
+    # Create our chain properties.
+    #[user@builder]
+
+        cat > "${FIRETHORN_HOME:?}/chain.properties" << EOF
+
+            buildtag=${buildtag:?}
+
+            metadata=$(pwgen 20 1)
+            metauser=$(pwgen 20 1)
+            metapass=$(pwgen 20 1)
+
+            usertype=mssql
+            userhost=$(secret 'firethorn.user.host')
+            userdata=$(secret 'firethorn.user.data')
+            useruser=$(secret 'firethorn.user.user')
+            userpass=$(secret 'firethorn.user.pass')
+
+            datatype=mssql
+            datahost=$(secret 'firethorn.data.host')
+            datadata=$(secret 'firethorn.data.data')
+            datauser=$(secret 'firethorn.data.user')
+            datapass=$(secret 'firethorn.data.pass')
+
+            tunneluser=$(secret 'ssh.tunnel.user')
+            tunnelhost=$(secret 'ssh.tunnel.host')
+
+            admingroup=Hyaenidae
+            adminuser=Aardwolf
+            adminpass=$(pwgen 20 1)
+
+            guestgroup=Afrotheria
+            guestuser=Hyrax
+            guestpass=$(pwgen 20 1)
+
+            tapresource=Wilhelmina
+            tapschemadata=data-$(pwgen 10 1)
+            tapschemauser=user-$(pwgen 10 1)
+            tapschemapass=pass-$(pwgen 10 1)
+
+    EOF
+
+    # -----------------------------------------------------
+    # Determine our location.
+    #[user@builder]
+
+    # 'local' if VM is inside UoE
+    # 'remote' if VM is at outside UoE
+    # TODO Change these to 'internal' and 'external'
+
+        external=$(curl -4 --silent 'http://icanhazip.com/')
+
+        EDINBURGH='129.215.*'
+
+        if [[ ${external:?} == ${EDINBURGH} ]]
+        then
+            echo "Address [${external:?}] is in Edinburgh"
+            #location=internal
+            location=local
+        else
+            echo "Address [${external:?}] is not in Edinburgh"
+            #location=external
+            location=remote
+        fi
+
+
+    # -----------------------------------------------------
+    # Link our compose config and start our test containers ...
+    #[user@builder]
+
+        # Check the env file is linked !!
+
+        pushd "${FIRETHORN_HOME:?}"
+
+            ln -sf 'chain.properties' '.env'
+
+            docker-compose \
+                --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-${location:?}.yml" \
+                run \
+                    angela
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell on the host VM, locate the logs volume and tail the firethorn log.
+#[user@virtual]
+
+    sudo -s
+
+    container=baryptera_gillian_1
+
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f firethorn-debug.log
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell on the host VM, locate the logs volume and tail the ogsadai log.
+#[user@virtual]
+
+    sudo -s
+
+    container=baryptera_jarmila_1
+
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f ogsadai.log
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our Python tests ...
+#[user@python]
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+print(
+    atlas_adql
+    )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Iterate the metadata tree
+for schema in atlas_adql.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}]".format(
+                schema.name(),
+                table.name()
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = workspace.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+#
+# Run some queries in parallel
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+from datetime import datetime
+
+query_str = "SELECT TOP 10000 ra, dec FROM ATLASDR1.atlasSource"
+
+def do_query(workspace, query_str, limit, delay):
+    before = datetime.now()
+    query_obj = workspace.create_query(
+        query_str,
+        "COMPLETED",
+        None,
+        200000,
+            {
+            "adql.query.limit.rows"  : limit,
+            "adql.query.delay.every" : delay
+            }
+        )
+    after = datetime.now()
+    return (
+        (after - before),
+        query_obj.json_object.get("results").get("count")
+        )
+
+def do_queries(workspace, query_str, threads, delay):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                query_str,
+                limit,
+                delay
+                ): limit for limit in range(threads, 0, -1)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()[0],
+                ':',
+                future.result()[1]
+                )
+
+for loop in range(1, 10):
+    for threads in range(1, 50):
+        for delay in range(1000, -100, -100):
+            print("---- ", loop, threads, delay)
+            do_queries(
+                workspace,
+                query_str,
+                threads,
+                delay
+                )
+
+
+

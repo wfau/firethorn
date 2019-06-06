@@ -19,7 +19,7 @@ FROM firethorn/java:2.1.32-zrq-thread-pools
 MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]
 
 # https://tomcat.apache.org/whichversion.html
-ENV TOMCAT_VERSION 9.0.20
+ENV TOMCAT_VERSION 9.0.10
 ENV TOMCAT_MAJOR  9
 
 ENV TOMCAT_DIRNAME apache-tomcat-${TOMCAT_VERSION}
