@@ -62,7 +62,7 @@
     <Executor
         name="main-interface"
         namePrefix="main-interface-"
-        maxThreads="20"
+        maxThreads="10"
         minSpareThreads="5"
         />
 
