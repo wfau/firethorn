@@ -62,45 +62,47 @@
 
 EOF
 
-# -----------------------------------------------------
-# Link our compose config.
-#[user@builder]
-
-    ln -sf "${FIRETHORN_HOME:?}/chain.properties" "${FIRETHORN_HOME:?}/.env"
 
 # -----------------------------------------------------
-# Start our test containers ...
+# Determine our location.
 #[user@builder]
+
+    # 'local' if VM is inside UoE
+    # 'remote' if VM is at outside UoE
+    # TODO Change these to 'internal' and 'external'
+
+    external=$(curl -4 --silent 'http://icanhazip.com/')
+
+    EDINBURGH='129.215.*'
+
+    if [[ ${external:?} == ${EDINBURGH} ]]
+    then
+        echo "Address [${external:?}] is in Edinburgh"
+        #location=internal
+        location=local
+    else
+        echo "Address [${external:?}] is not in Edinburgh"
+        #location=external
+        location=remote
+    fi
+
+
+# -----------------------------------------------------
+# Link our compose config and start our test containers ...
+#[user@builder]
+
+    # Check the env file is linked !!
 
     pushd "${FIRETHORN_HOME:?}"
 
-#
-# Choose one.
-# 'local' if VM is inside UoE
-# 'remote' if VM is at outside UoE
-# TODO Change these to 'internal' and 'external'
-
-        external=$(curl -4 --silent 'http://icanhazip.com/')
-
-        EDINBURGH='129.215.*'
-
-        if [[ ${external:?} == ${EDINBURGH} ]]
-        then
-            echo "Address [${external:?}] is in Edinburgh"
-            #location=internal
-            location=local
-        else
-            echo "Address [${external:?}] is not in Edinburgh"
-            #location=external
-            location=remote
-        fi
-
-        # Check the env file is linked !!
+        ln -sf 'chain.properties' '.env'
 
         docker-compose \
             --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-${location:?}.yml" \
             run \
                 angela
+
+
 
 # -----------------------------------------------------
 # -----------------------------------------------------

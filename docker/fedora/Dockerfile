@@ -18,6 +18,9 @@
 # FROM latest (fedora:29)
 # https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedoralatest
 # FROM fedora@sha256:2a60898a6dd7da9964b0c59fedcf652e24bfff04142e5488f793c9e8156afd33
+
+# Problems with OGSA-DAI webapp meant we had to revert back to fedora:28.
+# FROM fedora:28
 FROM fedora@sha256:7ae08e5637170eb47c01e315b6e64e0d48c6200d2942c695d0bee61b38c65b39
 
 MAINTAINER [Dave Morris <docker-admin@metagrid.co.uk>]

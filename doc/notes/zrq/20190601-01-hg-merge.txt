@@ -101,7 +101,6 @@ EOF
     branch=2.1.31-stv-cleanup
     branch=2.1.32-zrq-thread-pools
 
-
 # -----------------------------------------------------
 # Run our builder.
 #[user@virtual]
