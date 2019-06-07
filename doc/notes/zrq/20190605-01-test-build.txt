@@ -1,0 +1,547 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Login as to the VM.
+#[user@trop]
+
+    ssh "${vmname:?}"
+
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.32-zrq-thread-pools
+
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    export secretsh=$(which secret)
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+        >   Green Frog
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
+
+
+    # -----------------------------------------------------
+    # Update our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+        >   /var/local/build/firethorn /
+        >   Updating source code from []
+        >   pulling from http://wfau.metagrid.co.uk/code/firethorn
+        >   searching for changes
+        >   no changes found
+        >   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+        >   /
+        >   /var/local/build/firethorn /
+        >   Updating branch [2.1.32-zrq-thread-pools]
+        >   0 files updated, 0 files merged, 0 files removed, 0 files unresolved
+        >   /
+
+
+# OGSA-DAI webapp fails to initialize.
+# Lots of ArrayIndexOutOfBoundsException ..
+# 2019-06-04 01:48:36,506 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-5,debug:84] **** inside initializeWebapp
+# 2019-06-04 01:48:36,507 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-5,debug:84] genericCtx = org.springframework.context.support.GenericApplicationContext@562ec1f6: startup date [Thu Jan 01 00:00:00 UTC 1970]; root of context hierarchy
+# 2019-06-04 01:48:36,511 DEBUG context.OGSADAIContext [http-nio-8080-exec-5,debug:84] Initializing context...
+# 2019-06-04 01:48:36,531 FATAL rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-5,fatalExceptionAndChildren:458] #1559612916531:10# java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+
+    # -----------------------------------------------------
+    # Update the base image back to Fedora 29.
+    # PASS that works
+    #[root@builder]
+
+        pushd ${FIRETHORN_CODE:?}
+
+            vi docker/fedora/Dockerfile
+
+                # FROM latest (fedora:29)
+                # https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedoralatest
+            +   FROM fedora@sha256:2a60898a6dd7da9964b0c59fedcf652e24bfff04142e5488f793c9e8156afd33
+            -   FROM fedora@sha256:7ae08e5637170eb47c01e315b6e64e0d48c6200d2942c695d0bee61b38c65b39
+
+
+    # -----------------------------------------------------
+    # Change the Tomcat version back to 9.0.20.
+    #[root@builder]
+
+            vi docker/tomcat/Dockerfile
+
+            -   ENV TOMCAT_VERSION 9.0.10
+            +   ENV TOMCAT_VERSION 9.0.20
+
+            vi pom.xml
+
+            -   <tomcat.version>9.0.10</tomcat.version>
+            +   <tomcat.version>9.0.20</tomcat.version>
+
+#
+# THAT causes the ArrayIndexOutOfBoundsException in OGSA-DAI.
+2019-06-06 03:28:50,237 DEBUG context.OGSADAIContext [main,debug:84] Initializing context...
+2019-06-06 03:28:50,572 FATAL rest.JerseyStaticOGSADAIContextInitializer [main,fatalExceptionAndChildren:458] #1559791730572:0# java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 03:28:50,573 ERROR rest.JerseyRootService [main,errorExceptionAndChildren:401] #1559791730573:1# java.lang.IllegalArgumentException: java.lang.RuntimeException: java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 03:28:50,573 ERROR rest.JerseyRootService [main,errorExceptionAndChildren:401] #1559791730573:1# java.lang.RuntimeException: java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 03:28:50,574 ERROR rest.JerseyRootService [main,errorExceptionAndChildren:401] #1559791730573:1# java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 03:29:12,403 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-2,debug:84] **** inside initializeWebapp
+2019-06-06 03:29:12,407 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-2,debug:84] genericCtx = org.springframework.context.support.GenericApplicationContext@7a59a6f2: startup date [Thu Jan 01 00:00:00 UTC 1970]; root of context hierarchy
+
+    # -----------------------------------------------------
+    # Change the Tomcat version back to 9.0.10.
+    #[root@builder]
+
+            vi docker/tomcat/Dockerfile
+
+            +   ENV TOMCAT_VERSION 9.0.10
+            -   ENV TOMCAT_VERSION 9.0.20
+
+            vi pom.xml
+
+            +   <tomcat.version>9.0.10</tomcat.version>
+            -   <tomcat.version>9.0.20</tomcat.version>
+
+    # -----------------------------------------------------
+    # Revert the Java dependencies.
+    #[root@builder]
+
+        hg status
+
+        >   M docker/tomcat/Dockerfile
+        >   M pom.xml
+        >   M firethorn-jdbc/pom.xml
+        >   M firethorn-logging/pom.xml
+        >   M firethorn-spring/pom.xml
+        >   M firethorn-webapp/src/main/docker/firethorn/conf/server.xml
+
+        hg revert pom.xml
+        hg revert firethorn-jdbc/pom.xml
+        hg revert firethorn-logging/pom.xml
+        hg revert firethorn-spring/pom.xml
+
+    # -----------------------------------------------------
+    # List the remaining changes.
+    #[root@builder]
+
+        hg diff pom.xml
+
+            -        <tomcat.version>9.0.20</tomcat.version>
+            +        <tomcat.version>9.0.10</tomcat.version>
+
+
+        hg diff docker/tomcat/Dockerfile
+
+            -   ENV TOMCAT_VERSION 9.0.20
+            +   ENV TOMCAT_VERSION 9.0.10
+
+
+        hg diff firethorn-webapp/src/main/docker/firethorn/conf/server.xml
+
+                 <Executor
+                     name="main-interface"
+                     namePrefix="main-interface-"
+            -        maxThreads="20"
+            +        maxThreads="10"
+                     minSpareThreads="5"
+                     />
+
+#
+# Still get the ArrayIndexOutOfBoundsException in OGSA-DAI.
+2019-06-06 04:09:58,633 DEBUG context.OGSADAIContext [main,debug:84] Initializing context...
+2019-06-06 04:09:59,070 FATAL rest.JerseyStaticOGSADAIContextInitializer [main,fatalExceptionAndChildren:458] #1559794199070:0# java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 04:09:59,071 ERROR rest.JerseyRootService [main,errorExceptionAndChildren:401] #1559794199071:1# java.lang.IllegalArgumentException: java.lang.RuntimeException: java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 04:09:59,072 ERROR rest.JerseyRootService [main,errorExceptionAndChildren:401] #1559794199071:1# java.lang.RuntimeException: java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 04:09:59,073 ERROR rest.JerseyRootService [main,errorExceptionAndChildren:401] #1559794199071:1# java.lang.ArrayIndexOutOfBoundsException: Index 66158 out of bounds for length 30082
+2019-06-06 04:10:20,549 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-1,debug:84] **** inside initializeWebapp
+2019-06-06 04:10:20,553 DEBUG rest.JerseyStaticOGSADAIContextInitializer [http-nio-8080-exec-1,debug:84] genericCtx = org.springframework.context.support.GenericApplicationContext@3a7fcd66: startup date [Thu Jan 01 00:00:00 UTC 1970]; root of context hierarchy
+
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+
+    # -----------------------------------------------------
+    # Build our Python client container.
+    #[root@builder]
+
+        #
+        # Python client container from yesterday is still in local build cache.
+        #
+
+
+    # -----------------------------------------------------
+    # Create our chain properties.
+    #[user@builder]
+
+        # Only need to do this once.
+
+        cat > "${FIRETHORN_HOME:?}/chain.properties" << EOF
+
+            buildtag=${buildtag:?}
+
+            metadata=$(pwgen 20 1)
+            metauser=$(pwgen 20 1)
+            metapass=$(pwgen 20 1)
+
+            usertype=mssql
+            userhost=$(secret 'firethorn.user.host')
+            userdata=$(secret 'firethorn.user.data')
+            useruser=$(secret 'firethorn.user.user')
+            userpass=$(secret 'firethorn.user.pass')
+
+            datatype=mssql
+            datahost=$(secret 'firethorn.data.host')
+            datadata=$(secret 'firethorn.data.data')
+            datauser=$(secret 'firethorn.data.user')
+            datapass=$(secret 'firethorn.data.pass')
+
+            tunneluser=$(secret 'ssh.tunnel.user')
+            tunnelhost=$(secret 'ssh.tunnel.host')
+
+            admingroup=Hyaenidae
+            adminuser=Aardwolf
+            adminpass=$(pwgen 20 1)
+
+            guestgroup=Afrotheria
+            guestuser=Hyrax
+            guestpass=$(pwgen 20 1)
+
+            tapresource=Wilhelmina
+            tapschemadata=data-$(pwgen 10 1)
+            tapschemauser=user-$(pwgen 10 1)
+            tapschemapass=pass-$(pwgen 10 1)
+
+EOF
+
+    # -----------------------------------------------------
+    # Determine our location.
+    #[user@builder]
+
+        # Only need to do this once.
+
+        external=$(curl -4 --silent 'http://icanhazip.com/')
+
+        EDINBURGH='129.215.*'
+
+        if [[ ${external:?} == ${EDINBURGH} ]]
+        then
+            echo "Address [${external:?}] is in Edinburgh"
+            #location=internal
+            location=local
+        else
+            echo "Address [${external:?}] is not in Edinburgh"
+            #location=external
+            location=remote
+        fi
+
+
+    # -----------------------------------------------------
+    # Link our compose config and start our test containers ...
+    #[user@builder]
+
+        # Check the env file is linked !!
+
+        pushd "${FIRETHORN_HOME:?}"
+
+            ln -sf 'chain.properties' '.env'
+
+            docker-compose \
+                --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-${location:?}.yml" \
+                run \
+                    angela
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell on the host VM, locate the logs volume and tail the firethorn log.
+#[user@virtual]
+
+    sudo -s
+
+    container=baryptera_gillian_1
+
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f firethorn-debug.log
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Separate shell on the host VM, locate the logs volume and tail the ogsadai log.
+#[user@virtual]
+
+    sudo -s
+
+    container=baryptera_jarmila_1
+
+    pushd $(
+        docker inspect \
+            "${container:?}" \
+      | jq -r '
+            .[].Mounts | .[] | select(.Destination == "/var/local/tomcat/logs") | .Source
+            '
+            )
+
+    tail -f ogsadai.log
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run our Python tests ...
+#[user@python]
+
+import os
+import uuid
+import time
+import firethorn as ftpy
+
+#
+# Create our firethorn client (using named param).
+firethorn = ftpy.Firethorn(
+    endpoint = os.environ.get(
+        'endpoint'
+        )
+    )
+
+#
+# Login as the admin account.
+firethorn.login(
+    os.environ.get('adminuser'),
+    os.environ.get('adminpass'),
+    os.environ.get('admingroup')
+    )
+
+#
+# Create a JdbcResource to connect to the ATLAS database.
+atlas_jdbc = firethorn.firethorn_engine.create_jdbc_resource(
+    "ATLAS JDBC resource",
+    os.environ.get('datadata'),
+    '*',
+    os.environ.get('datatype'),
+    os.environ.get('datahost'),
+    os.environ.get('datauser'),
+    os.environ.get('datapass')
+    )
+print(
+    atlas_jdbc
+    )
+
+#
+# Create an AdqlResource to represent the JdbcResource.
+atlas_adql = firethorn.firethorn_engine.create_adql_resource(
+    "ATLAS ADQL resource"
+    )
+print(
+    atlas_adql
+    )
+
+#
+# Import the target JdbcSchema into AdqlSchema.
+schema_names = [
+    "ATLASDR1"
+    ]
+
+for schema_name in schema_names:
+    print(schema_name)
+    jdbc_schema = atlas_jdbc.select_schema_by_name(
+        schema_name,
+        "dbo"
+        )
+    if (None != jdbc_schema):
+        metadoc="https://raw.githubusercontent.com/wfau/metadata/master/metadocs/" + schema_name + "_TablesSchema.xml"
+        adql_schema = atlas_adql.import_jdbc_schema(
+            jdbc_schema,
+            schema_name,
+            metadoc=metadoc
+            )
+
+#
+# Admin user
+# -------- -------- -------- --------
+# Normal user
+#
+
+#
+# Login using a guest account.
+firethorn.login(
+    str(uuid.uuid4()),
+    str(uuid.uuid4()),
+    None
+    )
+
+#
+# Create a new workspace.
+workspace = firethorn.firethorn_engine.create_adql_resource(
+    "Query resource"
+    )
+
+#
+# Import the ATLAS schemas into our workspace
+for schema in atlas_adql.select_schemas():
+    workspace.import_adql_schema(
+        schema
+        )
+
+#
+# Create and run a query.
+query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
+query_obj = workspace.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+print(
+    query_obj
+    )
+print(
+    query_obj.table()
+    )
+print(
+    query_obj.table().count()
+    )
+
+#
+# Iterate the metadata tree
+for schema in atlas_adql.select_schemas():
+    for table in schema.select_tables():
+        print(
+            "table  [{}][{}]".format(
+                schema.name(),
+                table.name()
+                )
+            )
+        query_str = "SELECT TOP 10 * FROM {}.{}".format(
+            schema.name(),
+            table.name()
+            )
+        query_obj = workspace.create_query(
+            query_str,
+            "COMPLETED",
+            None,
+            3000000
+            )
+        py_table = query_obj.table().as_astropy()
+        py_table.pprint()
+
+#
+# Run some queries in parallel
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
+from datetime import datetime
+
+query_str = "SELECT TOP 10000 ra, dec FROM ATLASDR1.atlasSource"
+
+def do_query(workspace, query_str, limit, delay):
+    before = datetime.now()
+    query_obj = workspace.create_query(
+        query_str,
+        "COMPLETED",
+        None,
+        200000,
+            {
+            "adql.query.limit.rows"  : limit,
+            "adql.query.delay.every" : delay
+            }
+        )
+    after = datetime.now()
+    return (
+        (after - before),
+        query_obj.json_object.get("results").get("count")
+        )
+
+def do_queries(workspace, query_str, threads, delay):
+    with concurrent.futures.ThreadPoolExecutor(threads) as executor:
+        futures = {
+            executor.submit(
+                do_query,
+                workspace,
+                query_str,
+                limit,
+                delay
+                ): limit for limit in range(threads, 0, -1)
+            }
+        for future in concurrent.futures.as_completed(futures):
+            print(
+                future.result()[0],
+                ':',
+                future.result()[1]
+                )
+
+for loop in range(1, 10):
+    for threads in range(1, 50):
+        for delay in range(1000, -100, -100):
+            print("---- ", loop, threads, delay)
+            do_queries(
+                workspace,
+                query_str,
+                threads,
+                delay
+                )
+
+
+

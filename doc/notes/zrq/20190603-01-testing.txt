@@ -1,7 +1,7 @@
 #
 # <meta:header>
 #   <meta:licence>
-#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#     Copyright (c) 2019, ROE (http://www.roe.ac.uk/)
 #
 #     This information is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -20,13 +20,77 @@
 #
 #
 
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop01]
+
+    createvm
+
+    >   INFO : Node name [Astoalith]
+    >   INFO : Base name [fedora-28-docker-base-20180708.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+    >   INFO : Disc name [Astoalith.qcow]
+    >   INFO : Disc size [16GiB]
+
+    vmname=Astoalith
+
+
+# -----------------------------------------------------
+# Define a hosts lookup function.
+# https://askubuntu.com/questions/627906/why-is-my-etc-hosts-file-not-queried-when-nslookup-tries-to-resolve-an-address#comment1536517_627909
+#[user@trop01]
+
+    getipv4()
+        {
+        getent hosts "${1:?}" | cut -d ' ' -f 1
+        }
+
+
+#---------------------------------------------------------------------
+# Update the ssh keys for the VM.
+#[user@trop01]
+
+    # Remove the current key.
+    ssh-keygen -q -R "${vmname:?}"
+
+    # Add the host key(s) to known_hosts
+    ssh-keyscan "${vmname:?}" >> "${HOME}/.ssh/known_hosts"
+
+    # Add the IP address key(s) to known_hosts
+    ssh-keyscan -t ecdsa $(getipv4 "${vmname:?}") >> "${HOME}/.ssh/known_hosts"
+
+
+# -----------------------------------------------------
+# Login to the virtual machine.
+#[user@trop]
+
+    ssh "${vmname:?}"
+
+
+# -----------------------------------------------------
+# Install our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    cat > "${HOME:?}/bin/secret" << 'EOF'
+#!/bin/sh
+ssh -n \
+    'dave@shepseskaf.roe.ac.uk' \
+    "bin/secret '${1}'"
+EOF
+
+    chmod u+x "${HOME:?}/bin/secret"
+    secret 'frog'
+
+
 # -----------------------------------------------------
 # Create our chain properties.
-#[user@builder]
+#[user@virtual]
 
-    cat > "${FIRETHORN_HOME:?}/chain.properties" << EOF
+    cat > "${HOME:?}/chain.properties" << EOF
 
-        buildtag=${buildtag:?}
+        buildtag=latest
 
         metadata=$(pwgen 20 1)
         metauser=$(pwgen 20 1)
@@ -64,43 +128,51 @@ EOF
 
 # -----------------------------------------------------
 # Link our compose config.
-#[user@builder]
+#[user@virtual]
 
-    ln -sf "${FIRETHORN_HOME:?}/chain.properties" "${FIRETHORN_HOME:?}/.env"
+    ln -sf "${HOME:?}/chain.properties" "${HOME:?}/.env"
 
 # -----------------------------------------------------
-# Start our test containers ...
-#[user@builder]
+# Identify our location.
+#[user@virtual]
 
-    pushd "${FIRETHORN_HOME:?}"
-
-#
 # Choose one.
 # 'local' if VM is inside UoE
 # 'remote' if VM is at outside UoE
 # TODO Change these to 'internal' and 'external'
 
-        external=$(curl -4 --silent 'http://icanhazip.com/')
+    external=$(curl -4 --silent 'http://icanhazip.com/')
 
-        EDINBURGH='129.215.*'
+    EDINBURGH='129.215.*'
 
-        if [[ ${external:?} == ${EDINBURGH} ]]
-        then
-            echo "Address [${external:?}] is in Edinburgh"
-            #location=internal
-            location=local
-        else
-            echo "Address [${external:?}] is not in Edinburgh"
-            #location=external
-            location=remote
-        fi
+    if [[ ${external:?} == ${EDINBURGH} ]]
+    then
+        echo "Address [${external:?}] is in Edinburgh"
+        #location=internal
+        location=local
+    else
+        echo "Address [${external:?}] is not in Edinburgh"
+        #location=external
+        location=remote
+    fi
 
-        # Check the env file is linked !!
+# -----------------------------------------------------
+# Download our compose file.
+#[user@virtual]
 
-        docker-compose \
-            --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-${location:?}.yml" \
-            run \
-                angela
+    wget \
+        --output-document "baryptera-${location:?}.yml" \
+        "http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/tests/baryptera/baryptera-${location:?}.yml"
+
+
+# -----------------------------------------------------
+# Start our tests ...
+#[user@virtual]
+
+    docker-compose \
+        --file "baryptera-${location:?}.yml" \
+        run \
+            angela
 
 # -----------------------------------------------------
 # -----------------------------------------------------
@@ -110,6 +182,7 @@ EOF
     sudo -s
 
     container=baryptera_gillian_1
+    container=stevedore_gillian_1
 
     pushd $(
         docker inspect \
@@ -129,6 +202,7 @@ EOF
     sudo -s
 
     container=baryptera_jarmila_1
+    container=stevedore_jarmila_1
 
     pushd $(
         docker inspect \
@@ -280,7 +354,7 @@ for schema in atlas_adql.select_schemas():
         py_table.pprint()
 
 #
-# Run some queries in parallel
+# Run multiple queries in parallel
 from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
 from datetime import datetime
@@ -334,93 +408,5 @@ for loop in range(1, 10):
                 delay
                 )
 
-
-# -------- -------- -------- --------
-# Bug testing.
-
-
-#
-# Triggering a ChaosMonkey Exception in the cleanUp() method doesn't cause an error (the query completes).
-# http://wfau.metagrid.co.uk/code/firethorn/file/ab423c5da4f5/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l469
-params = {}
-params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
-params.update({"firethorn.monkey.data" : "baivahP0"})
-
-print(
-    params
-    )
-query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
-query_obj = workspace.create_query(
-    query_str,
-    "COMPLETED",
-    None,
-    3000000,
-    params=params
-    )
-print(
-    query_obj
-    )
-
-#
-# Triggering a ChaosMonkey Exception between creating the Future and waiting for it doesn't cause the same problem (the query fails immediately).
-# http://wfau.metagrid.co.uk/code/firethorn/file/ab423c5da4f5/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l369
-params = {}
-params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity"})
-params.update({"firethorn.monkey.data" : "uche2aNa"})
-
-print(
-    params
-    )
-query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
-query_obj = workspace.create_query(
-    query_str,
-    "COMPLETED",
-    None,
-    3000000,
-    params=params
-    )
-print(
-    query_obj
-    )
-
-#
-# Trigger a ChaosMonkey Exception inside the CallableStatement replicates the same symptoms as the issue we are tracking.
-# http://wfau.metagrid.co.uk/code/firethorn/file/ab423c5da4f5/firethorn-ogsadai/activity/server/src/main/java/uk/ac/roe/wfau/firethorn/ogsadai/activity/server/sql/SQLQueryActivity.java#l414
-params = {}
-params.update({"firethorn.monkey.name" : "uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity$ChaoticCallableStatement"})
-params.update({"firethorn.monkey.data" : "Eoph9xie"})
-
-print(
-    params
-    )
-query_str = "SELECT TOP 1000 ra, dec FROM ATLASDR1.atlasSource"
-query_obj = workspace.create_query(
-    query_str,
-    "COMPLETED",
-    None,
-    3000000,
-    params=params
-    )
-print(
-    query_obj
-    )
-
-
-
-
-
-
-#
-# Exit the Python shell
-
-    Ctrl^D
-
-# -----------------------------------------------------
-# Shutdown our containers ...
-#[user@virtual]
-
-    docker-compose \
-        --file "${FIRETHORN_CODE:?}/docker/compose/tests/baryptera/baryptera-local.yml" \
-        down
 
 
