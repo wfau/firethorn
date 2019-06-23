@@ -1,0 +1,54 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+## Run 10 TAP queries in Parallel using stilts.jar
+## Try to emulate what the Japanese validator is doing
+for run in {1..10}
+do
+  java -jar stilts.jar tapquery tapurl=http://tap.roe.ac.uk/vsa sync=true adql="SELECT TOP 1 * from UKIDSSDR4PLUS.UKIDSSDetection" &;
+done
+
+
+
+## --------------------------------------------------------------------
+
+
+## Run  20 TAP Validators in Paralle
+## Causes the Firethorn Container to stop responding, but not consistently
+
+python3
+
+
+import os                                                                       
+from multiprocessing import Pool                                                
+
+process_list = range(100)
+	
+def run_process(process_counter):                                                             
+    print ("Starting RUN # " + str(process_counter))
+    os.system('python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://tap.roe.ac.uk/firethorn -r=60 -u= -p= -g= -mode=sync')                                       
+    print ("Ended RUN # " + str(process_counter))
+
+
+pool = Pool(processes=20)                                                        
+pool.map(run_process, process_list)   
+
