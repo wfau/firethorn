@@ -45,7 +45,7 @@ process_list = range(100)
 	
 def run_process(process_counter):                                                             
     print ("Starting RUN # " + str(process_counter))
-    os.system('python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://tap.roe.ac.uk/firethorn -r=60 -u= -p= -g= -mode=sync')                                       
+    os.system('python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://tap.roe.ac.uk/firethorn -r=60 -u= -p= -g= -m=sync')                                       
     print ("Ended RUN # " + str(process_counter))
 
 
