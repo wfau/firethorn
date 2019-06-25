@@ -1,0 +1,232 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+## Test: Run  30 TAP Validators in Parallel
+## VM: Arraybwyn
+## tap.roe.ac.uk
+## Firethorn Version: 2.1.33 
+
+## Causes the Firethorn Container to stop responding, but not consistently
+
+python3
+
+import os                                                                       
+from multiprocessing import Pool                                                
+
+process_list = range(100)
+	
+def run_process(process_counter):                                                             
+    print ("Starting RUN # " + str(process_counter))
+    os.system('python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://tap.roe.ac.uk/firethorn -r=60 -u= -p= -g= -m=sync')                                       
+    print ("Ended RUN # " + str(process_counter))
+
+
+pool = Pool(processes=30)                                                        
+pool.map(run_process, process_list)   
+
+..
+
+## Test started around: 2019-06-25 10:55:00,000:
+## Lost connection to VM at 2019-06-25 11:36:28,361
+
+## Terminal that was following the firethorn-error log failed with: packet_write_wait: Connection to UNKNOWN port 65535: Broken pipe
+
+2019-06-25 11:36:28,181 ERROR [FireThornTaskExecutor-85] [OgsaBaseResourceEntity] Ping test failed [27564578][DataRequestExecutionResource][404] 
+2019-06-25 11:36:28,361 ERROR [FireThornTaskExecutor-53] [OgsaBaseResourceEntity] Ping test failed [27564579][DataRequestExecutionResource][404] 
+packet_write_wait: Connection to UNKNOWN port 65535: Broken pipe
+
+
+## stelios@stelios-pc:~$ ssh Stevedore@Araybwyn 
+## Does not respond
+## curl http://tap.roe.ac.uk/firethorn/system/info does not respond either
+
+
+## At the time where ssh connection was lost, all table queries where failing:
+
+Testing [BestDR8.PhotoFamily]
+Testing [BestDR8.Dependency]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.Dependency&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR8.PhotoFamily&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/urllib/request.py", line 1318, in do_open
+    encode_chunked=req.has_header('Transfer-encoding'))
+  File "/usr/lib/python3.6/http/client.py", line 1239, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1285, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1234, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1026, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.6/http/client.py", line 964, in send
+    self.connect()
+  File "/usr/lib/python3.6/http/client.py", line 936, in connect
+    (self.host,self.port), self.timeout, self.source_address)
+  File "/usr/lib/python3.6/socket.py", line 724, in create_connection
+    raise err
+  File "/usr/lib/python3.6/socket.py", line 713, in create_connection
+    sock.connect(sa)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/firethorn-0.1.0-py3.6.egg/firethorn/tap/voQuery.py", line 133, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/table/connect.py", line 52, in __call__
+    out = registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/registry.py", line 523, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/connect.py", line 73, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/table.py", line 135, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 157, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 63, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 192, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1091, in download_file
+    raise e
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1024, in download_file
+    with urllib.request.urlopen(remote_url, timeout=timeout) as remote:
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1346, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.6/urllib/request.py", line 1320, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.Field': '<urlopen error timed out>', 'BestDR1.SpecLineAll': '<urlopen error timed out>', 'BestDR1.DataConstants': '<urlopen error timed out>', 'BestDR1.TilingNote': '<urlopen error timed out>', 'BestDR1.SiteDiagnostics': '<urlopen error timed out>', 'BestDR1.PhotoObjAll': '<urlopen error timed out>', 'BestDR1.Frame': '<urlopen error timed out>', 'BestDR1."Zone"': '<urlopen error timed out>', 'BestDR1.PartitionMap': '<urlopen error timed out>', 'BestDR1.DBObjects': '<urlopen error timed out>', 'BestDR1.Sector': '<urlopen error timed out>', 'BestDR1.DBObjectDescription': '<urlopen error timed out>', 'BestDR1.Glossary': '<urlopen error timed out>', 'BestDR1.TilingRun': '<urlopen error timed out>', 'BestDR1.Chunk': '<urlopen error timed out>', 'BestDR1.Segment': '<urlopen error timed out>', 'BestDR1."First"': '<urlopen error timed out>', 'BestDR1.PlateX': '<urlopen error timed out>', 'BestDR1.PubHistory': '<urlopen error timed out>', 'BestDR1.FieldProfile': '<urlopen error timed out>', 'BestDR1.Best2Sector': '<urlopen error timed out>', 'BestDR1.DBViewCols': '<urlopen error timed out>', 'BestDR1.Mask': '<urlopen error timed out>', 'BestDR1.Target': '<urlopen error timed out>', 'BestDR1.IndexMap': '<urlopen error timed out>', 'BestDR1.TiledTargetAll': '<urlopen error timed out>', 'BestDR1.TargetInfo': '<urlopen error timed out>', 'BestDR1.Sector2Tile': '<urlopen error timed out>', 'BestDR1.SpecPhotoAll': '<urlopen error timed out>', 'BestDR3.Algorithm': '<urlopen error timed out>', 'BestDR3.Field': '<urlopen error timed out>', 'BestDR3.FieldProfile': '<urlopen error timed out>', 'BestDR3.FileGroupMap': '<urlopen error timed out>', 'BestDR3."First"': '<urlopen error timed out>', 'BestDR3.Frame': '<urlopen error timed out>', 'BestDR3.Glossary': '<urlopen error timed out>', 'BestDR3.History': '<urlopen error timed out>', 'BestDR3.HoleObj': '<urlopen error timed out>', 'BestDR3.IndexMap': '<urlopen error timed out>', 'BestDR3.LoadHistory': '<urlopen error timed out>', 'BestDR3.Mask': '<urlopen error timed out>', 'BestDR3.MaskedObject': '<urlopen error timed out>', 'BestDR3."Match"': '<urlopen error timed out>', 'BestDR3.MatchHead': '<urlopen error timed out>', 'BestDR3.PhotoObjAll': '<urlopen error timed out>', 'BestDR3.PhotoProfile': '<urlopen error timed out>', 'BestDR3.PhotoTag': '<urlopen error timed out>', 'BestDR3.Photoz': '<urlopen error timed out>', 'BestDR3.PlateX': '<urlopen error timed out>', 'BestDR3.ProfileDefs': '<urlopen error timed out>', 'BestDR3.PubHistory': '<urlopen error timed out>', 'BestDR3.QsoCatalogAll': '<urlopen error timed out>', 'BestDR3.QsoConcordance': '<urlopen error timed out>', 'BestDR3.QueryResults': '<urlopen error timed out>', 'BestDR3.RC3': '<urlopen error timed out>', 'BestDR3.RecentQueries': '<urlopen error timed out>', 'BestDR3."Region"': '<urlopen error timed out>', 'BestDR3.Rmatrix': '<urlopen error timed out>', 'BestDR3.Rosat': '<urlopen error timed out>', 'BestDR3.RunQA': '<urlopen error timed out>', 'BestDR3.RunShift': '<urlopen error timed out>', 'BestDR3.SDSSConstants': '<urlopen error timed out>', 'BestDR3.Sector': '<urlopen error timed out>', 'BestDR3.SpecObj': '<urlopen error timed out>', 'BestDR3.PhotoFamily': '<urlopen error timed out>', 'BestDR3.PhotoObj': '<urlopen error timed out>', 'BestDR3.PhotoPrimary': '<urlopen error timed out>', 'BestDR3.PhotoSecondary': '<urlopen error timed out>', 'BestDR3.SpecLine': '<urlopen error timed out>', 'BestDR3.SpecPhoto': '<urlopen error timed out>', 'BestDR3.Galaxy': '<urlopen error timed out>', 'BestDR3.Sky': '<urlopen error timed out>', 'BestDR3.Star': '<urlopen error timed out>', 'BestDR3.Unknown': '<urlopen error timed out>', 'BestDR5.SpecObjAll': '<urlopen error timed out>', 'BestDR5.TilingInfo': '<urlopen error timed out>', 'BestDR5.QsoBunch': '<urlopen error timed out>', 'BestDR5.HoleType': '<urlopen error timed out>', 'BestDR5.PhotoStatus': '<urlopen error timed out>', 'BestDR5.SDSSConstants': '<urlopen error timed out>', 'BestDR5.SiteDiagnostics': '<urlopen error timed out>', 'BestDR5.PubHistory': '<urlopen error timed out>', 'BestDR5.MaskType': '<urlopen error timed out>', 'BestDR5.PhotoPrimary': '<urlopen error timed out>', 'BestDR5.History': '<urlopen error timed out>', 'BestDR5.SpecLineIndex': '<urlopen error timed out>', 'BestDR5.Sector': '<urlopen error timed out>', 'BestDR5.PhotoFlags': '<urlopen error timed out>', 'BestDR5.FieldQuality': '<urlopen error timed out>', 'BestDR5.SpecObj': '<urlopen error timed out>', 'BestDR5.PhotoSecondary': '<urlopen error timed out>', 'BestDR5.TilingRun': '<urlopen error timed out>', 'BestDR5.PhotoAux': '<urlopen error timed out>', 'BestDR5.RunShift': '<urlopen error timed out>', 'BestDR5.FieldProfile': '<urlopen error timed out>', 'BestDR5.Frame': '<urlopen error timed out>', 'BestDR5.Region2Box': '<urlopen error timed out>', 'BestDR5.Sky': '<urlopen error timed out>', 'BestDR5.TilingBoundary': '<urlopen error timed out>', 'BestDR5.FramesStatus': '<urlopen error timed out>', 'BestDR5.StripeDefs': '<urlopen error timed out>', 'BestDR5.TableDesc': '<urlopen error timed out>', 'BestDR5.QsoTarget': '<urlopen error timed out>', 'BestDR5.FieldMask': '<urlopen error timed out>', 'BestDR5.TargetParam': '<urlopen error timed out>', 'BestDR5.QsoCatalog': '<urlopen error timed out>', 'BestDR5.Photoz': '<urlopen error timed out>', 'BestDR5."Match"': '<urlopen error timed out>', 'BestDR5.SiteConstants': '<urlopen error timed out>', 'BestDR5.PhotoMode': '<urlopen error timed out>', 'BestDR5."Region"': '<urlopen error timed out>', 'BestDR5.Chunk': '<urlopen error timed out>', 'BestDR5.SpecLine': '<urlopen error timed out>', 'BestDR5.CoordType': '<urlopen error timed out>', 'BestDR5.SpecLineAll': '<urlopen error timed out>', 'BestDR5.StarTag': '<urlopen error timed out>', 'BestDR5.PspStatus': '<urlopen error timed out>', 'BestDR5.Versions': '<urlopen error timed out>', 'BestDR5.BestTarget2Sector': '<urlopen error timed out>', 'BestDR5.Inventory': '<urlopen error timed out>', 'BestDR5.Rmatrix': '<urlopen error timed out>', 'BestDR5.TilingGeometry': '<urlopen error timed out>', 'BestDR5.Segment': '<urlopen error timed out>', 'BestDR5.LoadHistory': '<urlopen error timed out>', 'BestDR5.ProperMotions': '<urlopen error timed out>', 'BestDR5.IndexMap': '<urlopen error timed out>', 'BestDR5.Mask': '<urlopen error timed out>', 'BestDR5.Target': '<urlopen error timed out>', 'BestDR5.SpecPhotoAll': '<urlopen error timed out>', 'BestDR5.DBObjects': '<urlopen error timed out>', 'BestDR5.Neighbors': '<urlopen error timed out>', 'BestDR5.DBColumns': '<urlopen error timed out>', 'BestDR5.ObjMask': '<urlopen error timed out>', 'BestDR5.TilingMask': '<urlopen error timed out>', 'BestDR5.RecentQueries': '<urlopen error timed out>', 'BestDR5.PrimTarget': '<urlopen error timed out>', 'BestDR5.Galaxy': '<urlopen error timed out>', 'BestDR5.MaskedObject': '<urlopen error timed out>', 'BestDR5.MatchHead': '<urlopen error timed out>', 'BestDR5.PhotoProfile': '<urlopen error timed out>', 'BestDR5.USNO': '<urlopen error timed out>', 'BestDR5.TileAll': '<urlopen error timed out>', 'BestDR5.DBViewCols': '<urlopen error timed out>', 'BestDR5.PartitionMap': '<urlopen error timed out>', 'BestDR5.FileGroupMap': '<urlopen error timed out>', 'BestDR5.Glossary': '<urlopen error timed out>', 'BestDR5."Diagnostics"': '<urlopen error timed out>', 'BestDR5.Field': '<urlopen error timed out>', 'BestDR5.TargetInfo': '<urlopen error timed out>', 'BestDR5.DataConstants': '<urlopen error timed out>', 'BestDR5.TilingNote': '<urlopen error timed out>', 'BestDR5.RegionArcs': '<urlopen error timed out>', 'BestDR5.Stetson': '<urlopen error timed out>', 'BestDR5.GalaxyTag': '<urlopen error timed out>', 'BestDR5.Run': '<urlopen error timed out>', 'BestDR5.PhotoAuxAll': '<urlopen error timed out>', 'BestDR5."First"': '<urlopen error timed out>', 'BestDR5.TargRunQA': '<urlopen error timed out>', 'BestDR5.HoleObj': '<urlopen error timed out>', 'BestDR5.QuasarCatalog': '<urlopen error timed out>', 'BestDR5.SpecZStatus': '<urlopen error timed out>', 'BestDR5.PhotoTag': '<urlopen error timed out>', 'BestDR5.Columns': '<urlopen error timed out>', 'BestDR5.SpecLineNames': '<urlopen error timed out>', 'BestDR5.SiteDBs': '<urlopen error timed out>', 'BestDR5.TiledTarget': '<urlopen error timed out>', 'BestDR5.Star': '<urlopen error timed out>', 'BestDR5.QueryResults': '<urlopen error timed out>', 'BestDR5.SpecZWarning': '<urlopen error timed out>', 'BestDR5.QsoCatalogAll': '<urlopen error timed out>', 'BestDR5.RegionConvex': '<urlopen error timed out>', 'BestDR5.Algorithm': '<urlopen error timed out>', 'BestDR5.Photoz2': '<urlopen error timed out>', 'BestDR5."Zone"': '<urlopen error timed out>', 'BestDR5.ImageMask': '<urlopen error timed out>', 'BestDR5.QsoConcordanceAll': '<urlopen error timed out>', 'BestDR5.ProgramType': '<urlopen error timed out>', 'BestDR5.SpecClass': '<urlopen error timed out>', 'BestDR5.PhotoObjAll': '<urlopen error timed out>', 'BestDR5.RC3': '<urlopen error timed out>', 'BestDR5.PhotoType': '<urlopen error timed out>', 'BestDR5.Tile': '<urlopen error timed out>', 'BestDR5.HalfSpace': '<urlopen error timed out>', 'BestDR5.PlateX': '<urlopen error timed out>', 'BestDR5.QsoBest': '<urlopen error timed out>', 'BestDR5.QsoSpec': '<urlopen error timed out>', 'BestDR5.SpecPhoto': '<urlopen error timed out>', 'BestDR5.Unknown': '<urlopen error timed out>', 'BestDR5.RunQA': '<urlopen error timed out>', 'BestDR5.PhotoFamily': '<urlopen error timed out>', 'BestDR5.TiledTargetAll': '<urlopen error timed out>', 'BestDR5.Dependency': '<urlopen error timed out>', 'BestDR5.PhotoObj': '<urlopen error timed out>', 'BestDR5.InsideMask': '<urlopen error timed out>', 'BestDR5.Sector2Tile': '<urlopen error timed out>', 'BestDR7.SpecObjAll': '<urlopen error timed out>', 'BestDR7.TilingInfo': '<urlopen error timed out>', 'BestDR7.QsoBunch': '<urlopen error timed out>', 'BestDR7.Ap7Mag': '<urlopen error timed out>', 'BestDR7.SDSSConstants': '<urlopen error timed out>', 'BestDR7.TargPhotoObj': '<urlopen error timed out>', 'BestDR7.PubHistory': '<urlopen error timed out>', 'BestDR7.QsoConcordance': '<urlopen error timed out>', 'BestDR7.MaskType': '<urlopen error timed out>', 'BestDR7.ProfileDefs': '<urlopen error timed out>', 'BestDR7.Rosat': '<urlopen error timed out>', 'BestDR7.TiMask': '<urlopen error timed out>', 'BestDR7.ELRedShift': '<urlopen error timed out>', 'BestDR7.SecTarget': '<urlopen error timed out>', 'BestDR7.XCRedshift': '<urlopen error timed out>', 'BestDR7.ObjType': '<urlopen error timed out>', 'BestDR7.PhotoPrimary': '<urlopen error timed out>', 'BestDR7.History': '<urlopen error timed out>', 'BestDR7."Zone"': '<urlopen error timed out>', 'BestDR7.Sector': '<urlopen error timed out>', 'BestDR7.PhotoFlags': '<urlopen error timed out>', 'BestDR7.FieldQuality': '<urlopen error timed out>', 'BestDR7.SpecObj': '<urlopen error timed out>', 'BestDR7.PhotoSecondary': '<urlopen error timed out>', 'BestDR7.TilingRun': '<urlopen error timed out>', 'BestDR7.TilingMask': '<urlopen error timed out>', 'BestDR7.PhotoAux': '<urlopen error timed out>', 'BestDR7.TargPhotoSecondary': '<urlopen error timed out>', 'BestDR7.RunShift': '<urlopen error timed out>', 'BestDR7.FieldProfile': '<urlopen error timed out>', 'BestDR7.Frame': '<urlopen error timed out>', 'BestDR7.Region2Box': '<urlopen error timed out>', 'BestDR7.Sky': '<urlopen error timed out>', 'BestDR7.TilingBoundary': '<urlopen error timed out>', 'BestDR7.FramesStatus': '<urlopen error timed out>', 'BestDR7.StripeDefs': '<urlopen error timed out>', 'BestDR7.TableDesc': '<urlopen error timed out>', 'BestDR7.QsoTarget': '<urlopen error timed out>', 'BestDR7.UberAstro': '<urlopen error timed out>', 'BestDR7.FieldMask': '<urlopen error timed out>', 'BestDR7.TargetParam': '<urlopen error timed out>', 'BestDR7.QsoCatalog': '<urlopen error timed out>', 'BestDR7.Photoz': '<urlopen error timed out>', 'BestDR7."Match"': '<urlopen error timed out>', 'BestDR7.SiteConstants': '<urlopen error timed out>', 'BestDR7.PhotoMode': '<urlopen error timed out>', 'BestDR7."Region"': '<urlopen error timed out>', 'BestDR7.Chunk': '<urlopen error timed out>', 'BestDR7.SpecLine': '<urlopen error timed out>', 'BestDR7.CoordType': '<urlopen error timed out>', 'BestDR7.UberCalibStatus': '<urlopen error timed out>', 'BestDR7.SpecLineAll': '<urlopen error timed out>', 'BestDR7.StarTag': '<urlopen error timed out>', 'BestDR7.PspStatus': '<urlopen error timed out>', 'BestDR7.PsObjAll': '<urlopen error timed out>', 'BestDR7.BestTarget2Sector': '<urlopen error timed out>', 'BestDR7.Inventory': '<urlopen error timed out>', 'BestDR7.Rmatrix': '<urlopen error timed out>', 'BestDR7.TilingGeometry': '<urlopen error timed out>', 'BestDR7.Versions': '<urlopen error timed out>', 'BestDR7.Segment': '<urlopen error timed out>', 'BestDR7.LoadHistory': '<urlopen error timed out>', 'BestDR7.ProperMotions': '<urlopen error timed out>', 'BestDR7.IndexMap': '<urlopen error timed out>', 'BestDR7.Mask': '<urlopen error timed out>', 'BestDR7.Target': '<urlopen error timed out>', 'BestDR7.SpecPhotoAll': '<urlopen error timed out>', 'BestDR7.DBObjects': '<urlopen error timed out>', 'BestDR7.Neighbors': '<urlopen error timed out>', 'BestDR7.DBColumns': '<urlopen error timed out>', 'BestDR7.ObjMask': '<urlopen error timed out>', 'BestDR7.DR3QuasarCatalog': '<urlopen error timed out>', 'BestDR7.RecentQueries': '<urlopen error timed out>', 'BestDR7.PrimTarget': '<urlopen error timed out>', 'BestDR7.TargPhotoObjAll': '<urlopen error timed out>', 'BestDR7.Galaxy': '<urlopen error timed out>', 'BestDR7.MaskedObject': '<urlopen error timed out>', 'BestDR7.MatchHead': '<urlopen error timed out>', 'BestDR7.PhotoProfile': '<urlopen error timed out>', 'BestDR7.TargPhotoPrimary': '<urlopen error timed out>', 'BestDR7.USNO': '<urlopen error timed out>', 'BestDR7.TileAll': '<urlopen error timed out>', 'BestDR7.DBViewCols': '<urlopen error timed out>', 'BestDR7.PartitionMap': '<urlopen error timed out>', 'BestDR7.FileGroupMap': '<urlopen error timed out>', 'BestDR7.Glossary': '<urlopen error timed out>', 'BestDR7."Diagnostics"': '<urlopen error timed out>', 'BestDR7.Field': '<urlopen error timed out>', 'BestDR7.TargetInfo': '<urlopen error timed out>', 'BestDR7.DataConstants': '<urlopen error timed out>', 'BestDR7.TilingNote': '<urlopen error timed out>', 'BestDR7.sppParams': '<urlopen error timed out>', 'BestDR7.RegionArcs': '<urlopen error timed out>', 'BestDR7.Stetson': '<urlopen error timed out>', 'BestDR7.GalaxyTag': '<urlopen error timed out>', 'BestDR7.FieldQA': '<urlopen error timed out>', 'BestDR7.Run': '<urlopen error timed out>', 'BestDR7.PhotoAuxAll': '<urlopen error timed out>', 'BestDR7."First"': '<urlopen error timed out>', 'BestDR7.DR5QuasarCatalog': '<urlopen error timed out>', 'BestDR7.TargPhotoTag': '<urlopen error timed out>', 'BestDR7.RegionPatch': '<urlopen error timed out>', 'BestDR7.TargRunQA': '<urlopen error timed out>', 'BestDR7.spbsParams': '<urlopen error timed out>', 'BestDR7.HoleObj': '<urlopen error timed out>', 'BestDR7.SpecZStatus': '<urlopen error timed out>', 'BestDR7.PhotoTag': '<urlopen error timed out>', 'BestDR7.Columns': '<urlopen error timed out>', 'BestDR7.SpecLineNames': '<urlopen error timed out>', 'BestDR7.SiteDBs': '<urlopen error timed out>', 'BestDR7.TiledTarget': '<urlopen error timed out>', 'BestDR7.UberCal': '<urlopen error timed out>', 'BestDR7.Star': '<urlopen error timed out>', 'BestDR7.QueryResults': '<urlopen error timed out>', 'BestDR7.SpecZWarning': '<urlopen error timed out>', 'BestDR7.QsoCatalogAll': '<urlopen error timed out>', 'BestDR7.OrigField': '<urlopen error timed out>', 'BestDR7.RegionConvex': '<urlopen error timed out>', 'BestDR7.Algorithm': '<urlopen error timed out>', 'BestDR7.OrigPhotoObjAll': '<urlopen error timed out>', 'BestDR7.Photoz2': '<urlopen error timed out>', 'BestDR7.sppLines': '<urlopen error timed out>', 'BestDR7.SpecLineIndex': '<urlopen error timed out>', 'BestDR7.ImageMask': '<urlopen error timed out>', 'BestDR7.QsoConcordanceAll': '<urlopen error timed out>', 'BestDR7.ProgramType': '<urlopen error timed out>', 'BestDR7.SpecClass': '<urlopen error timed out>', 'BestDR7.PhotoObjAll': '<urlopen error timed out>', 'BestDR7.RC3': '<urlopen error timed out>', 'BestDR7.PhotoType': '<urlopen error timed out>', 'BestDR7.Tile': '<urlopen error timed out>', 'BestDR7.HalfSpace': '<urlopen error timed out>', 'BestDR7.PlateX': '<urlopen error timed out>', 'BestDR7.QsoBest': '<urlopen error timed out>', 'BestDR7.QsoSpec': '<urlopen error timed out>', 'BestDR7.SpecPhoto': '<urlopen error timed out>', 'BestDR7.Unknown': '<urlopen error timed out>', 'BestDR7.RunQA': '<urlopen error timed out>', 'BestDR7.PhotoFamily': '<urlopen error timed out>', 'BestDR7.TiledTargetAll': '<urlopen error timed out>', 'BestDR7.Dependency': '<urlopen error timed out>', 'BestDR7.PhotoObj': '<urlopen error timed out>', 'BestDR7.InsideMask': '<urlopen error timed out>', 'BestDR7.Sector2Tile': '<urlopen error timed out>', 'BestDR8.SpecObjAll': '<urlopen error timed out>', 'BestDR8.TwoMass': '<urlopen error timed out>', 'BestDR8.FieldMask': '<urlopen error timed out>', 'BestDR8.HoleType': '<urlopen error timed out>', 'BestDR8.PhotoStatus': '<urlopen error timed out>', 'BestDR8.SDSSConstants': '<urlopen error timed out>', 'BestDR8.galSpecIndx': '<urlopen error timed out>', 'BestDR8.ObjType': '<urlopen error timed out>', 'BestDR8.sdssTilingGeometry': '<urlopen error timed out>', 'BestDR8.PhotoPrimary': '<urlopen error timed out>', 'BestDR8.History': '<urlopen error timed out>', 'BestDR8.Plate2Target': '<urlopen error timed out>', 'BestDR8.detectionIndex': '<urlopen error timed out>', 'BestDR8.segue1SpecObjAll': '<urlopen error timed out>', 'BestDR8.thingIndex': '<urlopen error timed out>', 'BestDR8.Sector': '<urlopen error timed out>', 'BestDR8.PhotoFlags': '<urlopen error timed out>', 'BestDR8.FieldQuality': '<urlopen error timed out>', 'BestDR8.SpecObj': '<urlopen error timed out>', 'BestDR8.PhotoSecondary': '<urlopen error timed out>', 'BestDR8.RunShift': '<urlopen error timed out>', 'BestDR8.FieldProfile': '<urlopen error timed out>', 'BestDR8.zooSpec': '<urlopen error timed out>', 'BestDR8.Region2Box': '<urlopen error timed out>', 'BestDR8.Sky': '<urlopen error timed out>', 'BestDR8.TiMask': '<urlopen error timed out>', 'BestDR8.StripeDefs': '<urlopen error timed out>', 'BestDR8.sdssTilingBoundary': '<urlopen error timed out>', 'BestDR8.sdssTileAll': '<urlopen error timed out>', 'BestDR8.PhotoPrimaryDR7': '<urlopen error timed out>', 'BestDR8.segueTargetAll': '<urlopen error timed out>', 'BestDR8.Photoz': '<urlopen error timed out>', 'BestDR8.galSpecInfo': '<urlopen error timed out>', 'BestDR8.SiteConstants': '<urlopen error timed out>', 'BestDR8.PhotoMode': '<urlopen error timed out>', 'BestDR8."Region"': '<urlopen error timed out>', 'BestDR8.Frame': '<urlopen error timed out>', 'BestDR8.PhotozTemplateCoeff': '<urlopen error timed out>', 'BestDR8.CoordType': '<urlopen error timed out>', 'BestDR8.zooVotes': '<urlopen error timed out>', 'BestDR8.UberCalibStatus': '<urlopen error timed out>', 'BestDR8.zooConfidence': '<urlopen error timed out>', 'BestDR8.zooMirrorBias': '<urlopen error timed out>', 'BestDR8.PspStatus': '<urlopen error timed out>', 'BestDR8.Versions': '<urlopen error timed out>', 'BestDR8.StarTag': '<urlopen error timed out>', 'BestDR8.PhotoType': '<urlopen error timed out>', 'BestDR8.Inventory': '<urlopen error timed out>', 'BestDR8.Rmatrix': '<urlopen error timed out>', 'BestDR8.LoadHistory': '<urlopen error timed out>', 'BestDR8.PhotozRFTemplateCoeff': '<urlopen error timed out>', 'BestDR8.neighbors': '<urlopen error timed out>', 'BestDR8.sdssTilingMask': '<urlopen error timed out>', 'BestDR8.Mask': '<urlopen error timed out>', 'BestDR8.sdssTiledTargetAll': '<urlopen error timed out>', 'BestDR8.FramesStatus': '<urlopen error timed out>', 'BestDR8.Target': '<urlopen error timed out>', 'BestDR8.SpecPhotoAll': '<urlopen error timed out>', 'BestDR8.DBObjects': '<urlopen error timed out>', 'BestDR8.DBColumns': '<urlopen error timed out>', 'BestDR8.RecentQueries': '<urlopen error timed out>', 'BestDR8.PrimTarget': '<urlopen error timed out>', 'BestDR8.TwoMassXSC': '<urlopen error timed out>', 'BestDR8.Galaxy': '<urlopen error timed out>', 'BestDR8.MaskedObject': '<urlopen error timed out>', 'BestDR8.PhotoProfile': '<urlopen error timed out>', 'BestDR8.USNO': '<urlopen error timed out>', 'BestDR8.TableDesc': '<urlopen error timed out>', 'BestDR8.DBViewCols': '<urlopen error timed out>', 'BestDR8.ROSAT': '<urlopen error timed out>', 'BestDR8.FileGroupMap': '<urlopen error timed out>', 'BestDR8.sdssImagingHalfSpaces': '<urlopen error timed out>', 'BestDR8.sdssPolygon2Field': '<urlopen error timed out>', 'BestDR8."Diagnostics"': '<urlopen error timed out>', 'BestDR8.Field': '<urlopen error timed out>', 'BestDR8.TargetInfo': '<urlopen error timed out>', 'BestDR8.DataConstants': '<urlopen error timed out>', 'BestDR8.sdssTargetParam': '<urlopen error timed out>', 'BestDR8.RegionArcs': '<urlopen error timed out>', 'BestDR8.GalaxyTag': '<urlopen error timed out>', 'BestDR8.galSpecLine': '<urlopen error timed out>', 'BestDR8.Run': '<urlopen error timed out>', 'BestDR8.ProperMotions': '<urlopen error timed out>', 'BestDR8.galSpecExtra': '<urlopen error timed out>', 'BestDR8.RegionPatch': '<urlopen error timed out>', 'BestDR8.IndexMap': '<urlopen error timed out>', 'BestDR8.SpecZStatus': '<urlopen error timed out>', 'BestDR8.PhotoTag': '<urlopen error timed out>', 'BestDR8.Columns': '<urlopen error timed out>', 'BestDR8.SpecLineNames': '<urlopen error timed out>', 'BestDR8.SiteDBs': '<urlopen error timed out>', 'BestDR8.sdssPolygons': '<urlopen error timed out>', 'BestDR8.Star': '<urlopen error timed out>', 'BestDR8.QueryResults': '<urlopen error timed out>', 'BestDR8.SpecZWarning': '<urlopen error timed out>', 'BestDR8."FIRST"': '<urlopen error timed out>', 'BestDR8.RegionConvex': '<urlopen error timed out>', 'BestDR8.MaskType': '<urlopen error timed out>', 'BestDR8.segueSpecObjAll': '<urlopen error timed out>', 'BestDR8.sppLines': '<urlopen error timed out>', 'BestDR8."Zone"': '<urlopen error timed out>', 'BestDR8.ImageMask': '<urlopen error timed out>', 'BestDR8.ProgramType': '<urlopen error timed out>', 'BestDR8.SpecClass': '<urlopen error timed out>', 'BestDR8.PhotozRF': '<urlopen error timed out>', 'BestDR8.segue2SpecObjAll': '<urlopen error timed out>', 'BestDR8.sppParams': '<urlopen error timed out>', 'BestDR8.PhotoObjAll': '<urlopen error timed out>', 'BestDR8.RC3': '<urlopen error timed out>', 'BestDR8.PartitionMap': '<urlopen error timed out>', 'BestDR8.zooNoSpec': '<urlopen error timed out>', 'BestDR8.HalfSpace': '<urlopen error timed out>', 'BestDR8.PlateX': '<urlopen error timed out>', 'BestDR8.PhotoObjDR7': '<urlopen error timed out>', 'BestDR8.sdssTilingInfo': '<urlopen error timed out>', 'BestDR8.SpecPhoto': '<urlopen error timed out>', 'BestDR8.Unknown': '<urlopen error timed out>', 'BestDR8.zooMonochromeBias': '<urlopen error timed out>', 'BestDR8.PhotoFamily': '<urlopen error timed out>', 'BestDR8.Dependency': '<urlopen error timed out>'}
+Table query completed after 10.012227535247803 seconds
+
+
+
+
+## Restart Araybwyn VM, as it is not responding, and cannot be ssh'd into
+
+ssh trop02
+
+     ## Destroy VM
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         destroy \
+            "${vmname:?}"
+
+   ## Startup VM
+    vmname=Araybwyn
+
+    source "${HOME}/libvirt.settings"
+    virsh \
+        --connect "${connection}" \
+         start \
+            "${vmname:?}"
+
+
+    ## Restart using compose
+
+	export buildtag=2.1.33
+	source "${HOME:?}/chain.properties"
+
+	docker-compose --file "docker-compose.yml" run firethorn-py
+
+	Starting stevedore_jarmila_1  ... done
+	Starting stevedore_bethany_1  ... done
+	Starting stevedore_carolina_1 ... done
+	Starting stevedore_gillian_1  ... done
+	Python 3.5.2 (default, Nov 12 2018, 13:43:14) 
+	[GCC 5.4.0 20160609] on linux
+	Type "help", "copyright", "credits" or "license" for more information.
+	>>> exit()
+	[Stevedore@Araybwyn ~]$ docker ps
+	CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS                            PORTS                    NAMES
+	44aaf5d76a44        firethorn/firethorn:2.1.33   "/bin/sh -c '/var/lo…"   6 days ago          Up 6 seconds (health: starting)   0.0.0.0:8080->8080/tcp   stevedore_gillian_1
+	4ae7d97e1d09        firethorn/postgres:2.1.33    "docker-entrypoint.s…"   6 days ago          Up 38 seconds                     5432/tcp                 stevedore_carolina_1
+	9099fe97de6d        firethorn/postgres:2.1.33    "docker-entrypoint.s…"   6 days ago          Up 38 seconds                     5432/tcp                 stevedore_bethany_1
+	b75f992b86e7        firethorn/ogsadai:2.1.33     "/bin/sh -c '/var/lo…"   6 days ago          Up 38 seconds (healthy)           8080/tcp                 stevedore_jarmila_1
+
+
+    ## curl http://tap.roe.ac.uk/firethorn/system/info still times out
+    ## Looks like the Apache proxy service is not responding
+    ## ssh   Stevedore@Acilamwen 
+    ## docker restart apache
+    ##  curl http://tap.roe.ac.uk/firethorn/system/info now works
+
+
+
+   ## Try a sync query:
+   ## curl http://tap.roe.ac.uk/ssa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+BestDR1.Sector&LANG=ADQL 
+
+
+      <VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" version="1.3">
+<RESOURCE type="results">
+<INFO name="QUERY_STATUS" value="OK"/>
+<INFO name="link" value="http://tap.roe.ac.uk/firethorn/adql/table/29635605"/>
+<TABLE ID="table.29635605" name="XX_YEXCG642EFIPCAAAAFVY6KMXB4">
+<FIELD ID="column.29635659" name="regionID" datatype="int" arraysize="1" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/29635659"/>
+</FIELD>
+<FIELD ID="column.29635661" name="nTiles" datatype="int" arraysize="1" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/29635661"/>
+</FIELD>
+<FIELD ID="column.29635663" name="area" datatype="float" xtype="null">
+<LINK content-type="application/json" content-role="metadata" href="http://tap.roe.ac.uk/firethorn/adql/column/29635663"/>
+</FIELD>
+<DATA>
+<TABLEDATA>
+<TR>
+<TD>26816</TD>
+<TD>1</TD>
+<TD>0.0</TD>
+</TR>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
+</VOTABLE>
+
+
+   ## Service has recovered
+
+
+
