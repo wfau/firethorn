@@ -1,0 +1,674 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+## Test: Run  30 TAP Validators in Parallel
+## VM: Arraybwyn
+## tap.roe.ac.uk
+## Firethorn Version: 2.1.33 
+
+## Causes the Firethorn Container to stop responding, but not consistently
+
+python3
+
+import os                                                                       
+from multiprocessing import Pool                                                
+
+process_list = range(100)
+	
+def run_process(process_counter):                                                             
+    print ("Starting RUN # " + str(process_counter))
+    os.system('python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://tap.roe.ac.uk/firethorn -r=60 -u= -p= -g= -m=sync')                                       
+    print ("Ended RUN # " + str(process_counter))
+
+
+pool = Pool(processes=30)                                                        
+pool.map(run_process, process_list)   
+
+
+## Test 1
+## ----------------------------------------------------------------------------------------------------------------------------------------------------
+## 22:09 - Started Test
+## Run 30 parallel TAP Validators, running sync queries on all of the tables of the "VSA" resource on tap.roe.ac.uk
+
+## For the first few queries, we get a timeout error in python
+## After that there are a number of successfull queries for a few minutes, after which the failed queries (timeouts) start again
+## Again, after a few minutes we see the same symptoms, a number of successful queries, after which the logs show a list of failed queries
+
+
+## 22:43
+## http://tap.roe.ac.uk/osa/tables  and http://tap.roe.ac.uk/firethorn/system/info return successfully
+
+## 00:16
+## http://tap.roe.ac.uk/osa/tables  and http://tap.roe.ac.uk/firethorn/system/info return are both very slow to respond, but eventually do repond successfully
+## All queries are now failing
+## http://tap.roe.ac.uk/firethorn/system/info  is responding, but slow
+
+
+## Run was stopped during the night (machine shutdown)
+## Services survived
+
+## Sample of the output is shown below:
+
+Starting RUN # 0
+Starting RUN # 1
+Starting RUN # 2
+Starting RUN # 3
+Starting RUN # 4
+Starting RUN # 5
+Starting RUN # 6
+Starting RUN # 7
+Starting RUN # 8
+Starting RUN # 9
+Starting RUN # 10
+Starting RUN # 11
+Starting RUN # 12
+Starting RUN # 13
+Starting RUN # 14
+Starting RUN # 15
+Starting RUN # 16
+Starting RUN # 17
+Starting RUN # 18
+Starting RUN # 19
+Starting RUN # 20
+Starting RUN # 21
+Starting RUN # 22
+Starting RUN # 23
+Starting RUN # 24
+Starting RUN # 25
+Starting RUN # 26
+Starting RUN # 27
+Starting RUN # 28
+Starting RUN # 29
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+--- Starting validation on Resource: http://tap.roe.ac.uk/firethorn/adql/resource/60---
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Testing [BestDR1.SpecObjAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecObjAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1024, in download_file
+    with urllib.request.urlopen(remote_url, timeout=timeout) as remote:
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1346, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.6/urllib/request.py", line 1321, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1331, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 297, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 258, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.6/socket.py", line 586, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/firethorn-0.1.0-py3.6.egg/firethorn/tap/voQuery.py", line 133, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/table/connect.py", line 52, in __call__
+    out = registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/registry.py", line 523, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/connect.py", line 73, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/table.py", line 135, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 157, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 63, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 192, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1097, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': '<urlopen error timed out>'}
+Table query completed after 10.047759532928467 seconds
+
+
+
+......................................................................................................................................................
+
+
+
+
+
+Testing [BestDR1.Field]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.Field&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.MatchHead&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 2.7k/2.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.05977725982666 seconds
+Testing [BestDR1.History]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.History&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.History&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 2.2k/2.2k (100.00%)         0s
+Rowcount:0
+Table query completed after 7.143743515014648 seconds
+Testing [BestDR1.Field]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.Field&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.History&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 2.2k/2.2k (100.00%)         0s
+Rowcount:0
+Table query completed after 7.266925096511841 seconds
+Testing [BestDR1.Field]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.Field&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.History&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 2.2k/2.2k (100.00%)         0s
+Rowcount:0
+Table query completed after 8.249078750610352 seconds
+Testing [BestDR1.Field]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.Field&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1024, in download_file
+    with urllib.request.urlopen(remote_url, timeout=timeout) as remote:
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1346, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.6/urllib/request.py", line 1321, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1331, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 297, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 258, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.6/socket.py", line 586, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/firethorn-0.1.0-py3.6.egg/firethorn/tap/voQuery.py", line 133, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/table/connect.py", line 52, in __call__
+    out = registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/registry.py", line 523, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/connect.py", line 73, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/table.py", line 135, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 157, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 63, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 192, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1097, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': '<urlopen error timed out>', 'BestDR1.Field': '<urlopen error timed out>'}
+Table query completed after 10.040127038955688 seconds
+Testing [BestDR1.SpecLineAll]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.SpecLineAll&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.History&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 2.2k/2.2k (100.00%)         0s
+Rowcount:0
+Table query completed after 11.048564672470093 seconds
+Testing [BestDR1.Field]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.Field&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.History&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 2.2k/2.2k (100.00%)         0s
+Rowcount:0
+Table query completed after 11.176760911941528 seconds
+Testing [BestDR1.Field]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.Field&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1024, in download_file
+    with urllib.request.urlopen(remote_url, timeout=timeout) as remote:
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1346, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.6/urllib/request.py", line 1321, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1331, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 297, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 258, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.6/socket.py", line 586, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/firethorn-0.1.0-py3.6.egg/firethorn/tap/voQuery.py", line 133, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/table/connect.py", line 52, in __call__
+    out = registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/registry.py", line 523, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/connect.py", line 73, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/table.py", line 135, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 157, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 63, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 192, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1097, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1024, in download_file
+    with urllib.request.urlopen(remote_url, timeout=timeout) as remote:
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1346, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.6/urllib/request.py", line 1321, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1331, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 297, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 258, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.6/socket.py", line 586, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/firethorn-0.1.0-py3.6.egg/firethorn/tap/voQuery.py", line 133, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/table/connect.py", line 52, in __call__
+    out = registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/registry.py", line 523, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/connect.py", line 73, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/table.py", line 135, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 157, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 63, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 192, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1097, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>Rowcount:-1
+
+<class 'Exception'>
+{'BestDR1.SpecObjAll': '<urlopen error timed out>', 'BestDR1.Field': '<urlopen error timed out>'}
+Table query completed after 10.040641069412231 seconds
+
+
+..............................................................................................................................................................................................................
+
+Testing [BestDR3.PhotoFamily]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoFamily&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE -Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingBoundary&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 9.394372701644897 seconds
+Testing [BestDR3.TilingMask]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 9.834657669067383 seconds
+Testing [BestDR3.PhotoFamily]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoFamily&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 9.936257362365723 seconds
+Testing [BestDR3.PhotoFamily]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoFamily&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 8.035722017288208 seconds
+Testing [BestDR3.TiledTarget]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE -Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.2k/4.2k (100.00%)         0s
+Rowcount:5
+Table query completed after 8.153093099594116 seconds
+Testing [BestDR3.SpecObj]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 10.541740655899048 seconds
+Testing [BestDR3.PhotoFamily]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoFamily&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.2k/4.2k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.451206207275391 seconds
+Testing [BestDR3.SpecObj]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingBoundary&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.12007737159729 seconds
+Testing [BestDR3.TilingMask]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE -Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingBoundary&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.456395626068115 seconds
+Testing [BestDR3.TilingMask]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE [Done]
+Rowcount:5
+Table query completed after 9.467787027359009 seconds
+Testing [BestDR3.PhotoFamily]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoFamily&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Rowcount:5
+Table query completed after 8.390213251113892 seconds
+Testing [BestDR3.PhotoFamily]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoFamily&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.2k/4.2k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.233114957809448 seconds
+Testing [BestDR3.SpecObj]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingBoundary&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.394808053970337 seconds
+Testing [BestDR3.TilingMask]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.2k/4.2k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.578145265579224 seconds
+Testing [BestDR3.SpecObj]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.2k/4.2k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.709306478500366 seconds
+Testing [BestDR3.SpecObj]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.SpecObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 7.802347660064697 seconds
+Testing [BestDR3.TiledTarget]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 8.726522445678711 seconds
+Testing [BestDR3.TiledTarget]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 8.938718318939209 seconds
+Testing [BestDR3.TiledTarget]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+Downloading http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TilingMask&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+|===============================================================================================================================================================================================| 4.7k/4.7k (100.00%)         0s
+Rowcount:5
+Table query completed after 9.069983959197998 seconds
+Testing [BestDR3.TiledTarget]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.TiledTarget&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1024, in download_file
+    with urllib.request.urlopen(remote_url, timeout=timeout) as remote:
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1346, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.6/urllib/request.py", line 1321, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1331, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 297, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 258, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.6/socket.py", line 586, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/firethorn-0.1.0-py3.6.egg/firethorn/tap/voQuery.py", line 133, in execute_sync_query
+    self.votable = Table.read(full_url, format="votable")
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/table/connect.py", line 52, in __call__
+    out = registry.read(cls, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/registry.py", line 523, in read
+    data = reader(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/connect.py", line 73, in read_table_votable
+    input = parse(input, table_id=table_id)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/io/votable/table.py", line 135, in parse
+    _debug_python_based_parser=_debug_python_based_parser) as iterator:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 157, in get_xml_iterator
+    with _convert_to_fd_or_read_function(source) as fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/xml/iterparser.py", line 63, in _convert_to_fd_or_read_function
+    with data.get_readable_fileobj(fd, encoding='binary') as new_fd:
+  File "/usr/lib/python3.6/contextlib.py", line 81, in __enter__
+    return next(self.gen)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 192, in get_readable_fileobj
+    timeout=remote_timeout)
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1097, in download_file
+    raise urllib.error.URLError(e)
+urllib.error.URLError: <urlopen error timed out>
+Rowcount:-1
+<class 'Exception'>
+{'BestDR1.SpecObjAll': '<urlopen error timed out>', 'BestDR1.Field': '<urlopen error timed out>', 'BestDR1.SpecLineAll': '<urlopen error timed out>', 'BestDR1.DataConstants': '<urlopen error timed out>', 'BestDR1.TilingNote': '<urlopen error timed out>', 'BestDR1.SiteDiagnostics': '<urlopen error timed out>', 'BestDR1.PhotoObjAll': '<urlopen error timed out>', 'BestDR1.Frame': '<urlopen error timed out>', 'BestDR1."Zone"': '<urlopen error timed out>', 'BestDR1.PartitionMap': '<urlopen error timed out>', 'BestDR1.DBObjects': '<urlopen error timed out>', 'BestDR1.Sector': '<urlopen error timed out>', 'BestDR1.DBObjectDescription': '<urlopen error timed out>', 'BestDR1.Glossary': '<urlopen error timed out>', 'BestDR1.TilingRun': '<urlopen error timed out>', 'BestDR1.Chunk': '<urlopen error timed out>', 'BestDR1.Segment': '<urlopen error timed out>', 'BestDR1."First"': '<urlopen error timed out>', 'BestDR1.PlateX': '<urlopen error timed out>', 'BestDR3.Field': '<urlopen error timed out>', 'BestDR3.FieldProfile': '<urlopen error timed out>', 'BestDR3.FileGroupMap': '<urlopen error timed out>', 'BestDR3."First"': '<urlopen error timed out>', 'BestDR3.Frame': '<urlopen error timed out>', 'BestDR3.Glossary': '<urlopen error timed out>', 'BestDR3.History': '<urlopen error timed out>', 'BestDR3.HoleObj': '<urlopen error timed out>', 'BestDR3.PhotoObjAll': '<urlopen error timed out>', 'BestDR3.PhotoProfile': '<urlopen error timed out>', 'BestDR3.PhotoTag': '<urlopen error timed out>', 'BestDR3.Photoz': '<urlopen error timed out>', 'BestDR3.PlateX': '<urlopen error timed out>', 'BestDR3.ProfileDefs': '<urlopen error timed out>', 'BestDR3.PubHistory': '<urlopen error timed out>', 'BestDR3.QsoCatalogAll': '<urlopen error timed out>', 'BestDR3.QsoConcordance': '<urlopen error timed out>', 'BestDR3.QueryResults': '<urlopen error timed out>', 'BestDR3.RC3': '<urlopen error timed out>', 'BestDR3.PhotoFamily': '<urlopen error timed out>'}
+Table query completed after 10.04263687133789 seconds
+Testing [BestDR3.PhotoObj]
+http://tap.roe.ac.uk/firethorn/tap/60/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR3.PhotoObj&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+ERROR:root:<urlopen error timed out>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/astropy-3.2.1-py3.6-linux-x86_64.egg/astropy/utils/data.py", line 1024, in download_file
+    with urllib.request.urlopen(remote_url, timeout=timeout) as remote:
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1346, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/usr/lib/python3.6/urllib/request.py", line 1321, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1331, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 297, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 258, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.6/socket.py", line 586, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+
+
+
+
