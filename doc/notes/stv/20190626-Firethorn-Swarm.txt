@@ -312,6 +312,32 @@ wget https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/docker/fire
 ## ------------------------------------------------------------------------
 
 docker stack deploy -c docker-compose.yml ft
+        .. 
+	Creating service ft_bethany
+	Creating service ft_carolina
+	Creating service ft_jarmila
+	Creating service ft_gillian
+	Creating service ft_firethorn-py
+     
+
+docker ps
+
+	CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                             PORTS               NAMES
+	212df08e73b2        firethorn/firethorn-py:latest   "python3"                29 seconds ago      Up 27 seconds                                          ft_firethorn-py.1.rz43gsoc11ky3ldutdyq8d6y1
+	028e656c70d1        firethorn/firethorn:latest      "/bin/sh -c '/var/lo…"   31 seconds ago      Up 27 seconds (health: starting)   8080/tcp            ft_gillian.1.u7plhcroj56qj7ajyd8eceh0j
+	2b1766b8b1ad        firethorn/ogsadai:latest        "/bin/sh -c '/var/lo…"   34 seconds ago      Up 28 seconds (health: starting)   8080/tcp            ft_jarmila.1.x9h7g1pdiznlwxkqtelllr9os
+	9ce64b692f6a        firethorn/postgres:latest       "docker-entrypoint.s…"   36 seconds ago      Up 28 seconds                      5432/tcp            ft_carolina.1.iw9fi4qbogkbej8yp2d9ktleo
+	04187bab3f02        firethorn/postgres:latest       "docker-entrypoint.s…"   38 seconds ago      Up 37 seconds                      5432/tcp            ft_bethany.1.bcezzygrqrnj5mvwg5yfug9zf
+
+
+docker service ls
+
+	ID                  NAME                MODE                REPLICAS            IMAGE                           PORTS
+	srrn94ebri8c        ft_bethany          replicated          1/1                 firethorn/postgres:latest       
+	7keylnyfy68h        ft_carolina         replicated          1/1                 firethorn/postgres:latest       
+	5slvh38gsa7h        ft_firethorn-py     replicated          1/1                 firethorn/firethorn-py:latest   
+	z0doy33yeok9        ft_gillian          replicated          1/1                 firethorn/firethorn:latest      *:8080->8080/tcp
+	yewb5qwddzbc        ft_jarmila          replicated          1/1                 firethorn/ogsadai:latest       
 
 
 
@@ -365,11 +391,9 @@ TAP Service available at: http://gillian:8080/firethorn/tap/54/
 ..
 
 ## ------------------------------------------------------------------------
-## [OPTIONAL] Adding a seconf VM to the Swarm
+## [OPTIONAL] Adding a second VM to the Swarm as a Worker node
 ## ------------------------------------------------------------------------
 
-
-## Create Worker VM 
 createvm Erennon (worker)
 Domain Erennon started
 
