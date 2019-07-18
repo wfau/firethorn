@@ -64,8 +64,8 @@ implements SecurityContextFactory
         log.debug("remote [" + remote + "]");
 
         return new RequestContext()
-			{
-			private EndpointBuilder builder = new EndpointBuilder()
+	    {
+	    private EndpointBuilder builder = new EndpointBuilder()
                 {
                 private String protocol = DEFAULT_PROTOCOL;
                 @Override
@@ -78,12 +78,8 @@ implements SecurityContextFactory
                     {
                     this.protocol = protocol;
                     }
-                
-                private String host = (remote != null) ? remote : DEFAULT_HOST ;
-                if (System.getenv("firethornhost") != null) {
-                    host = System.getenv("firethornhost").trim();
-                } 
 
+                private String host =(System.getenv("firethornhost") != null) ? System.getenv("firethornhost") : (remote != null) ? remote : DEFAULT_HOST ;
                 @Override
                 public String host()
                     {
