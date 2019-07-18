@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.33
+FROM firethorn/ubuntu:2.1.33-stv-tap-swarm
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #

@@ -11,10 +11,13 @@ import org.apache.commons.logging.LogFactory;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParam;
 import uk.ac.roe.wfau.firethorn.ogsadai.activity.common.chaos.MonkeyParamImpl;
 import uk.org.ogsadai.service.rest.authorisation.SecurityContextFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  *
  */
+@Component
 public class RequestContextFactory
 implements SecurityContextFactory
 	{
@@ -78,8 +81,9 @@ implements SecurityContextFactory
                     {
                     this.protocol = protocol;
                     }
-
-                private String host = (remote != null) ? remote : DEFAULT_HOST ;
+                
+                @Value("${firethorn.host:#{localhost2}}")
+                private String host;
                 @Override
                 public String host()
                     {
