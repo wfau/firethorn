@@ -1,0 +1,648 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+############################################################################
+##### Notes on Deploying WFAU TAP Services on trop02 with Docker Swarm #####
+############################################################################
+
+## Aim of 2.1.34 version is an autorecovering TAP Service, using Swarm, addressing a Swarm Networking issue
+## OGSADAI cannot get the original IP address of Firethorn in docker swarm mode 
+## https://github.com/moby/moby/issues/25526
+
+stv@trop02:~$ createvm
+
+
+	## INFO : Node name [Lothigometh]
+	## INFO : Base name [fedora-28-32G-docker-base-20181016.qcow]
+	## INFO : Base path [/var/lib/libvirt/images/base/fedora-28-32G-docker-base-20181016.qcow]
+	## INFO : Disc name [Lothigometh.qcow]
+	## INFO : Disc size [32GiB]
+
+
+
+
+ssh Stevedore@Lothigometh
+
+
+
+## ------------------------------------------------------------------------------------------
+## Initialize Swarm with VM's address
+## ------------------------------------------------------------------------------------------
+
+[Stevedore@Lothigometh ~]$ ifconfig
+
+       ## ..  192.168.202.9  ..
+
+
+
+docker swarm init --advertise-addr 192.168.202.9
+
+
+	# To add a worker to this swarm, run the following command:
+
+	#     docker swarm join --token SWMTKN-1-5e6vdte3jggnih4t2fu5vrk4o0p2twg5mcjy7bi29s8lrv1uxs-6b09cgappan7fv9myme1pi39w 192.168.202.9:2377
+
+	# To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+
+
+## ------------------------------------------------------------------------------------------
+## Configure Firewall for Docker Swarm
+## https://www.digitalocean.com/community/tutorials/how-to-configure-the-linux-firewall-for-docker-swarm-on-centos-7
+## ------------------------------------------------------------------------------------------
+
+
+
+    ## Fix Firewall issue
+    sudo su
+	    firewall-cmd --add-port=2377/tcp --permanent
+	    firewall-cmd --add-port=2377/tcp --permanent
+	    firewall-cmd --add-port=7946/tcp --permanent
+	    firewall-cmd --add-port=4789/tcp --permanent
+	    firewall-cmd --add-port=4789/udp --permanent
+	    firewall-cmd --reload
+    exit
+
+
+## ------------------------------------------------------------------------------------------
+## Set the target branch and builtag
+## ------------------------------------------------------------------------------------------
+
+
+    export buildtag=2.1.34
+    export branch=default
+
+
+
+## ------------------------------------------------------------------------------------------
+## Add secret function.
+## ------------------------------------------------------------------------------------------
+
+    secrethost='stv@shepseskaf.roe.ac.uk'
+    secretfile='${HOME:?}/secret.store.20181212'
+
+    secret()
+    {
+        local key=${1:?}
+        ssh -o 'VisualHostKey=no' "${secrethost:?}" "sed -n 's/${key}=\\(.*\\)/\\1/p' \"${secretfile:?}\"" 
+    }
+
+    secret 'firethorn.ssh.keys' >> "${HOME}/.ssh/authorized_keys"
+
+
+# ssh: connect to host shepseskaf.roe.ac.uk port 22: No route to host
+# Shepseskaf is not accessible, looks like its down (todo: email Mark to see what is going on)
+
+
+# For now, use properties from the last deploy 
+# Stevedore@Araybwyn (/home/Stevedore/chain.properties)
+# The example below is what is needed when the above secret function can access the server where the secrets are stored
+
+
+
+
+## -------------------------------------------------------------------------------------------
+## Create our chain.properties file
+## -------------------------------------------------------------------------------------------
+
+cat > "${HOME:?}/chain.properties" << EOF
+
+metadata=postgres
+metauser=$(pwgen 20 1)
+metapass=$(pwgen 20 1) 
+
+userhost=$(secret 'firethorn.user.host')
+userdata=$(secret 'firethorn.user.data')
+useruser=$(secret 'firethorn.user.user')
+userpass=$(secret 'firethorn.user.pass')
+usertype=mssql
+
+datahost=$(secret 'firethorn.data.host')
+datadata=$(secret 'firethorn.data.data')
+datacatalog=$(secret 'firethorn.data.catalog')
+datatype=$(secret 'firethorn.data.type')
+datauser=$(secret 'firethorn.data.user')
+datapass=$(secret 'firethorn.data.pass')
+
+tapschemadata=$(secret 'firethorn.tapschema.database.name')
+tapschemauser=$(secret 'firethorn.tapschema.database.user')
+tapschemapass=$(secret 'firethorn.tapschema.database.pass')
+tapschemahost=$(secret 'firethorn.tapschema.database.host')
+tapschemaport=$(secret 'firethorn.tapschema.database.port')
+tapschematype=$(secret 'firethorn.tapschema.database.type')
+tapschemajdbc=$(secret 'firethorn.tapschema.jdbc.name')
+
+tunneluser=$(secret 'ssh.tunnel.user')
+tunnelhost=$(secret 'ssh.tunnel.host')
+
+admingroup=$(pwgen 20 1)	
+adminuser=$(pwgen 20 1)
+adminpass=$(pwgen 20 1)
+
+adql_query_delay_first=$(secret 'adql.query.delay.first')
+ 
+firethorn_limits_rows_absolute=$(secret 'firethorn.limits.rows.absolute')
+firethorn_limits_rows_default=$(secret 'firethorn.limits.rows.default')
+
+guestgroup=friends
+endpoint=$(secret 'endpoint')
+
+firethornhost=gillian
+
+EOF
+
+
+
+## ------------------------------------------------------------------------------------------
+## Create our Firethorn properties.
+## ------------------------------------------------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/firethorn.properties" << EOF
+
+firethorn.meta.type=pgsql
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.host=bethany
+firethorn.meta.url=jdbc:postgresql://bethany/${metadata}
+firethorn.meta.data=postgres
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+
+firethorn.user.type=mssql
+firethorn.user.url=jdbc:jtds:sqlserver://${userhost:?}/${userdata:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.host=${userhost:?}
+firethorn.user.data=${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+
+firethorn.tapschema.resource.name=${tapschemajdbc}
+firethorn.tapschema.database.name=${tapschemadata}
+firethorn.tapschema.database.host=${tapschemahost}
+firethorn.tapschema.database.port=${tapschemaport}
+firethorn.tapschema.database.user=${tapschemauser}
+firethorn.tapschema.database.pass=${tapschemapass}
+
+firethorn.admin.community=${admingroup:?}
+firethorn.admin.user.name=${adminuser:?}
+firethorn.admin.user.pass=${adminpass:?}
+
+firethorn.guest.community=${guestgroup:?}
+
+adql.query.delay.first=${adql_query_delay_first:?}
+
+firethorn.limits.rows.absolute=${firethorn_limits_rows_absolute:?}
+firethorn.limits.rows.default=${firethorn_limits_rows_default:?}
+	
+
+EOF
+
+
+
+## ------------------------------------------------------------------------------------------
+## Create our compose env files.
+## ------------------------------------------------------------------------------------------
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/.env" << EOF
+
+buildtag=${branch:?}
+endpoint=${endpoint:?}
+
+
+metadata=postgres
+metauser=${metauser:?}
+metapass=${metapass:?}
+firethorn.meta.type=pgsql
+firethorn.meta.driver=org.postgresql.Driver
+firethorn.meta.host=bethany
+firethorn.meta.url=jdbc:postgresql://bethany/postgres
+firethorn.meta.data=postgres
+firethorn.meta.user=${metauser:?}
+firethorn.meta.pass=${metapass:?}
+
+
+datadata=${datadata:?}
+datauser=${datauser:?}
+datapass=${datapass:?}
+datahost=${datahost:?}
+datacatalog=${datacatalog:?}
+datatype=mssql
+
+
+tapschemadata=${tapschemadata:?}
+tapschemauser=${tapschemauser:?}
+tapschemapass=${tapschemapass:?}
+tapschemahost=${tapschemahost}
+tapschemaport=${tapschemaport:?}
+tapschemajdbc=${tapschemajdbc:?}
+tapschematype=${tapschematype:?}
+firethorn.tapschema.resource.name=${tapschemajdbc:?}
+firethorn.tapschema.database.name=${tapschemadata:?}
+firethorn.tapschema.database.host=${tapschemahost:?}
+firethorn.tapschema.database.port=5432
+firethorn.tapschema.database.user=${tapschemauser:?}
+firethorn.tapschema.database.pass=${tapschemapass:?}
+firethorn.tapschema.database.type=pgsql
+
+userhost=${userhost:?}
+userdata=${userdata:?}
+useruser=${useruser:?}
+userpass=${userpass:?}
+usertype=mssql
+firethorn.user.type=mssql
+firethorn.user.url=jdbc:jtds:sqlserver://${userhost:?}/${userdata:?}
+firethorn.user.driver=net.sourceforge.jtds.jdbc.Driver
+firethorn.user.host=${userhost:?}
+firethorn.user.data=${userdata:?}
+firethorn.user.user=${useruser:?}
+firethorn.user.pass=${userpass:?}
+
+
+admingroup=${admingroup:?}
+adminuser=${adminuser:?}
+adminpass=${adminpass:?}
+guestgroup=${guestgroup:?}
+firethorn.admin.community=${admingroup:?}
+firethorn.admin.user.name=${adminuser:?}
+firethorn.admin.user.pass=${adminpass:?}
+firethorn.guest.community=${guestgroup:?}
+
+
+adql_query_delay_first=${adql_query_delay_first:?}
+adql.query.delay.first=${adql_query_delay_first:?}
+firethorn_limits_rows_absolute=${firethorn_limits_rows_absolute:?}
+firethorn_limits_rows_default=${firethorn_limits_rows_default:?}
+firethorn.limits.rows.absolute=${firethorn_limits_rows_absolute:?}
+firethorn.limits.rows.default=${firethorn_limits_rows_default:?}
+
+firethorn.ogsadai.endpoint=http://jarmila:8080/ogsadai/services
+
+firethornhost=gillian
+
+EOF
+
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/.tapschema_env" << EOF
+
+POSTGRES_DB=${tapschemadatabase}
+POSTGRES_USER=${tapschemauser}
+POSTGRES_PASSWORD=${tapschemapass}
+
+EOF
+
+
+source "${HOME:?}/chain.properties"
+cat > "${HOME:?}/.metadata_env" << EOF
+
+POSTGRES_DB=${metadata}
+POSTGRES_USER=${metauser}
+POSTGRES_PASSWORD=${metapass}
+         
+EOF
+
+
+
+
+## -------------------------------------------------------------------------------------------
+## Fetch the TAP Deployer
+## -------------------------------------------------------------------------------------------
+
+wget https://raw.githubusercontent.com/stvoutsin/firethorn.py/master/docker/firethorn-compose-v3.yml -O  docker-compose.yml
+
+
+
+
+
+
+## -------------------------------------------------------------------------------------------
+## Deploy Swarm stack
+## -------------------------------------------------------------------------------------------
+
+docker stack deploy -c docker-compose.yml ft
+
+	# Creating network ft_miriam
+	# Creating network ft_rosana
+	# Creating service ft_jarmila
+	# Creating service ft_gillian
+	# Creating service ft_firethorn-py
+	# Creating service ft_bethany
+	# Creating service ft_carolina
+
+
+
+## -------------------------------------------------------------------------------------------
+## To remove all docker services 
+## -------------------------------------------------------------------------------------------
+
+## docker service rm $(docker service ls -q)
+
+
+
+## -------------------------------------------------------------------------------------------
+## To list all docker services 
+## -------------------------------------------------------------------------------------------
+
+## docker service ls
+
+
+
+docker ps
+
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                            PORTS               NAMES
+4db9c13b1f0d        firethorn/firethorn:2.1.34      "/bin/sh -c '/var/lo…"   5 seconds ago       Up 3 seconds (health: starting)   8080/tcp            ft_gillian.1.su28yys3as7foaqdb0b9nqlwx
+fe80420092a1        firethorn/ogsadai:2.1.34        "/bin/sh -c '/var/lo…"   8 seconds ago       Up 6 seconds (health: starting)   8080/tcp            ft_jarmila.1.0dbei14did74h1iu7ku93gx7a
+a2c23f565cb8        firethorn/postgres:2.1.34       "docker-entrypoint.s…"   10 seconds ago      Up 8 seconds                      5432/tcp            ft_carolina.1.wx5wtw407thlr128yvh5t9lhm
+a85761628bbb        firethorn/postgres:2.1.34       "docker-entrypoint.s…"   12 seconds ago      Up 8 seconds                      5432/tcp            ft_bethany.1.xd20qmguubfyopfy9b7sin4sk
+5adc907ffcee        firethorn/firethorn-py:2.1.34   "python3"                15 seconds ago      Up 13 seconds                                         ft_firethorn-py.1.gc6fl7q80yr231lr0kd0pesql
+
+
+
+## ------------------------------------------------------------------------
+## Create TAP service with firethorn-utils
+## ------------------------------------------------------------------------
+
+docker exec -it ft_firethorn-py.1.gc6fl7q80yr231lr0kd0pesql bash
+
+
+root@firethorn-py:/home# python3
+
+
+import firethorn
+import firethorn_utils.configurator as configur
+ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+configurator =  configur.Configurator(ft)
+configurator.load_resources("https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/osa-tap.json")
+configurator.load_resources("https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/vsa-tap.json")
+configurator.load_resources("https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/wsa-tap.json")
+configurator.load_resources("https://raw.githubusercontent.com/wfau/metadata/master/firethorn/config/ssa-tap.json")
+
+
+
+
+## OSA
+
+Importing JDBC Schema: ATLASDR1
+Importing JDBC Schema: ATLASDR2
+Importing JDBC Schema: ATLASDR3
+Importing JDBC Schema: ATLASDR4
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: 2XMM
+Importing JDBC Schema: WISE
+Importing JDBC Schema: VIKINGDR3
+Importing JDBC Schema: VHSDR1
+Importing JDBC Schema: MGC
+Importing JDBC Schema: GLIMPSE
+Importing JDBC Schema: FIRST
+Importing JDBC Schema: DENIS
+Importing JDBC Schema: VPHASDR3
+Importing JDBC Schema: VVVDR4
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing JDBC Schema: SDSSDR7
+Importing JDBC Schema: SDSSDR9
+TAP Service available at: http://gillian:8080/firethorn/tap/54/
+
+
+
+## VSA
+
+Importing JDBC Schema: VVVDR1
+Importing JDBC Schema: VVVDR2
+Importing JDBC Schema: VVVDR4
+ERROR:root:HTTP Error 404: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/base/base_object.py", line 90, in get_json
+    with urllib.request.urlopen( req, data) as response:
+  File "/usr/lib/python3.5/urllib/request.py", line 163, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.5/urllib/request.py", line 472, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.5/urllib/request.py", line 582, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.5/urllib/request.py", line 510, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 444, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.5/urllib/request.py", line 590, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: 
+ERROR:root:Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/firethorn/models/adql/adql_resource.py", line 112, in import_jdbc_schema
+    response_json_list = json.loads(response.text)
+  File "/usr/lib/python3.5/json/__init__.py", line 319, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.5/json/decoder.py", line 339, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Importing JDBC Schema: VHSDR1
+Importing JDBC Schema: VHSDR2
+Importing JDBC Schema: VHSDR3
+Importing JDBC Schema: VMCDR1
+Importing JDBC Schema: VMCDR2
+Importing JDBC Schema: VMCDR3
+Importing JDBC Schema: VMCDR4
+Importing JDBC Schema: VIKINGDR2
+Importing JDBC Schema: VIKINGDR3
+Importing JDBC Schema: VIKINGDR4
+Importing JDBC Schema: VIDEODR2
+Importing JDBC Schema: VIDEODR3
+Importing JDBC Schema: VIDEODR4
+Importing JDBC Schema: VIDEODR5
+Importing JDBC Schema: UKIDSSDR4PLUS
+Importing JDBC Schema: UKIDSSDR5PLUS
+Importing JDBC Schema: UKIDSSDR6PLUS
+Importing JDBC Schema: UKIDSSDR7PLUS
+Importing JDBC Schema: UKIDSSDR8PLUS
+Importing JDBC Schema: UKIDSSDR9PLUS
+Importing JDBC Schema: UKIDSSDR10PLUS
+Importing JDBC Schema: SDSSDR1
+Importing JDBC Schema: SDSSDR3
+Importing JDBC Schema: SDSSDR5
+Importing JDBC Schema: SDSSDR7
+Importing JDBC Schema: SDSSDR8
+Importing JDBC Schema: SDSSDR9
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: ROSAT
+Importing JDBC Schema: FIRST
+Importing JDBC Schema: IRAS
+Importing JDBC Schema: SSA
+Importing JDBC Schema: GLIMPSE
+Importing JDBC Schema: 2XMM
+Importing JDBC Schema: MGC
+Importing JDBC Schema: Stripe82
+Importing JDBC Schema: WISE
+TAP Service available at: http://gillian:8080/firethorn/tap/57/
+
+
+
+
+## WSA 
+
+Importing JDBC Schema: UKIDSSDR1PLUS
+Importing JDBC Schema: UKIDSSDR2PLUS
+Importing JDBC Schema: UKIDSSDR3PLUS
+Importing JDBC Schema: UKIDSSDR4PLUS
+Importing JDBC Schema: UKIDSSDR5PLUS
+Importing JDBC Schema: UKIDSSDR6PLUS
+Importing JDBC Schema: UKIDSSDR7PLUS
+Importing JDBC Schema: UKIDSSDR8PLUS
+Importing JDBC Schema: UKIDSSDR9PLUS
+Importing JDBC Schema: UKIDSSDR10PLUS
+Importing JDBC Schema: SDSSDR1
+Importing JDBC Schema: SDSSDR3
+Importing JDBC Schema: SDSSDR5
+Importing JDBC Schema: SDSSDR7
+Importing JDBC Schema: SDSSDR8
+Importing JDBC Schema: SDSSDR9
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: ROSAT
+Importing JDBC Schema: FIRST
+Importing JDBC Schema: IRAS
+Importing JDBC Schema: SSA
+Importing JDBC Schema: GLIMPSE
+Importing JDBC Schema: 2XMM
+Importing JDBC Schema: MGC
+Importing JDBC Schema: Stripe82
+Importing JDBC Schema: WISE
+Importing JDBC Schema: WFCAMCAL08B
+TAP Service available at: http://gillian:8080/firethorn/tap/60/
+
+
+## SSA
+
+Importing JDBC Schema: SSA
+Importing JDBC Schema: 2MASS
+Importing JDBC Schema: 2MPZ
+Importing JDBC Schema: WISExSCOSPZ
+Importing JDBC Schema: SDSSDR1
+Importing JDBC Schema: SDSSDR5
+Importing JDBC Schema: SDSSDR7
+Importing JDBC Schema: SDSSDR8
+Importing JDBC Schema: SDSSDR9
+Importing JDBC Schema: 6dF
+TAP Service available at: http://gillian:8080/firethorn/tap/63/
+
+
+
+
+
+
+# -----------------------------------------------------
+# WFAU TAP Service endpoints
+# -----------------------------------------------------
+
+TAP Service available at: http://gillian:8080/firethorn/tap/54/ - OSA
+TAP Service available at: http://gillian:8080/firethorn/tap/57/ - VSA
+TAP Service available at: http://gillian:8080/firethorn/tap/60/ - WSA
+TAP Service available at: http://gillian:8080/firethorn/tap/63/ - SSA
+
+
+
+# -----------------------------------------------------
+# Update the Proxy Entry
+# -----------------------------------------------------
+ssh Stevedore@Acilamwen 
+
+[Stevedore@Acilamwen ~]$ nano tap.roe.ac.uk.conf 
+
+..
+    ## PROXY ENTRIES HERE ##
+    ProxyPassMatch    ^/osa\/(.*)$  http://lothigometh:8080/firethorn/tap/54/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://lothigometh:8080/firethorn/tap/54/$1
+
+    ProxyPassMatch    ^/vsa\/(.*)$  http://lothigometh:8080/firethorn/tap/57/$1
+    ProxyPassReverse  ^/vsa\/(.*)$  http://lothigometh:8080/firethorn/tap/57/$1
+
+    ProxyPassMatch    ^/wsa\/(.*)$  http://lothigometh:8080/firethorn/tap/60/$1
+    ProxyPassReverse  ^/wsa\/(.*)$  http://lothigometh:8080/firethorn/tap/60/$1
+
+    ProxyPassMatch    ^/ssa\/(.*)$  http://lothigometh:8080/firethorn/tap/63/$1
+    ProxyPassReverse  ^/ssa\/(.*)$  http://lothigometh:8080/firethorn/tap/63/$1
+
+    ProxyPassMatch    ^/firethorn\/(.*)$  http://lothigometh:8080/firethorn/$1
+    ProxyPassReverse  ^/firethorn\/(.*)$  http://lothigometh:8080/firethorn/$1
+
+
+...   
+
+[Stevedore@Acilamwen ~]$ nano tap.roe.ac.uk.conf 
+[Stevedore@Acilamwen ~]$ docker exec -it  apache bash
+[root@bc8d6979e451 /]# nano /etc/httpd/conf.d/tap.roe.ac.uk.conf
+
+..
+
+    ## PROXY ENTRIES HERE ##
+    ProxyPassMatch    ^/osa\/(.*)$  http://lothigometh:8080/firethorn/tap/54/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://lothigometh:8080/firethorn/tap/54/$1
+
+    ProxyPassMatch    ^/vsa\/(.*)$  http://lothigometh:8080/firethorn/tap/57/$1
+    ProxyPassReverse  ^/vsa\/(.*)$  http://lothigometh:8080/firethorn/tap/57/$1
+
+    ProxyPassMatch    ^/wsa\/(.*)$  http://lothigometh:8080/firethorn/tap/60/$1
+    ProxyPassReverse  ^/wsa\/(.*)$  http://lothigometh:8080/firethorn/tap/60/$1
+
+    ProxyPassMatch    ^/ssa\/(.*)$  http://lothigometh:8080/firethorn/tap/63/$1
+    ProxyPassReverse  ^/ssa\/(.*)$  http://lothigometh:8080/firethorn/tap/63/$1
+
+    ProxyPassMatch    ^/firethorn\/(.*)$  http://lothigometh:8080/firethorn/$1
+    ProxyPassReverse  ^/firethorn\/(.*)$  http://lothigometh:8080/firethorn/$1
+
+
+
+..
+[root@bc8d6979e451 /]# exit
+exit
+
+[Stevedore@Acilamwen ~]$ docker kill --signal 'USR1' 'apache'
+

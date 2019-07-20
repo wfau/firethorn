@@ -1,0 +1,118 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+############################################################################
+#####     Test to cause Firethorn Service to become unresponsive       #####
+############################################################################
+
+
+
+## Test tap.roe.ac.uk on local machine
+
+## ------------------------------------------------------------------------
+## Run Container on local machine , test Firethorn on a public IP
+## ------------------------------------------------------------------------
+
+docker run -it firethorn/firethorn-py:2.1.34 python3
+
+
+
+import os                                                                       
+from multiprocessing import Pool                                                
+
+process_list = range(100)
+	
+def run_process(process_counter):                                                             
+    print ("Starting RUN # " + str(process_counter))
+    os.system('python3.5 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://tap.roe.ac.uk/firethorn -r=54 -u= -p= -g= -v=True -m=sync')
+    print ("Ended RUN # " + str(process_counter))
+
+
+pool = Pool(processes=20)                                                        
+pool.map(run_process, process_list)   
+
+
+## Leave running for up to a few hours
+
+
+
+
+
+
+
+## Test development deployment
+
+## ------------------------------------------------------------------------
+## Run Container on local machine , test Firethorn on a public IP
+## ------------------------------------------------------------------------
+
+Create a Firethorn chain as described:
+http://wfau.metagrid.co.uk/code/firethorn/file/9fd44371154b/doc/notes/stv/20190718-Firethorn-Swarm.txt
+
+
+## Fetch the container name of firethorn.py
+
+
+docker ps
+CONTAINER ID        IMAGE                                     COMMAND                  CREATED             STATUS                  PORTS               NAMES
+4eb9467315fd        firethorn/firethorn:latest                "/bin/sh -c '/var/lo…"   21 hours ago        Up 21 hours (healthy)   8080/tcp            ft_gillian.1.mqv7eoh2gdb0ydy7ektlzc6iu
+c95dc31a37d7        firethorn/ogsadai:2.1.33-stv-tap-swarm    "/bin/sh -c '/var/lo…"   21 hours ago        Up 21 hours (healthy)   8080/tcp            ft_jarmila.1.v8rbyw4x3xkfnwpluu9kwi8nf
+698232c0b83f        firethorn/postgres:2.1.33-stv-tap-swarm   "docker-entrypoint.s…"   46 hours ago        Up 46 hours             5432/tcp            ft_carolina.1.zfi7dbj2wn5v14ew8dq02xr4c
+54d97f68dda2        firethorn/postgres:2.1.33-stv-tap-swarm   "docker-entrypoint.s…"   46 hours ago        Up 46 hours             5432/tcp            ft_bethany.1.4gdjm36l81crue5xykbrrm4gt
+59b0ce098117        firethorn/firethorn-py:latest             "python3"                46 hours ago        Up 46 hours                                 ft_firethorn-py.1.nhjlot9nvyoitf5onbde0l8gj
+
+
+
+
+## Bash into Firethorn.py container
+
+docker exec -it ft_firethorn-py.1.nhjlot9nvyoitf5onbde0l8gj bash
+
+
+
+
+root@firethorn-py:/home# python3
+Python 3.5.2 (default, Nov 12 2018, 13:43:14) 
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+
+
+
+import os                                                                       
+from multiprocessing import Pool                                                
+
+process_list = range(100)
+	
+def run_process(process_counter):                                                             
+    print ("Starting RUN # " + str(process_counter))
+    os.system('python3.5 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://gillian:8080/firethorn -r=54 -u=chae1aixuh5exae5Udoh -p=EiB0shoegahfeWahx1ai -g=oowe1eedaeFei1tohtai -v=True -m=sync')
+    print ("Ended RUN # " + str(process_counter))
+
+
+pool = Pool(processes=20)                                                        
+pool.map(run_process, process_list)  
+
+
+
+## Leave running until all queries start failing
+
