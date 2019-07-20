@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM firethorn/fedora:2.1.33
+FROM firethorn/fedora:2.1.34
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 EXPOSE 1433
