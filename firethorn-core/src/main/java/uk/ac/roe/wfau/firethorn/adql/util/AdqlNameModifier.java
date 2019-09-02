@@ -75,7 +75,8 @@ public class AdqlNameModifier
             "area",
             "key",
             "count",
-            "when"
+            "when",
+            "overlaps"
             );
     
 
