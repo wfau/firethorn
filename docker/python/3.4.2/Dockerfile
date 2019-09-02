@@ -1,4 +1,4 @@
-FROM firethorn/ubuntu:2.1.34
+FROM firethorn/ubuntu:2.1.34-stv-tap-reserved
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 #

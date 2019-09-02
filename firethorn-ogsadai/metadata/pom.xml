@@ -32,7 +32,7 @@
     <parent>
         <groupId>uk.ac.roe.wfau</groupId>
         <artifactId>firethorn-ogsadai</artifactId>
-        <version project='firethorn'>2.1.34</version>
+        <version project='firethorn'>2.1.34-stv-tap-reserved</version>
     </parent>
 
     <artifactId>firethorn-ogsadai-metadata</artifactId>

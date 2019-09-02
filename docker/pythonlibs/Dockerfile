@@ -1,4 +1,4 @@
-FROM firethorn/python:2.1.34
+FROM firethorn/python:2.1.34-stv-tap-reserved
 MAINTAINER Stelios Voutsinas <stv@roe.ac.uk>
 
 # Install Python Libs
