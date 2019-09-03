@@ -1,0 +1,371 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a new VM.
+#[user@trop01]
+
+    createvm
+
+    >   INFO : Node name [Froeseth]
+    >   INFO : Base name [fedora-28-docker-base-20180708.qcow]
+    >   INFO : Base path [/var/lib/libvirt/images/base/fedora-28-docker-base-20180708.qcow]
+    >   INFO : Disc name [Froeseth.qcow]
+    >   INFO : Disc size [16GiB]
+
+    vmname=Froeseth
+
+
+
+    getipv4()
+        {
+        getent hosts "${1:?}" | cut -d ' ' -f 1
+        }
+
+
+#---------------------------------------------------------------------
+# Update the ssh keys for the VM.
+#[user@trop01]
+
+    # Remove the current key.
+    ssh-keygen -q -R "${vmname:?}"
+
+    # Add the host key(s) to known_hosts
+    ssh-keyscan "${vmname:?}" >> "${HOME}/.ssh/known_hosts"
+
+    # Add the IP address key(s) to known_hosts
+    ssh-keyscan -t ecdsa $(getipv4 "${vmname:?}") >> "${HOME}/.ssh/known_hosts"
+
+
+# -----------------------------------------------------
+# Login as Stevedore
+#[user@trop]
+
+    ssh "${vmname:?}"
+
+
+# -----------------------------------------------------
+# Install our secret function.
+#[user@virtual]
+
+    mkdir "${HOME:?}/bin"
+    cat > "${HOME:?}/bin/secret" << 'EOF'
+#!/bin/sh
+ssh -n \
+    'stv@shepseskaf.roe.ac.uk' \
+    "bin/secret '${1}'"
+EOF
+
+    chmod u+x "${HOME:?}/bin/secret"
+    secret 'frog'
+
+
+# -----------------------------------------------------
+# Download our builder compose file
+#[user@virtual]
+
+    wget -O builder.yml \
+        http://wfau.metagrid.co.uk/code/firethorn/raw-file/tip/docker/compose/builder.yml
+
+
+# -----------------------------------------------------
+# Set the target branch
+#[user@virtual]
+
+    branch=2.1.34-stv-tap-reserved
+
+# -----------------------------------------------------
+# Run our builder.
+#[user@virtual]
+
+    export branch
+    export secretsh=$(which secret)
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+        PATH=${PATH}:/builder/bin
+
+        : ${FIRETHORN_HOME:=/etc/firethorn}
+        : ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+        export FIRETHORN_HOME
+        export FIRETHORN_CODE
+
+    # -----------------------------------------------------
+    # Checkout a copy of our source code.
+    #[root@builder]
+
+        02.01-checkout.sh
+
+    # -----------------------------------------------------
+    # Merge our branch into main.
+    #[root@builder]
+
+        07.01-merge-start.sh
+
+    # -----------------------------------------------------
+    # Update our version number.
+    #[root@builder]
+
+        07.02-version-step.sh
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Tag this version of builder as latest.
+    #[root@builder]
+
+        source "${FIRETHORN_HOME}/merge.settings"
+
+        docker tag \
+            "firethorn/builder:${newversion}" "firethorn/builder:latest"
+
+    # -----------------------------------------------------
+    # Exit this version of builder.
+    #[root@builder]
+
+        exit
+
+# -----------------------------------------------------
+# Run a new instance of the builder.
+#[user@virtual]
+
+    export branch
+    export secretsh=$(which secret)
+
+    docker-compose \
+        --file "builder.yml" \
+        run \
+            builder
+
+    # -----------------------------------------------------
+    # Test our secret function.
+    #[root@builder]
+
+        secret 'frog'
+
+    # -----------------------------------------------------
+    # Initialise our paths.
+    #[root@builder]
+
+		PATH=${PATH}:/builder/bin
+
+		: ${FIRETHORN_HOME:=/etc/firethorn}
+		: ${FIRETHORN_CODE:=/var/local/build/firethorn}
+
+		export FIRETHORN_HOME
+		export FIRETHORN_CODE
+
+    # -----------------------------------------------------
+    # Build our base images.
+    #[root@builder]
+
+        04.01-buildbase.sh
+
+    # -----------------------------------------------------
+    # Compile our Java code.
+    #[root@builder]
+
+        05.01-javamaven.sh
+
+    # -----------------------------------------------------
+    # Build our Java containers.
+    #[root@builder]
+
+        05.02-javadocker.sh
+
+    # -----------------------------------------------------
+    # Fetch our Python code.
+    #[root@builder]
+
+        echo "Fetching client source"
+
+        ftpysrc='/var/local/build/client'
+        ftpyutilsfolder='/var/local/build/ftpy-utils'
+
+        ftpygit='https://github.com/stvoutsin/firethorn.py.git'
+        ftpyutils='https://github.com/stvoutsin/firethorn-utils.git'
+
+        if [  -e "${ftpysrc:?}" ]
+        then
+            pushd "${ftpysrc:?}"
+
+                echo "Updating Python code"
+                git pull
+
+            popd
+        else
+            pushd "$(dirname ${ftpysrc:?})"
+
+                echo "Cloning Python code from [${ftpygit:?}]"
+                git clone "${ftpygit:?}" "$(basename ${ftpysrc:?})"
+                git clone "${ftpyutils:?}" "$(basename ${ftpyutilsfolder:?})"
+
+		docker build --tag firethorn/firethorn-utils:${buildtag} ${ftpyutilsfolder?}/docker/firethorn-utils
+		docker build --tag firethorn/firethorn-py:${buildtag} ${ftpysrc:?}/docker/firethorn-py
+		docker build --tag firethorn/firethorn-utils:latest  ${ftpyutilsfolder?}/docker/firethorn-utils
+		docker build --tag firethorn/firethorn-py:latest ${ftpysrc:?}/docker/firethorn-py
+
+            popd
+        fi
+
+  
+	
+
+  # -----------------------------------------------------
+    # Delete the embedded metadata.
+    #[root@builder]
+
+        pushd "${ftpysrc:?}"
+
+            du -h  firethorn/meta
+            rm -rf firethorn/meta
+
+        popd
+
+
+# -----------------------------------------------------
+# Run our Python tests, 20190601-02-merge-tests.txt
+# -----------------------------------------------------
+
+    # -----------------------------------------------------
+    # Update our Mercurial config.
+    #[root@builder]
+
+        07.02-mercurial-user.sh
+
+
+    # -----------------------------------------------------
+    # Commit our merged code.
+    #[root@builder]
+
+        07.03-merge-commit.sh
+
+	/var/local/build/firethorn /builder/bin
+	Merging [2.1.34-stv-tap-reserved] into [2.1.35] (Y/n)Y
+	Close dev branch [2.1.34-stv-tap-reserved] (Y/n)Y
+	51 files updated, 0 files merged, 0 files removed, 0 files unresolved
+	51 files updated, 0 files merged, 0 files removed, 0 files unresolved
+	/builder/bin
+
+
+    # -----------------------------------------------------
+    # Push changes to Mercurial
+    #[root@builder]
+
+        08.03-mercurial-push.sh
+
+		root@builder firethorn]#         08.03-mercurial-push.sh
+		/var/local/build/firethorn /var/local/build/firethorn
+		Push version [2.1.35] (Y/n)Y
+		pushing to ssh://Stelios@data.metagrid.co.uk//var/local/wfau/projects/firethorn/code
+		remote: sign_and_send_pubkey: no mutual signature supported
+		remote: Stelios@data.metagrid.co.uk: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+		abort: no suitable response from remote hg!
+		[root@builder firethorn]# ssh Stelios@/Stelios@data.metagrid.co.uk^C
+		[root@builder firethorn]# ^C
+		[root@builder firethorn]# ssh Stelios@data.metagrid.co.uk
+		sign_and_send_pubkey: no mutual signature supported
+		Stelios@data.metagrid.co.uk: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+
+    ## Copy .ssh dsa key & config from local machine and then it works
+
+
+
+    # -----------------------------------------------------
+    # Tag our new images
+    #[root@builder]
+
+        08.01-docker-latest.sh
+
+
+
+    # -----------------------------------------------------
+    # Push images to Docker.
+    #[root@builder]
+
+    docker login \
+        --username ${username:?} \
+        --password ${pass:?}
+
+    docker push "firethorn/fedora:${newversion:?}"
+    docker push "firethorn/java:${newversion:?}"
+    docker push "firethorn/tomcat:${newversion:?}"
+    docker push "firethorn/firethorn:${newversion:?}"
+    docker push "firethorn/ogsadai:${newversion:?}"
+
+    docker push "firethorn/builder:${newversion:?}"
+    docker push "firethorn/tester:${newversion:?}"
+    docker push "firethorn/postgres:${newversion:?}"
+    docker push "firethorn/sql-proxy:${newversion:?}"
+
+    docker push "firethorn/firethorn-py:${newversion:?}"
+
+    docker push "firethorn/fedora:latest"
+    docker push "firethorn/java:latest"
+    docker push "firethorn/tomcat:latest"
+    docker push "firethorn/firethorn:latest"
+    docker push "firethorn/ogsadai:latest"
+
+    docker push "firethorn/builder:latest"
+    docker push "firethorn/tester:latest"
+    docker push "firethorn/postgres:latest"
+    docker push "firethorn/sql-proxy:latest"
+
+    docker push "firethorn/firethorn-py:latest"
+
+    docker push "firethorn/firethorn-utils:latest"
+    docker push "firethorn/firethorn-utils:${newversion:?}"
+
+
+    # -----------------------------------------------------
+    # Push binaries to Maven repo.
+    #[root@builder]
+
+        08.04-maven-push.sh
+
+	   > /builder/bin/08.04-maven-push.sh: line 29: mvnuser: parameter null or not set
+ 
+
+    ## Add missing value to secret file, works after that..
+
+
+
+
+
