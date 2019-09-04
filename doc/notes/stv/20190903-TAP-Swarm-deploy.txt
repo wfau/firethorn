@@ -21,11 +21,7 @@
 #
 
 
-## ------------------------------------------------------------------------------------------
-## Create Master VM 
-## ------------------------------------------------------------------------------------------
-
-stv@trop02:~$ createvm 
+stv@trop02:~$ createvm
 
 INFO : Base pool  [base]
 INFO : Live pool  [live]
@@ -44,7 +40,7 @@ INFO : Template   [/var/local/projects/ischnura/github/src/dat/tropo-template.xm
 [6] Eterathiel
 [7] Siamond
 [8] Acilamwen
-Select machine name (1) 3
+Select machine name (1) 2
 
 [1] fedora-28-docker-base-20180708.qcow
 [2] fedora-28-8G-docker-base-20181016.qcow
@@ -52,37 +48,52 @@ Select machine name (1) 3
 [4] fedora-28-16G-docker-base-20181016.qcow
 Select base image (1) 3
 
-INFO : Node name [Ulov]
+INFO : Node name [Lothigometh]
 INFO : Base name [fedora-28-32G-docker-base-20181016.qcow]
 INFO : Base path [/var/lib/libvirt/images/base/fedora-28-32G-docker-base-20181016.qcow]
-INFO : Disc name [Ulov.qcow]
+INFO : Disc name [Lothigometh.qcow]
 INFO : Disc size [32GiB]
 
-INFO : MAC  [52:54:00:02:02:0A]
-INFO : IPv4 [192.168.202.10]
+INFO : MAC  [52:54:00:02:02:09]
+INFO : IPv4 [192.168.202.9]
 INFO : IPv6 []
 
 Create virtual machine (Y/n)Y
 
-Found existing storage volume [Ulov.qcow]
-Delete storage volume (Y/n)Y
-Deleting storage volume [Ulov.qcow]
-Vol Ulov.qcow deleted
+Found existing virtual machine [Lothigometh]
+Delete existing virtual machine (Y/n)Y
+Stopping virtual machine [Lothigometh]
+Domain a22a63dd-3a36-471a-b24a-4a3756abdc96 destroyed
+Delete associated storage (Y/n)Y
+Deleting virtual machine [Lothigometh]
+Domain a22a63dd-3a36-471a-b24a-4a3756abdc96 has been undefined
+Y
+Volume 'vda'(/libvirt/storage/live/Lothigometh.qcow) removed.
+Volume 'vdb'(/var/lib/libvirt/images/init/Lothigometh.iso) removed.
 
-Creating new volume [Ulov.qcow]
-Vol Ulov.qcow created
-Name:           Ulov.qcow
+Creating new volume [Lothigometh.qcow]
+Vol Lothigometh.qcow created
+Name:           Lothigometh.qcow
 Type:           file
 Capacity:       32.00 GiB
 Allocation:     196.00 KiB
 
-Vol Ulov.iso deleted
-Vol Ulov.iso created
-Creating new virtual machine [Ulov]
-Domain Ulov defined from /tmp/tmp.3mwcAcOuPd
-Starting new virtual machine [Ulov]
-Domain Ulov started
+Vol Lothigometh.iso created
+Creating new virtual machine [Lothigometh]
+Domain Lothigometh defined from /tmp/tmp.1QAPX8kigk
+Starting new virtual machine [Lothigometh]
+Domain Lothigometh started
+stv@trop02:~$ Y
+-bash: Y: command not found
+stv@trop02:~$ exit
+logout
+Connection to trop02.roe.ac.uk closed.
 
+
+ssh-keygen -f "/home/stelios/.ssh/known_hosts" -R "lothigometh"
+
+ssh Stevedore@Lothigometh
+[Stevedore@Lothigometh ~]$ 
 
 
 
@@ -90,12 +101,12 @@ Domain Ulov started
 ## Initialize Swarm with VM's address
 ## ------------------------------------------------------------------------------------------
 
-[Stevedore@Ulov ~]$ ifconfig
+[Stevedore@Lothigometh ~]$ ifconfig
 
-       ..  192.168.202.10  ..
+       ..  192.168.202.9  ..
 
 
-docker swarm init --advertise-addr 192.168.202.10  
+docker swarm init --advertise-addr 192.168.202.9 
 
 
 	To add a worker to this swarm, run the following command:
@@ -105,8 +116,7 @@ docker swarm init --advertise-addr 192.168.202.10
 	To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 
 
-
-## Fix Firewall issue
+## Firewall Ports for Swarm
 sudo su
     firewall-cmd --add-port=2377/tcp --permanent
     firewall-cmd --add-port=2377/tcp --permanent
@@ -140,7 +150,7 @@ exit
 ## -------------------------------------------------------------------------------------------
 
 
-    export buildtag=2.1.34
+    export buildtag=2.1.35
     export branch=default
 
 
@@ -382,12 +392,11 @@ docker stack deploy -c docker-compose.yml ft
 
 [Stevedore@Lothigometh ~]$ docker ps
 CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                   PORTS               NAMES
-a6b8ce6fc1a7        firethorn/firethorn-py:2.1.35   "python3"                2 minutes ago       Up 2 minutes                                 ft_firethorn-py.1.b6ww5ws0x5hsoxzibvvmzkpg2
-e2aa39f93f71        firethorn/ogsadai:2.1.35        "/bin/sh -c '/var/lo…"   3 minutes ago       Up 2 minutes (healthy)   8080/tcp            ft_jarmila.1.k0lafcd3mnk4omqqa6b3sfgga
-77839250c9d9        firethorn/firethorn:2.1.35      "/bin/sh -c '/var/lo…"   3 minutes ago       Up 2 minutes (healthy)   8080/tcp            ft_gillian.1.b375fvmymiqzubvwrqi3jcp0u
-754c7061e9a7        firethorn/postgres:2.1.35       "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes             5432/tcp            ft_carolina.1.ry40mzo4vy2kipfj8s879ak95
-166cb66e3bb1        firethorn/postgres:2.1.35       "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes             5432/tcp            ft_bethany.1.jlh7gdn8oau9dcxhhmd9kafkn
-
+a6b8ce6fc1a7        firethorn/firethorn-py:2.1.35   "python3"                3 minutes ago       Up 3 minutes                                 ft_firethorn-py.1.b6ww5ws0x5hsoxzibvvmzkpg2
+e2aa39f93f71        firethorn/ogsadai:2.1.35        "/bin/sh -c '/var/lo…"   3 minutes ago       Up 3 minutes (healthy)   8080/tcp            ft_jarmila.1.k0lafcd3mnk4omqqa6b3sfgga
+77839250c9d9        firethorn/firethorn:2.1.35      "/bin/sh -c '/var/lo…"   3 minutes ago       Up 3 minutes (healthy)   8080/tcp            ft_gillian.1.b375fvmymiqzubvwrqi3jcp0u
+754c7061e9a7        firethorn/postgres:2.1.35       "docker-entrypoint.s…"   4 minutes ago       Up 4 minutes             5432/tcp            ft_carolina.1.ry40mzo4vy2kipfj8s879ak95
+166cb66e3bb1        firethorn/postgres:2.1.35       "docker-entrypoint.s…"   4 minutes ago       Up 4 minutes             5432/tcp            ft_bethany.1.jlh7gdn8oau9dcxhhmd9kafkn
 
 
 
@@ -395,7 +404,9 @@ e2aa39f93f71        firethorn/ogsadai:2.1.35        "/bin/sh -c '/var/lo…"   3
 ## Run Docker Compose tap-deployer.yml from firethorn.py
 ## ------------------------------------------------------------------------
 
-docker exec -it fa6b8ce6fc1a7 bash
+docker exec -it a6b8ce6fc1a7 bash
+
+
 
 python3
 
@@ -405,95 +416,61 @@ ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
 ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
 configurator =  configur.Configurator(ft)
 
+
 configurator.load_resources("/home/firethorn.py/firethorn/data/osa-tap.json")
-Importing JDBC Schema: ATLASDR1
-Importing JDBC Schema: ATLASDR2
-Importing JDBC Schema: ATLASDR3
-Importing JDBC Schema: 2MASS
-Importing JDBC Schema: 2XMM
-Importing JDBC Schema: WISE
-Importing JDBC Schema: VIKINGDR3
-Importing JDBC Schema: VHSDR1
-Importing JDBC Schema: MGC
-Importing JDBC Schema: GLIMPSE
-Importing JDBC Schema: FIRST
-Importing JDBC Schema: DENIS
-TAP Service available at: http://gillian:8080/firethorn/tap/54/
+
+ > TAP Service available at: http://gillian:8080/firethorn/tap/54/
+
 
 
 configurator.load_resources("/home/firethorn.py/firethorn/data/ssa-tap.json")
->>> configurator.load_resources("/home/firethorn.py/firethorn/data/ssa-tap.json")
-Importing JDBC Schema: SSA
-Importing JDBC Schema: 2MASS
-Importing JDBC Schema: 2MPZ
-Importing JDBC Schema: WISExSCOSPZ
-Importing JDBC Schema: SDSSDR1
-Importing JDBC Schema: SDSSDR5
-Importing JDBC Schema: SDSSDR7
-Importing JDBC Schema: SDSSDR8
-Importing JDBC Schema: SDSSDR9
-Importing JDBC Schema: 6dF
-TAP Service available at: http://gillian:8080/firethorn/tap/57/
+
+ > TAP Service available at: http://gillian:8080/firethorn/tap/57/
+
+
+
+## Update vsa json config file with VHSDR6, VVVDR5 catalogs
+
+nano /home/firethorn.py/firethorn/data/vsa-tap.json 
+
+{  
+    
+   ..
+                    {
+                        "jdbcid" : "avASDeA0",
+                        "jdbcschema" : "dbo",
+                        "jdbccatalog": "VVVDR5",
+                        "adqlschema": "VVVDR5",
+                        "metadata": {
+                            "metadoc": "https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/VVVDR5_TablesSchema.xml",
+                            "catalog": "VVVDR5"
+                        }
+                    },
+  .. 
+                    {
+                        "jdbcid" : "avASDeA0",   
+                        "jdbcschema" : "dbo",         
+                        "jdbccatalog": "VHSDR6",
+                        "adqlschema": "VHSDR6",
+                        "metadata": {
+                            "metadoc": "https://raw.githubusercontent.com/stvoutsin/metadata/master/metadocs/VHSDR6_TablesSchema.xml",
+                            "catalog": "VHSDR6"
+                        }
+                    }, 
+  ..
+}
+
+
+
 
 configurator.load_resources("/home/firethorn.py/firethorn/data/vsa-tap.json")
->>> configurator.load_resources("/home/firethorn.py/firethorn/data/vsa-tap.json")
-Importing JDBC Schema: VVVDR1
-Importing JDBC Schema: VVVDR2
-Importing JDBC Schema: VVVDR4
-Importing JDBC Schema: VVVDR5
-Importing JDBC Schema: VHSDR1
-Importing JDBC Schema: VHSDR2
-Importing JDBC Schema: VHSDR3
-Importing JDBC Schema: VHSDR6
-Importing JDBC Schema: VMCDR1
-Importing JDBC Schema: VMCDR2
-Importing JDBC Schema: VMCDR3
-Importing JDBC Schema: VMCDR4
-Importing JDBC Schema: VIKINGDR2
-Importing JDBC Schema: VIKINGDR3
-Importing JDBC Schema: VIKINGDR4
-Importing JDBC Schema: VIDEODR2
-Importing JDBC Schema: VIDEODR3
-Importing JDBC Schema: VIDEODR4
-Importing JDBC Schema: VIDEODR5
-Importing JDBC Schema: UKIDSSDR4PLUS
-Importing JDBC Schema: UKIDSSDR5PLUS
-Importing JDBC Schema: UKIDSSDR6PLUS
-Importing JDBC Schema: UKIDSSDR7PLUS
-Importing JDBC Schema: UKIDSSDR8PLUS
-Importing JDBC Schema: UKIDSSDR9PLUS
-Importing JDBC Schema: UKIDSSDR10PLUS
-Importing JDBC Schema: SDSSDR1
-Importing JDBC Schema: SDSSDR3
-Importing JDBC Schema: SDSSDR5
-Importing JDBC Schema: SDSSDR7
-Importing JDBC Schema: SDSSDR8
-Importing JDBC Schema: SDSSDR9
-Importing JDBC Schema: 2MASS
-Importing JDBC Schema: ROSAT
-Importing JDBC Schema: FIRST
-Importing JDBC Schema: IRAS
-Importing JDBC Schema: SSA
-Importing JDBC Schema: GLIMPSE
-Importing JDBC Schema: 2XMM
-Importing JDBC Schema: MGC
-Importing JDBC Schema: Stripe82
-Importing JDBC Schema: WISE
-TAP Service available at: http://gillian:8080/firethorn/tap/60/
 
+ > TAP Service available at: http://gillian:8080/firethorn/tap/60/
 
 
 configurator.load_resources("/home/firethorn.py/firethorn/data/wsa-tap.json")
->>> configurator.load_resources("/home/firethorn.py/firethorn/data/wsa-tap.json")
-Importing JDBC Schema: UKIDSSDR1PLUS
-Importing JDBC Schema: UKIDSSDR2PLUS
-Importing JDBC Schema: UKIDSSDR3PLUS
-Importing JDBC Schema: UKIDSSDR4PLUS
-Importing JDBC Schema: UKIDSSDR5PLUS
-Importing JDBC Schema: UKIDSSDR6PLUS
-Importing JDBC Schema: UKIDSSDR7PLUS
-Importing JDBC Schema: UKIDSSDR8PLUS
-Importing JDBC Schema: UKIDSSDR9PLUS
+
+..
 Importing JDBC Schema: UKIDSSDR10PLUS
 ERROR:root:HTTP Error 404: 
 Traceback (most recent call last):
@@ -523,11 +500,7 @@ Traceback (most recent call last):
   File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Importing JDBC Schema: SDSSDR1
-Importing JDBC Schema: SDSSDR3
-Importing JDBC Schema: SDSSDR5
-Importing JDBC Schema: SDSSDR7
-Importing JDBC Schema: SDSSDR8
+...
 Importing JDBC Schema: SDSSDR9
 ERROR:root:HTTP Error 404: 
 Traceback (most recent call last):
@@ -557,10 +530,7 @@ Traceback (most recent call last):
   File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Importing JDBC Schema: 2MASS
-Importing JDBC Schema: ROSAT
-Importing JDBC Schema: FIRST
-Importing JDBC Schema: IRAS
+...
 Importing JDBC Schema: SSA
 ERROR:root:HTTP Error 404: 
 Traceback (most recent call last):
@@ -590,75 +560,143 @@ Traceback (most recent call last):
   File "/usr/lib/python3.5/json/decoder.py", line 357, in raw_decode
     raise JSONDecodeError("Expecting value", s, err.value) from None
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-Importing JDBC Schema: GLIMPSE
-Importing JDBC Schema: 2XMM
-Importing JDBC Schema: MGC
-Importing JDBC Schema: Stripe82
+..
 Importing JDBC Schema: WISE
-TAP Service available at: http://gillian:8080/firethorn/tap/63/
-
-..
-
+ 
+  > TAP Service available at: http://gillian:8080/firethorn/tap/63/
 
 
 
-# -----------------------------------------------------
-# Update the Proxy Entry
-# -----------------------------------------------------
-ssh Stevedore@Acilamwen 
-
-[Stevedore@Acilamwen ~]$ nano tap.roe.ac.uk.conf 
-
-..
-
-    ## PROXY ENTRIES HERE ##
-    ProxyPassMatch    ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
-    ProxyPassReverse  ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
-
-    ProxyPassMatch    ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/57/$1
-    ProxyPassReverse  ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/57/$1
-
-    ProxyPassMatch    ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/60/$1
-    ProxyPassReverse  ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/60/$1
-
-    ProxyPassMatch    ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/63/$1
-    ProxyPassReverse  ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/63/$1
-
-    ProxyPassMatch    ^/firethorn\/(.*)$  http://ulov:8080/firethorn/$1
-    ProxyPassReverse  ^/firethorn\/(.*)$  http://ulov:8080/firethorn/$1
 
 
+## ------------------------------------------------------------------------
+## Validate
+## ------------------------------------------------------------------------
 
-...   
+java -Xmx4096m -jar stilts.jar -disk taplint tapurl=http://tap.roe.ac.uk/vsa debug=true maxtable=10
 
-[Stevedore@Acilamwen ~]$ nano tap.roe.ac.uk.conf 
-[Stevedore@Acilamwen ~]$ docker exec -it  apache bash
-[root@bc8d6979e451 /]# nano /etc/httpd/conf.d/tap.roe.ac.uk.conf
+This is STILTS taplint, 3.1-6/78f78cf (2019-05-09)
+Static report types: ERROR(124), WARNING(48), INFO(21), SUMMARY(9), FAILURE(21)
 
-..
+Section TMV: Validate table metadata against XML schema
+I-TMV-VURL-1 Validating http://tap.roe.ac.uk/vsa/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
 
+Section TME: Check content of tables metadata from /tables
+I-TME-TURL-1 Reading table metadata from http://tap.roe.ac.uk/vsa/tables
+S-TME-SUMM-1 Schemas: 43, Tables: 2748, Columns: 114479, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
 
-    ## PROXY ENTRIES HERE ##
-    ProxyPassMatch    ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
-    ProxyPassReverse  ^/osa\/(.*)$  http://ulov:8080/firethorn/tap/54/$1
+Section TMS: Check content of tables metadata from TAP_SCHEMA
+I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
+I-TMS-QGET-6 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=114489
+I-TMS-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+I-TMS-QGET-7 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+*+FROM+TAP_SCHEMA.columns&MAXREC=1
+I-TMS-QSUB-8 Submitting query: SELECT ft_column_id, std, indexed, principal, arraysize, ts_column_id, datatype, utype, ucd, unit, description, column_name, table_name FROM TAP_SCHEMA.columns
+I-TMS-QGET-8 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+ft_column_id%2C+std%2C+indexed%2C+principal%2C+arraysize%2C+ts_column_id%2C+datatype%2C+utype%2C+ucd%2C+unit%2C+description%2C+column_name%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=114489
+I-TMS-QSUB-9 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-9 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=114489
+S-TMS-SUMM-1 Schemas: 43, Tables: 2748, Columns: 114479, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 7, std: 33
+S-TMS-QNUM-1 Successful/submitted TAP queries: 13/13
+S-TMS-QTIM-1 Average successful query time: 4.3s
+I-TMS-QSUB-x (4 more)
+I-TMS-QGET-x (4 more)
 
-    ProxyPassMatch    ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/57/$1
-    ProxyPassReverse  ^/vsa\/(.*)$  http://ulov:8080/firethorn/tap/57/$1
+Section TMC: Compare table metadata from /tables and TAP_SCHEMA
 
-    ProxyPassMatch    ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/60/$1
-    ProxyPassReverse  ^/wsa\/(.*)$  http://ulov:8080/firethorn/tap/60/$1
+Section CPV: Validate capabilities against XML schema
+I-CPV-VURL-1 Validating http://tap.roe.ac.uk/vsa/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+S-CPV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
 
-    ProxyPassMatch    ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/63/$1
-    ProxyPassReverse  ^/ssa\/(.*)$  http://ulov:8080/firethorn/tap/63/$1
+Section CAP: Check content of TAPRegExt capabilities record
+I-CAP-CURL-1 Reading capability metadata from http://tap.roe.ac.uk/vsa/capabilities
 
-    ProxyPassMatch    ^/firethorn\/(.*)$  http://ulov:8080/firethorn/$1
-    ProxyPassReverse  ^/firethorn\/(.*)$  http://ulov:8080/firethorn/$1
+Section AVV: Validate availability against XML schema
+I-AVV-VURL-1 Validating http://tap.roe.ac.uk/vsa/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
 
+Section QGE: Make ADQL queries in sync GET mode
+I-QGE-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM VIKINGDR3.ExternalSurveyTable
+I-QGE-QGET-1 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+surveyID+FROM+VIKINGDR3.ExternalSurveyTable
+I-QGE-QSUB-2 Submitting query: SELECT TOP 1 surveyID FROM VIKINGDR3.ExternalSurveyTable
+I-QGE-QGET-2 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+surveyID+FROM+VIKINGDR3.ExternalSurveyTable
+I-QGE-QSUB-3 Submitting query: SELECT TOP 1 surveyID FROM VIKINGDR3.ExternalSurveyTable
+I-QGE-QGET-3 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+surveyID+FROM+VIKINGDR3.ExternalSurveyTable
+I-QGE-QSUB-4 Submitting query: SELECT TOP 8 releaseNum, productID AS taplint_c_2, V.ppErrBitsStatus, cuEventID AS taplint_c_4, multiframeID, V.programmeID AS taplint_c_6 FROM VIKINGDR3.ProgrammeFrame AS V
+I-QGE-QGET-4 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+releaseNum%2C+productID+AS+taplint_c_2%2C+V.ppErrBitsStatus%2C+cuEventID+AS+taplint_c_4%2C+multiframeID%2C+V.programmeID+AS+taplint_c_6++FROM+VIKINGDR3.ProgrammeFrame+AS+V
+I-QGE-QSUB-5 Submitting query: SELECT programmeID FROM VIKINGDR3.RequiredDiffImage
+I-QGE-QGET-5 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+programmeID+FROM+VIKINGDR3.RequiredDiffImage&MAXREC=0
+I-QGE-DUFF-1 Submitting duff query: DUFF QUERY
+I-QGE-QGET-6 Query GET URL: http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+S-QGE-QNUM-1 Successful/submitted TAP queries: 5/5
+S-QGE-QTIM-1 Average successful query time: 1.3s
 
+Section QPO: Make ADQL queries in sync POST mode
+I-QPO-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM VIKINGDR3.ExternalSurveyTable
+I-QPO-QSUB-2 Submitting query: SELECT TOP 8 releaseNum, productID AS taplint_c_2, V.ppErrBitsStatus, cuEventID AS taplint_c_4, multiframeID, V.programmeID AS taplint_c_6 FROM VIKINGDR3.ProgrammeFrame AS V
+I-QPO-QSUB-3 Submitting query: SELECT programmeID FROM VIKINGDR3.RequiredDiffImage
+I-QPO-DUFF-1 Submitting duff query: DUFF QUERY
+S-QPO-QNUM-1 Successful/submitted TAP queries: 3/3
+S-QPO-QTIM-1 Average successful query time: 1.3s
 
-..
-[root@bc8d6979e451 /]# exit
-exit
+Section QAS: Make ADQL queries in async mode
+I-QAS-QSUB-1 Submitting query: SELECT TOP 10 surveyID FROM VIKINGDR3.ExternalSurveyTable
+I-QAS-QJOB-1 Submitted query at http://tap.roe.ac.uk/firethorn/tap/60/async/843161
+I-QAS-QSUB-2 Submitting query: SELECT TOP 8 releaseNum, productID AS taplint_c_2, V.ppErrBitsStatus, cuEventID AS taplint_c_4, multiframeID, V.programmeID AS taplint_c_6 FROM VIKINGDR3.ProgrammeFrame AS V
+I-QAS-QJOB-2 Submitted query at http://tap.roe.ac.uk/firethorn/tap/60/async/843162
+I-QAS-QSUB-3 Submitting query: SELECT programmeID FROM VIKINGDR3.RequiredDiffImage
+I-QAS-QJOB-3 Submitted query at http://tap.roe.ac.uk/firethorn/tap/60/async/843163
+I-QAS-DUFF-1 Submitting duff query: DUFF QUERY
+I-QAS-QJOB-4 Submitted query at http://tap.roe.ac.uk/firethorn/tap/60/async/843164
+S-QAS-QNUM-1 Successful/submitted TAP queries: 3/3
+S-QAS-QTIM-1 Average successful query time: 2.2s
 
-[Stevedore@Acilamwen ~]$ docker kill --signal 'USR1' 'apache'
+Section UWS: Test asynchronous UWS/TAP behaviour
+I-UWS-CJOB-1 Created new job http://tap.roe.ac.uk/firethorn/tap/60/async/843165
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://tap.roe.ac.uk/firethorn/tap/60/async/843165/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://tap.roe.ac.uk/firethorn/tap/60/async/843165/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://tap.roe.ac.uk/firethorn/tap/60/async/843165
+I-UWS-CJOB-2 Created new job http://tap.roe.ac.uk/firethorn/tap/60/async/843166
+I-UWS-CJOB-3 Created new job http://tap.roe.ac.uk/firethorn/tap/60/async/843167
+I-UWS-VUWS-1 UWS job document implicitly V1.0
+I-UWS-POPA-4 POSTed PHASE=RUN to http://tap.roe.ac.uk/firethorn/tap/60/async/843167/phase
+
+Section MDQ: Check table query result columns against declared metadata
+I-MDQ-TMAX-1 Testing only 10/2748 tables
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM "FIRST".first08Jul16Source
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM "FIRST".firstSource
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM "FIRST".firstSource12Feb16
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM BestDR1."Diagnostics"
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM BestDR1."First"
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM BestDR1."Match"
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM BestDR1."Region"
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM BestDR1."Zone"
+I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM BestDR1.Best2Sector
+S-MDQ-QNUM-1 Successful/submitted TAP queries: 10/10
+S-MDQ-QTIM-1 Average successful query time: 1.4s
+I-MDQ-QSUB-x (1 more)
+
+Section OBS: Test implementation of ObsCore Data Model
+I-OBS-NODM-1 Table capabilities lists no ObsCore DataModel - no ObsCore tests
+
+Section UPL: Make queries with table uploads
+F-UPL-NOUP-1 Table capabilities lists no upload methods - will not attempt upload tests
+
+Section EXA: Check content of examples document
+I-EXA-EURL-1 Reading examples document from http://tap.roe.ac.uk/vsa/examples
+F-EXA-EXNO-1 No examples document at http://tap.roe.ac.uk/vsa/examples
+
+Totals: Errors: 0; Warnings: 0; Infos: 76; Summaries: 18; Failures: 2
 
