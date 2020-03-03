@@ -329,7 +329,6 @@ extends AbstractTableController
                 }
             else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) {
 		writer.append(" datatype='int'");
-                writer.append(" arraysize='1'");
 		}
 	    else if (column.meta().adql().type() == AdqlColumn.AdqlType.BYTE) {
 		writer.append(" datatype='unsignedByte'");
