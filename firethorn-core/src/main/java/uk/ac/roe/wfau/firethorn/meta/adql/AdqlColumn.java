@@ -259,7 +259,7 @@ extends BaseColumn<AdqlColumn>
                 case TIMESTAMP :
                     return AdqlColumn.AdqlType.DATETIME;
                 case TINYINT :
-                    return AdqlColumn.AdqlType.INTEGER;
+                    return AdqlColumn.AdqlType.SHORT;
 
 
                 case BLOB :
