@@ -1,0 +1,299 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2018, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+##########################################################
+#####         Notes on Testing fix for 1182          #####
+##########################################################
+
+
+
+import firethorn
+
+import firethorn_utils.configurator as configur
+ft = firethorn.Firethorn(endpoint="http://gillian:8080/firethorn")
+ft.login(firethorn.config.adminuser, firethorn.config.adminpass, firethorn.config.admingroup)
+configurator =  configur.Configurator(ft)
+
+
+
+## -----------------------------
+## Import Catalogs
+
+# Importing 2 catalogs that have columns that we want to check
+  # ATLASDR1 / Filter / filterID  (Should see the equivalent of tiny int, instead of byte array)
+  # BestDR9 / Frame / img  (Should see a byte array)
+
+
+>>> configurator.load_resources("/home/firethorn.py/firethorn/data/osa-gui.json")
+Importing JDBC Schema: ATLASDR1
+Importing JDBC Schema: SDSSDR9
+TAP Service available at: http://gillian:8080/firethorn/tap/110305/
+
+
+
+## -----------------------------
+## Test with ftpy
+
+
+resource=ft.firethorn_engine.select_adql_resource_by_ident("http://gillian:8080/firethorn/adql/resource/110305")
+
+
+#
+# Create and run a query on the resource.
+query_str = "SELECT TOP 10 * FROM ATLASDR1.Filter"
+
+query_obj = resource.create_query(
+    query_str,
+    "COMPLETED",
+    None,
+    3000000
+    )
+
+
+print(
+    query_obj.table()
+     )
+
+{
+  "columns": "http://gillian:8080/firethorn/adql/table/155703/columns/select",
+  "self": "http://gillian:8080/firethorn/adql/table/155703",
+  "root": "http://gillian:8080/firethorn/jdbc/table/155702",
+  "url": "http://gillian:8080/firethorn/adql/table/155703",
+  "created": "2020-03-05T22:16:03.103",
+  "query": "http://gillian:8080/firethorn/blue/query/155602",
+  "schema": "http://gillian:8080/firethorn/adql/schema/132238",
+  "base": "http://gillian:8080/firethorn/jdbc/table/155702",
+  "parent": "http://gillian:8080/firethorn/adql/schema/132238",
+  "depth": "PARTIAL",
+  "ident": "155703",
+  "name": "XX_CDEILDVUQYJ4GAAAAFYKZRIZDQ",
+  "fullname": "temp.XX_CDEILDVUQYJ4GAAAAFYKZRIZDQ",
+  "owner": "http://gillian:8080/firethorn/community-member/162",
+  "modified": "2020-03-05T22:16:03.103",
+  "formats": {
+    "datatable": "http://gillian:8080/firethorn/adql/table/155703/datatable",
+    "votable": "http://gillian:8080/firethorn/adql/table/155703/votable"
+  },
+  "text": null,
+  "type": "http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-table-1.0.json",
+  "resource": "http://gillian:8080/firethorn/adql/resource/110307",
+  "metadata": {
+    "adql": {
+      "status": "COMPLETED",
+      "count": 10
+    }
+  }
+}
+
+
+py_table = query_obj.table().as_astropy()
+
+> Downloading http://gillian:8080/firethorn/adql/table/155703/votable
+> |=======================================================================================================================================================================| 5.1k/5.1k (100.00%)         0s
+
+
+
+##-----------------------
+## Test in Astropy
+
+py_table.pprint()
+
+filterID shortName      name                                                               description                                                           ...   vegaToAB    oneSecMLVg  isSectioned
+-------- --------- -------------- ------------------------------------------------------------------------------------------------------------------------------ ... ------------ ------------ -----------
+       0      NONE           NONE                                                                                                                           NONE ... -999999500.0 -999999500.0           0
+       1         u         u_SDSS Sloan u filter: see  Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf ...         0.94 -999999500.0           0
+       2         g         g_SDSS Sloan g filter: see  Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf ...        -0.08 -999999500.0           0
+       3         r         r_SDSS Sloan r filter (see Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf) ...         0.17 -999999500.0           0
+       4         i         i_SDSS Sloan i filter (see Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf) ...          0.4 -999999500.0           0
+       5         z         z_SDSS Sloan z filter (see Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf) ...         0.57 -999999500.0           0
+       6         B         B_JOHN                                                                                                               Johnson B filter ...       -0.044 -999999500.0           0
+       7         V         V_JOHN                                                                                                               Johnson V filter ...       -0.163 -999999500.0           0
+       8      BLNK OMEGACAM blank                                                                                         OMEGACAM blank filter (e.g. for darks) ... -999999500.0 -999999500.0           0
+       9     vStrm         v_STRM                                                                                                                   Stroemgren v ... -999999500.0 -999999500.0           0
+
+
+## VALID
+## filterID values are printed correctly
+
+## Check VOTable file
+
+import requests
+r = requests.get("http://gillian:8080/firethorn/adql/table/155703/votable")
+r.text
+
+"<?xml version='1.0' encoding='UTF-8'?><VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3' version='1.3'><RESOURCE type='results'><INFO name='QUERY_STATUS' value='OK'></INFO><INFO name='link' value='http://gillian:8080/firethorn/adql/table/155703'/><TABLE ID='table.155703' name='XX_CDEILDVUQYJ4GAAAAFYKZRIZDQ'><FIELD ID='column.155753' name='filterID' datatype='short' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155753'/></FIELD><FIELD ID='column.155755' name='shortName' datatype='char' arraysize='10' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155755'/></FIELD><FIELD ID='column.155757' name='name' datatype='char' arraysize='16' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155757'/></FIELD><FIELD ID='column.155759' name='description' datatype='char' arraysize='256' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155759'/></FIELD><FIELD ID='column.155761' name='cutOn' datatype='float' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155761'/></FIELD><FIELD ID='column.155763' name='cutOff' datatype='float' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155763'/></FIELD><FIELD ID='column.155765' name='aebv' datatype='float' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155765'/></FIELD><FIELD ID='column.155767' name='vegaToAB' datatype='float' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155767'/></FIELD><FIELD ID='column.155769' name='oneSecMLVg' datatype='float' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155769'/></FIELD><FIELD ID='column.155771' name='isSectioned' datatype='short' xtype='null'><LINK content-type='application/json' content-role='metadata' href='http://gillian:8080/firethorn/adql/column/155771'/></FIELD><DATA><TABLEDATA><TR><TD>0</TD><TD>NONE</TD><TD>NONE</TD><TD>NONE</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>1</TD><TD>u</TD><TD>u_SDSS</TD><TD>Sloan u filter: see  Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf</TD><TD>0.32690000534057617</TD><TD>0.3828999996185303</TD><TD>5.15500020980835</TD><TD>0.9399999976158142</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>2</TD><TD>g</TD><TD>g_SDSS</TD><TD>Sloan g filter: see  Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf</TD><TD>0.4092000126838684</TD><TD>0.5457000136375427</TD><TD>3.7929999828338623</TD><TD>-0.07999999821186066</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>3</TD><TD>r</TD><TD>r_SDSS</TD><TD>Sloan r filter (see Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf)</TD><TD>0.5546000003814697</TD><TD>0.6916999816894531</TD><TD>2.750999927520752</TD><TD>0.17000000178813934</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>4</TD><TD>i</TD><TD>i_SDSS</TD><TD>Sloan i filter (see Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf)</TD><TD>0.6949999928474426</TD><TD>0.8309999704360962</TD><TD>2.0859999656677246</TD><TD>0.4000000059604645</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>5</TD><TD>z</TD><TD>z_SDSS</TD><TD>Sloan z filter (see Tokunaga et al., 2002, PASP, 114, 180; http://www.astro-wise.org/~omegacam/documents/3110_user_manual.pdf)</TD><TD>0.8654999732971191</TD><TD>0.9605000019073486</TD><TD>1.4789999723434448</TD><TD>0.5699999928474426</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>6</TD><TD>B</TD><TD>B_JOHN</TD><TD>Johnson B filter</TD><TD>0.38999998569488525</TD><TD>0.49000000953674316</TD><TD>-9.99999488E8</TD><TD>-0.04399999976158142</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>7</TD><TD>V</TD><TD>V_JOHN</TD><TD>Johnson V filter</TD><TD>0.5</TD><TD>0.6000000238418579</TD><TD>-9.99999488E8</TD><TD>-0.16300000250339508</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>8</TD><TD>BLNK</TD><TD>OMEGACAM blank</TD><TD>OMEGACAM blank filter (e.g. for darks)</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>0</TD></TR><TR><TD>9</TD><TD>vStrm</TD><TD>v_STRM</TD><TD>Stroemgren v</TD><TD>0.40049999952316284</TD><TD>0.42149999737739563</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>0</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>"
+
+## VALID
+## filterID value is: datatype='short'
+
+
+
+
+## -----------------------------
+## Test with Taplint
+
+java -jar stilts.jar taplint tapurl=http://localhost:8080/firethorn/tap/155703  debug=true
+This is STILTS taplint, 3.2/1c07f08 (2019-11-18)
+Static report types: ERROR(139), WARNING(56), INFO(23), SUMMARY(9), FAILURE(22)
+
+Section TMV: Validate table metadata against XML schema
+I-TMV-VURL-1 Validating http://localhost:8080/firethorn/tap/54/tables as tableset (http://www.ivoa.net/xml/VODataService/v1.1)
+S-TMV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section TME: Check content of tables metadata from /tables
+I-TME-CURL-1 Reading capability metadata from http://localhost:8080/firethorn/tap/54/capabilities
+I-TME-TURL-1 Reading table metadata from http://localhost:8080/firethorn/tap/54/tables
+S-TME-SUMM-1 Schemas: 3, Tables: 205, Columns: 10926, Foreign Keys: 0
+S-TME-FLGS-1 Standard column flags: indexed: 0, primary: 0, nullable: 0
+S-TME-FLGO-1 Other column flags: none
+
+Section TMS: Check content of tables metadata from TAP_SCHEMA
+I-TMS-TAPV-1 Validating for TAP version V1.0
+I-TMS-QSUB-1 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.schemas
+I-TMS-QGET-1 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.schemas
+I-TMS-QSUB-2 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.tables
+I-TMS-QGET-2 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.tables
+I-TMS-QSUB-3 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.columns
+I-TMS-QGET-3 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.columns
+I-TMS-QSUB-4 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.keys
+I-TMS-QGET-4 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.keys
+I-TMS-QSUB-5 Submitting query: SELECT COUNT(*) AS nr FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-5 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+COUNT%28*%29+AS+nr+FROM+TAP_SCHEMA.key_columns
+I-TMS-QSUB-6 Submitting query: SELECT principal, indexed, std, "size" FROM TAP_SCHEMA.columns
+I-TMS-QGET-6 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+principal%2C+indexed%2C+std%2C+%22size%22+FROM+TAP_SCHEMA.columns&MAXREC=10936
+I-TMS-QSUB-7 Submitting query: SELECT TOP 1 * FROM TAP_SCHEMA.columns
+I-TMS-QGET-7 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+*+FROM+TAP_SCHEMA.columns&MAXREC=1
+I-TMS-QSUB-8 Submitting query: SELECT ft_column_id, std, indexed, principal, arraysize, ts_column_id, datatype, utype, ucd, unit, description, column_name, table_name FROM TAP_SCHEMA.columns
+I-TMS-QGET-8 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+ft_column_id%2C+std%2C+indexed%2C+principal%2C+arraysize%2C+ts_column_id%2C+datatype%2C+utype%2C+ucd%2C+unit%2C+description%2C+column_name%2C+table_name+FROM+TAP_SCHEMA.columns&MAXREC=10936
+I-TMS-QSUB-9 Submitting query: SELECT from_column, target_column, key_id FROM TAP_SCHEMA.key_columns
+I-TMS-QGET-9 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+from_column%2C+target_column%2C+key_id+FROM+TAP_SCHEMA.key_columns&MAXREC=10936
+E-TMS-TSCT-1 Type mismatch for column TAP_SCHEMA.schemas.schema_name: datatype=char is not varchar-like (TAP 1.0)
+E-TMS-TSCT-2 Type mismatch for column TAP_SCHEMA.schemas.utype: datatype=char is not varchar-like (TAP 1.0)
+E-TMS-TSCT-3 Type mismatch for column TAP_SCHEMA.schemas.description: datatype=char is not varchar-like (TAP 1.0)
+I-TMS-TSNS-1 2 non-standard columns in TAP_SCHEMA.schemas: [ts_schema_id, ft_schema_id]
+E-TMS-TSCT-4 Type mismatch for column TAP_SCHEMA.tables.schema_name: datatype=char is not varchar-like (TAP 1.0)
+E-TMS-TSCT-5 Type mismatch for column TAP_SCHEMA.tables.table_name: datatype=char is not varchar-like (TAP 1.0)
+E-TMS-TSCT-6 Type mismatch for column TAP_SCHEMA.tables.table_type: datatype=char is not varchar-like (TAP 1.0)
+E-TMS-TSCT-7 Type mismatch for column TAP_SCHEMA.tables.utype: datatype=char is not varchar-like (TAP 1.0)
+E-TMS-TSCT-8 Type mismatch for column TAP_SCHEMA.tables.description: datatype=char is not varchar-like (TAP 1.0)
+I-TMS-TSNS-2 2 non-standard columns in TAP_SCHEMA.tables: [ts_table_id, ft_table_id]
+E-TMS-TSCT-9 Type mismatch for column TAP_SCHEMA.columns.table_name: datatype=char is not varchar-like (TAP 1.0)
+I-TMS-TSNS-3 3 non-standard columns in TAP_SCHEMA.columns: [arraysize, ts_column_id, ft_column_id]
+I-TMS-TSNS-4 1 non-standard columns in TAP_SCHEMA.keys: [ts_key_id]
+I-TMS-TSNS-5 1 non-standard columns in TAP_SCHEMA.key_columns: [ts_key_column_id]
+S-TMS-SUMM-1 Schemas: 3, Tables: 205, Columns: 10926, Foreign Keys: 0
+S-TMS-FLGS-1 Standard column flags: indexed: 0, principal: 7, std: 33
+S-TMS-QNUM-1 Successful/submitted TAP queries: 29/29
+S-TMS-QTIM-1 Average successful query time: 1.4s
+I-TMS-QSUB-x (20 more)
+I-TMS-QGET-x (20 more)
+E-TMS-TSCT-x (18 more)
+
+Section TMC: Compare table metadata from /tables and TAP_SCHEMA
+
+Section CPV: Validate capabilities against XML schema
+I-CPV-VURL-1 Validating http://localhost:8080/firethorn/tap/54/capabilities as capabilities (http://www.ivoa.net/xml/VOSICapabilities/v1.0)
+S-CPV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section CAP: Check TAP and TAPRegExt content of capabilities document
+
+Section AVV: Validate availability against XML schema
+I-AVV-VURL-1 Validating http://localhost:8080/firethorn/tap/54/availability as availability (http://www.ivoa.net/xml/VOSIAvailability/v1.0)
+S-AVV-VALI-1 SAX report: warnings 0, errors 0, fatal 0
+
+Section QGE: Make ADQL queries in sync GET mode
+I-QGE-QSUB-1 Submitting query: SELECT TOP 10 bin FROM BestDR9.FieldProfile
+I-QGE-QGET-1 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+bin+FROM+BestDR9.FieldProfile
+I-QGE-QSUB-2 Submitting query: SELECT bin FROM BestDR9.FieldProfile
+I-QGE-QGET-2 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+bin+FROM+BestDR9.FieldProfile&MAXREC=9
+I-QGE-QSUB-3 Submitting query: SELECT TOP 10 bin FROM BestDR9.FieldProfile
+I-QGE-QGET-3 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+10+bin+FROM+BestDR9.FieldProfile&DUMMY=ignore-me
+I-QGE-QSUB-4 Submitting query: SELECT TOP 1 bin FROM BestDR9.FieldProfile
+I-QGE-QGET-4 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL-2.0&QUERY=SELECT+TOP+1+bin+FROM+BestDR9.FieldProfile
+I-QGE-QSUB-5 Submitting query: SELECT TOP 1 bin FROM BestDR9.FieldProfile
+I-QGE-QGET-5 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+1+bin+FROM+BestDR9.FieldProfile
+I-QGE-QSUB-6 Submitting query: SELECT TOP 8 c, z AS taplint_c_2, B.y, x AS taplint_c_4, convexid, B.regionid AS taplint_c_6 FROM BestDR9.HalfSpace AS B
+I-QGE-QGET-6 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+TOP+8+c%2C+z+AS+taplint_c_2%2C+B.y%2C+x+AS+taplint_c_4%2C+convexid%2C+B.regionid+AS+taplint_c_6++FROM+BestDR9.HalfSpace+AS+B
+I-QGE-QSUB-7 Submitting query: SELECT stripe FROM BestDR9.StripeDefs
+I-QGE-QGET-7 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=SELECT+stripe+FROM+BestDR9.StripeDefs&MAXREC=0
+I-QGE-DUFF-1 Submitting query expected to fail (bad ADQL): DUFF QUERY
+I-QGE-QGET-8 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=ADQL&QUERY=DUFF+QUERY
+I-QGE-DUFF-2 Submitting query expected to fail (unknown query language): SELECT TOP 1 * FROM TAP_SCHEMA.tables
+I-QGE-QGET-9 Query GET URL: http://localhost:8080/firethorn/tap/54/sync?REQUEST=doQuery&LANG=OOBLECK&QUERY=SELECT+TOP+1+*+FROM+TAP_SCHEMA.tables
+S-QGE-QNUM-1 Successful/submitted TAP queries: 7/7
+S-QGE-QTIM-1 Average successful query time: 2.0s
+
+Section QPO: Make ADQL queries in sync POST mode
+I-QPO-QSUB-1 Submitting query: SELECT TOP 10 bin FROM BestDR9.FieldProfile
+I-QPO-QSUB-2 Submitting query: SELECT bin FROM BestDR9.FieldProfile
+I-QPO-QSUB-3 Submitting query: SELECT TOP 10 bin FROM BestDR9.FieldProfile
+I-QPO-QSUB-4 Submitting query: SELECT TOP 8 c, z AS taplint_c_2, B.y, x AS taplint_c_4, convexid, B.regionid AS taplint_c_6 FROM BestDR9.HalfSpace AS B
+I-QPO-QSUB-5 Submitting query: SELECT stripe FROM BestDR9.StripeDefs
+I-QPO-DUFF-1 Submitting query expected to fail (bad ADQL): DUFF QUERY
+I-QPO-DUFF-2 Submitting query expected to fail (unknown query language): SELECT TOP 1 * FROM TAP_SCHEMA.tables
+S-QPO-QNUM-1 Successful/submitted TAP queries: 5/5
+S-QPO-QTIM-1 Average successful query time: 1.1s
+
+Section QAS: Make ADQL queries in async mode
+I-QAS-QSUB-1 Submitting query: SELECT TOP 10 bin FROM BestDR9.FieldProfile
+I-QAS-QJOB-1 Submitted query at http://localhost:8080/firethorn/tap/54/async/23245
+I-QAS-QSUB-2 Submitting query: SELECT bin FROM BestDR9.FieldProfile
+I-QAS-QJOB-2 Submitted query at http://localhost:8080/firethorn/tap/54/async/23246
+E-QAS-OVNO-1 Overflow not marked - no <INFO name='QUERY_STATUS' value='OVERFLOW'/> after TABLE
+I-QAS-QSUB-3 Submitting query: SELECT TOP 10 bin FROM BestDR9.FieldProfile
+I-QAS-QJOB-3 Submitted query at http://localhost:8080/firethorn/tap/54/async/23247
+I-QAS-QSUB-4 Submitting query: SELECT TOP 8 c, z AS taplint_c_2, B.y, x AS taplint_c_4, convexid, B.regionid AS taplint_c_6 FROM BestDR9.HalfSpace AS B
+I-QAS-QJOB-4 Submitted query at http://localhost:8080/firethorn/tap/54/async/23248
+I-QAS-QSUB-5 Submitting query: SELECT stripe FROM BestDR9.StripeDefs
+I-QAS-QJOB-5 Submitted query at http://localhost:8080/firethorn/tap/54/async/23249
+I-QAS-DUFF-1 Submitting query expected to fail (bad ADQL): DUFF QUERY
+I-QAS-QJOB-6 Submitted query at http://localhost:8080/firethorn/tap/54/async/23250
+I-QAS-DUFF-2 Submitting query expected to fail (unknown query language): SELECT TOP 1 * FROM TAP_SCHEMA.tables
+I-QAS-QJOB-7 Submitted query at http://localhost:8080/firethorn/tap/54/async/23251
+E-QAS-DSUC-1 Apparent success from bad query (unknown query language)
+S-QAS-QNUM-1 Successful/submitted TAP queries: 5/5
+S-QAS-QTIM-1 Average successful query time: 1.5s
+
+Section UWS: Test asynchronous UWS/TAP behaviour
+I-UWS-CJOB-1 Created new job http://localhost:8080/firethorn/tap/54/async/24602
+I-UWS-POPA-1 POSTed runId=TAPLINT-002 to http://localhost:8080/firethorn/tap/54/async/24602/parameters
+I-UWS-POPA-2 POSTed PHASE=ABORT to http://localhost:8080/firethorn/tap/54/async/24602/phase
+I-UWS-POPA-3 POSTed ACTION=DELETE to http://localhost:8080/firethorn/tap/54/async/24602
+I-UWS-CJOB-2 Created new job http://localhost:8080/firethorn/tap/54/async/24603
+I-UWS-CJOB-3 Created new job http://localhost:8080/firethorn/tap/54/async/24604
+I-UWS-VUWS-1 UWS job document implicitly V1.0
+I-UWS-POPA-4 POSTed PHASE=RUN to http://localhost:8080/firethorn/tap/54/async/24604/phase
+
+Section MDQ: Check table query result columns against declared metadata
+I-MDQ-QSUB-1 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ArchiveCurationHistory
+I-MDQ-QSUB-2 Submitting query: SELECT TOP 1 * FROM ATLASDR1.AstrCalVers
+I-MDQ-QSUB-3 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurationTask
+I-MDQ-QSUB-4 Submitting query: SELECT TOP 1 * FROM ATLASDR1.CurrentAstrometry
+I-MDQ-QSUB-5 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurvey
+I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurveyTable
+I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Filter
+I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM ATLASDR1.FilterSections
+I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Multiframe
+
+
+
+
