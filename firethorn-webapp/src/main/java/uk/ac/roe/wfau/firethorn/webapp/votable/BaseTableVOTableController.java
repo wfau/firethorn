@@ -153,19 +153,21 @@ extends AbstractTableController
                 String byteArrayString = "";
                 int aux;
 	            final StringBuilder builder = new StringBuilder(); 
-                		
+                int size=0;
+                
                 if (results.getObject(index())!=null){
                 	
                     boolean isarray;
 
                 	try {
                 		isarray = column.meta().adql().type().isarray();
+                		size =  column.meta().adql().arraysize();
 					} catch (ProtectionException e) {
 						isarray = false;
 					}
 
-					if (!isarray) {
-					    short shortval = results.getShort(
+					if (!isarray && size<=0) {
+					    byte shortval = results.getByte(
 					            index()
 					        );
 					    builder.append(shortval);       

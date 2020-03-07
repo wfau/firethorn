@@ -293,7 +293,192 @@ I-MDQ-QSUB-6 Submitting query: SELECT TOP 1 * FROM ATLASDR1.ExternalSurveyTable
 I-MDQ-QSUB-7 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Filter
 I-MDQ-QSUB-8 Submitting query: SELECT TOP 1 * FROM ATLASDR1.FilterSections
 I-MDQ-QSUB-9 Submitting query: SELECT TOP 1 * FROM ATLASDR1.Multiframe
+E-MDQ-QERX-1 Failed to parse result for TAP query SELECT TOP 1 * FROM BestDR1.DataConstants [The element type "TR" must be terminated by the matching end-tag "</TR>".]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 1388; The element type "TR" must be terminated by the matching end-tag "</TR>".
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:234)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:303)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
+E-MDQ-QERX-2 Failed to parse result for TAP query SELECT TOP 1 * FROM BestDR1.Frame [The element type "TR" must be terminated by the matching end-tag "</TR>".]
+org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 6808; The element type "TR" must be terminated by the matching end-tag "</TR>".
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1239)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:277)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.readResultDocument(VotLintTapRunner.java:205)
+	at uk.ac.starlink.ttools.taplint.VotLintTapRunner.executeQuery(VotLintTapRunner.java:112)
+	at uk.ac.starlink.ttools.taplint.TapRunner.attemptGetResultTable(TapRunner.java:79)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.checkTable(ColumnMetadataStage.java:164)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage$Checker.run(ColumnMetadataStage.java:145)
+	at uk.ac.starlink.ttools.taplint.ColumnMetadataStage.run(ColumnMetadataStage.java:91)
+	at uk.ac.starlink.ttools.taplint.TapLinter$4.execute(TapLinter.java:234)
+	at uk.ac.starlink.ttools.task.LineInvoker.invoke(LineInvoker.java:303)
+	at uk.ac.starlink.ttools.Stilts.main(Stilts.java:42)
 
+
+2020-03-07 21:55:57,019 DEBUG [main-interface-4] [AbstractTableController] VOTABLE SQL [SELECT [XX_3B3RDH35VZR4OAAAAFYLN726NU] AS plateID, [XX_YGY2ZQF7GD7NSAAAAFYLN726OA] AS spRerun, [XX_CWE2AJ55BXX6UAAAAFYLN726OI] AS mjd, [XX_GAWHULRWTQ4U6AAAAFYLN726OU] AS plate, [XX_MB4WT3552XKZGAAAAFYLN726O4] AS tile, [XX_VLTGCL4FRH6YQAAAAFYLN726PE] AS mapMjd, [XX_SF5PA7ISEU5Z4AAAAFYLN726PM] AS nExp, [XX_AVNEDEEUS3QHOAAAAFYLN726PU] AS tai, [XX_FID5H6HPICWLUAAAAFYLN726P4] AS raBoresight, [XX_O4UN76VWK3CCMAAAAFYLN726QE] AS decBoresight, [XX_WU7IHMXE4M66UAAAAFYLN726QI] AS taiHMS, [XX_LLZR47YPAHTDIAAAAFYLN726QQ] AS expTime, [XX_UVLX5G7WDYCQQAAAAFYLN726QY] AS expTimeB1, [XX_7QJMKEIGIU7FEAAAAFYLN726RA] AS expTimeB2, [XX_QVJCHSZZH7PT2AAAAFYLN726RI] AS expTimeR1, [XX_LJZ5UCEGKAWMKAAAAFYLN726RQ] AS expTimeR2, [XX_LA5RF6EZP6DYWAAAAFYLN726RY] AS helioRV, [XX_WIIIVI2UPF4OOAAAAFYLN726SA] AS ra, [XX_BGXB2BRSMH6UGAAAAFYLN726SI] AS dec, [XX_AHI2HACBCWP2MAAAAFYLN726SQ] AS cx, [XX_4V24I4QCC45I6AAAAFYLN726SY] AS cy, [XX_YPKZSI2FLBZAIAAAAFYLN726TA] AS cz, [XX_EZVE3ZK5I45OSAAAAFYLN726TE] AS htmID, [XX_Q5QCA5HHLQBZKAAAAFYLN726TM] AS sn1_0, [XX_Z3ZGBJVEBFI2EAAAAFYLN726TU] AS sn1_1, [XX_EL2FOQTFU3UQIAAAAFYLN726TY] AS sn1_2, [XX_E7DTOKBU77IFYAAAAFYLN726UA] AS sn2_0, [XX_YNNXZOR4ZPDI4AAAAFYLN726UI] AS sn2_1, [XX_OPPF66MA2H6ZAAAAAFYLN726UM] AS sn2_2, [XX_GKNDT4ES7QXIKAAAAFYLN726UU] AS dateObs, [XX_UKNQXUTNPZNQSAAAAFYLN726U4] AS timeSys, [XX_KALHUXPWVDH44AAAAFYLN726VA] AS quality, [XX_BOUPGCPOH46GOAAAAFYLN726VI] AS name, [XX_3FX5IX5GRD2GIAAAAFYLN726VM] AS program, [XX_RIRMCIOR7OWZ4AAAAFYLN726VU] AS version, [XX_KHGIDNCKUNH5GAAAAFYLN726V4] AS observer, [XX_T3TBPO2PP2UXIAAAAFYLN726WE] AS camVer, [XX_BOOOP747GIO32AAAAFYLN726WM] AS spec2DVer, [XX_TQ3R5GOD52QAMAAAAFYLN726WU] AS utilsVer, [XX_C4L3CTATPSIFSAAAAFYLN726W4] AS spec1DVer, [XX_H4K2IK3NH5GUGAAAAFYLN726XE] AS readVer, [XX_DXYHJA6H76HO6AAAAFYLN726XI] AS combVer, [XX_QTS4365HS7PXAAAAAFYLN726XY] AS extinction_u, [XX_AMFO35VIP7CF2AAAAFYLN726YA] AS extinction_g, [XX_7ZHFSPKZ45W2EAAAAFYLN726YI] AS extinction_r, [XX_OMWMPWUX336ZKAAAAFYLN726ZA] AS extinction_i, [XX_LJXGWRWLEG7EOAAAAFYLN726ZI] AS extinction_z, [XX_OHX7FROEZ3MBYAAAAFYLN726ZM] AS isPrimary, [XX_M7GPEEQO3ZOZ4AAAAFYLN726ZU] AS cartridgeID, [XX_KR3Y4NSHXLAI2AAAAFYLN726Z4] AS plateVersion, [XX_KKRZJPEVKQCDUAAAAFYLN7262A] AS haMin, [XX_RGUWCCY3QNARIAAAAFYLN7262I] AS haMax, [XX_PJTTICJP5JGYGAAAAFYLN7262Q] AS mjdDesign, [XX_AXW6ECC34SP7IAAAAFYLN7262U] AS theta, [XX_2KX7VXQI3O7DIAAAAFYLN72624] AS fscanVersion, [XX_E24NAVLVULHACAAAAFYLN7263E] AS fmapVersion, [XX_MXRP5RNBUINN4AAAAFYLN7263I] AS fscanMode, [XX_NBOFX7452SSSOAAAAFYLN7263Q] AS fscanSpeed, [XX_HI7XA3HJE4HGIAAAAFYLN7263U] AS programType, [XX_K3UN453W5B3OCAAAAFYLN7263Y] AS programName, [XX_RQYVYJW76MQH2AAAAFYLN7264A] AS loadVersion, [XX_XENSGD2DHPVMEAAAAFYLN7264E] AS expID FROM [LIVEFirethornUserdataULOV20190307].[dbo].[XX_W4RVLBJBH5D4CAAAAFYLN726GA]] 
+2020-03-07 21:55:57,025 DEBUG [main-interface-4] [AdqlTableEntity] columns() for [366605][temp.XX_W4RVLBJBH5D4CAAAAFYLN726GA] 
+2020-03-07 21:55:57,025 DEBUG [main-interface-4] [BaseComponentEntity] scan for [366605][XX_W4RVLBJBH5D4CAAAAFYLN726GA] 
+2020-03-07 21:55:57,025 DEBUG [main-interface-4] [BaseComponentEntity] scantest for [366605][XX_W4RVLBJBH5D4CAAAAFYLN726GA] 
+2020-03-07 21:55:57,025 DEBUG [main-interface-4] [BaseComponentEntity$EntityFactory] scanperiod() 
+2020-03-07 21:55:57,026 DEBUG [main-interface-4] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+2020-03-07 21:55:57,026 DEBUG [main-interface-4] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+2020-03-07 21:55:57,026 DEBUG [main-interface-4] [BaseComponentEntity] prevscan   [2020-03-07T21:55:54.095Z] 
+2020-03-07 21:55:57,026 DEBUG [main-interface-4] [BaseComponentEntity] scanperiod [PT25H] 
+2020-03-07 21:55:57,026 DEBUG [main-interface-4] [BaseComponentEntity] prev scan is recent - skipping 
+2020-03-07 21:55:57,074 DEBUG [main-interface-4] [AbstractTableController] Exception:  
+java.sql.SQLException: Unable to convert between net.sourceforge.jtds.jdbc.BlobImpl and TINYINT.
+	at net.sourceforge.jtds.jdbc.Support.convert(Support.java:747)
+	at net.sourceforge.jtds.jdbc.JtdsResultSet.getByte(JtdsResultSet.java:667)
+	at net.sourceforge.jtds.jdbc.JtdsResultSet.getByte(JtdsResultSet.java:965)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.BaseTableVOTableController$ByteFormatter.format(BaseTableVOTableController.java:168)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.BaseTableVOTableController.cell(BaseTableVOTableController.java:413)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.cells(AbstractTableController.java:289)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.BaseTableVOTableController.row(BaseTableVOTableController.java:401)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.rows(AbstractTableController.java:259)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.body(AbstractTableController.java:384)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.write(AbstractTableController.java:435)
+	at uk.ac.roe.wfau.firethorn.webapp.votable.AdqlTableVOTableController.votable(AdqlTableVOTableController.java:91)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:209)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:136)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:102)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:877)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:783)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:991)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:925)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:974)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:866)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:634)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:851)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at uk.ac.roe.wfau.firethorn.webapp.catalina.ConnectionConfigFilter.doFilter(ConnectionConfigFilter.java:50)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at uk.ac.roe.wfau.firethorn.webapp.pratchett.GnuTerryPratchett.doFilter(GnuTerryPratchett.java:58)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:491)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:668)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:764)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1388)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+2020-03-07 21:55:57,075 ERROR [main-interface-4] [AbstractTableController] Exception reading SQL results [Unable to convert between net.sourceforge.jtds.jdbc.BlobImpl and TINYINT.] 
+2020-03-07 21:55:57,077 DEBUG [main-interface-4] [HttpRequestDebug] Response headers 
+
+# Looks like this does not work
+# firethorn-webapp/src/main/java/uk/ac/roe/wfau/firethorn/webapp/votable/BaseTableVOTableController.java  / Line:168
+  ..
+
+  boolean isarray;
+
+	try {
+		isarray = column.meta().adql().type().isarray();
+			} catch (ProtectionException e) {
+				isarray = false;
+			}
+
+			if (!isarray) {
+			    byte shortval = results.getByte(  ## Error in this line <-------------------
+			            index()
+			        );
+			    builder.append(shortval);       
+					
+			} else {
+			    
+			    byte[] bytes = results.getBytes(
+			        index()
+			    );
+			    
+			    for (byte b : bytes) {
+			        if(b<0) aux=256+b; else aux=b; 
+			            builder.append(aux  + " ");
+			    } 
+				  
+			}
+		
+}
+
+
+
+..
+
+
+## This was fails
+    
+   http://gillian:8080/firethorn/tap/332798/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR1.PlateX&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE
+
+
+## Test passes after fixing the above to this:
+
+
+               String byteArrayString = "";
+                int aux;
+	        final StringBuilder builder = new StringBuilder(); 
+                int size=0;
+                
+                if (results.getObject(index())!=null){
+                	
+                    boolean isarray;
+
+                	try {
+                		isarray = column.meta().adql().type().isarray();
+                		size =  column.meta().adql().arraysize();
+					} catch (ProtectionException e) {
+						isarray = false;
+					}
+
+					if (!isarray && size<=0) {
+					    byte shortval = results.getByte(
+					            index()
+					        );
+					    builder.append(shortval);       
+							
+					} else {
+					    
+					    byte[] bytes = results.getBytes(
+					        index()
+					    );
+					    
+					    for (byte b : bytes) {
+					        if(b<0) aux=256+b; else aux=b; 
+					            builder.append(aux  + " ");
+					    } 
+						  
+					}
+				
+                }
+
+                byteArrayString = builder.toString();
+                return byteArrayString.trim();
 
 
 
