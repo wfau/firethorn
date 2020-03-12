@@ -554,3 +554,44 @@ curl -L "http://localhost:8080/firethorn/tap/39559/sync?QUERY=SELECT+TOP+5+*+FRO
 
 ## Query completed, but empty table
 
+
+
+## Test5: Check a query on a field of type: datetime
+## ---------------------------------------------------------------------------------------
+
+## Testing Column: ATLASDR1.Multiframe.creationDate
+## Column type: "DATETIME"
+
+curl -L "http://localhost:8080/firethorn/tap/39559/sync?QUERY=SELECT+TOP+5+creationDate+FROM+ATLASDR1.Multiframe&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3" version="1.3">
+  <RESOURCE type="results">
+    <INFO name="QUERY_STATUS" value="OK"/>
+    <INFO name="link" value="http://localhost:8080/firethorn/adql/table/215777"/>
+    <TABLE ID="table.215777" name="XX_W2RFSDGF2HWB2AAAAFYNA7WZU4">
+      <FIELD ID="column.219142" name="creationDate" datatype="char">
+        <LINK content-type="application/json" content-role="metadata" href="http://localhost:8080/firethorn/adql/column/219142"/>
+      </FIELD>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>2011-08-17T00:00:00.000Z</TD>
+          </TR>
+          <TR>
+            <TD>2011-08-17T00:00:00.000Z</TD>
+          </TR>
+          <TR>
+            <TD>2011-08-17T00:00:00.000Z</TD>
+          </TR>
+          <TR>
+            <TD>2011-08-17T00:00:00.000Z</TD>
+          </TR>
+          <TR>
+            <TD>2011-08-17T00:00:00.000Z</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
