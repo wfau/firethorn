@@ -148,29 +148,27 @@ extends AbstractTableController
 
         @Override
         public String format(final ResultSet results)
-        throws SQLException
+        throws SQLException, ProtectionException
             {
                 String byteArrayString = "";
                 int aux;
 	            final StringBuilder builder = new StringBuilder(); 
-                int size=0;
                 
                 if (results.getObject(index())!=null){
                 	
-                    boolean isarray;
-
-                	try {
-                		isarray = column.meta().adql().type().isarray();
-                		size =  column.meta().adql().arraysize();
-					} catch (ProtectionException e) {
-						isarray = false;
-					}
+                   
+            		boolean isarray = column.meta().adql().type().isarray();
+            		int size =  column.meta().adql().arraysize();
+			
 
 					if (!isarray && size<=0) {
-					    byte shortval = results.getByte(
+						byte[] bytes = results.getBytes(
 					            index()
 					        );
-					    builder.append(shortval);       
+						
+						int intval = java.nio.ByteBuffer.wrap(bytes).getInt();
+
+					    builder.append(intval);       
 							
 					} else {
 					    
@@ -332,10 +330,12 @@ extends AbstractTableController
 
             if (column.meta().adql().arraysize() != null)
                 {
-                if (column.meta().adql().arraysize() == AdqlColumn.NON_ARRAY_SIZE)
+            	
+            	// Changed AdqlColumn.NON_ARRAY_SIZE and AdqlColumn.VAR_ARRAY_SIZE to 0 and 1, comparison was not working correctly
+                if (column.meta().adql().arraysize()==0)
                     {
                     }
-                else if (column.meta().adql().arraysize() == AdqlColumn.VAR_ARRAY_SIZE || column.meta().adql().arraysize() <= 0)
+                else if (column.meta().adql().arraysize()==-1)
                     {
                     writer.append(" arraysize='*'");
                     }
@@ -348,9 +348,11 @@ extends AbstractTableController
                 
             if (column.meta().adql() != null)
                 {
-                writer.append(" xtype='");
-                writer.append(column.meta().adql().type().xtype());
-                writer.append("'");
+                    if (column.meta().adql().type().xtype() != null) {
+	                    writer.append(" xtype='");
+	                    writer.append(column.meta().adql().type().xtype());
+	                    writer.append("'");
+	                }
                 }
             }
 
@@ -397,7 +399,7 @@ extends AbstractTableController
 
     @Override
     public void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
         writer.append("<TR>");
         cells(
@@ -410,7 +412,7 @@ extends AbstractTableController
 
     @Override
     public void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
     	String content =  formatter.format(results);
         writer.append("<TD>");

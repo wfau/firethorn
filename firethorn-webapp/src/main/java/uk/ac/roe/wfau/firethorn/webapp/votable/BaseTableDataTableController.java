@@ -194,7 +194,7 @@ extends AbstractTableController
      */
     @Override
     public void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
         writer.append("{");
         cells(
@@ -212,7 +212,7 @@ extends AbstractTableController
      */
     @Override
     public void cells(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
     	int size = 1;
     	int maxlen = formatters.size();
@@ -239,7 +239,7 @@ extends AbstractTableController
      */
     @Override
     public void rows(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
         while (results.next())
             {
@@ -261,7 +261,7 @@ extends AbstractTableController
      */
     @Override
     public void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
     	  writer.append(
             formatter.format(

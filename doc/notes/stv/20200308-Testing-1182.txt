@@ -553,3 +553,48 @@ Totals: Errors: 29; Warnings: 0; Infos: 857; Summaries: 18; Failures: 2
 
 ## Some (unrelated errors), issue for them created in Redmine (http://redmine.roe.ac.uk/issues/1183)
 
+
+
+
+## Test4: Run our own validator
+## ---------------------------------------------------------------------------------------
+
+
+## From ftpy container run:
+
+python3 -c "import firethorn_utils.tap_validator as validator;validator.main()" -ft=http://gillian:8080/firethorn -r=376723 -u=Po7gi9wahLi5sheokoit -p=iengii1Eigiekootahzu -g=fu6us6baiNgie7rah5se -m=sync
+--- Starting validation on Resource: http://gillian:8080/firethorn/adql/resource/376723---
+...
+
+Exceptions: 
+{'BestDR7.Unknown': '<urlopen error timed out>', 'BestDR9.Sky': '<urlopen error timed out>', 'BestDR9.PhotoPrimary': '<urlopen error timed out>', 'BestDR9.neighbors': '<urlopen error timed out>'}
+
+
+## Test completed, but a few exceptions, with time out error messages
+## Run queries on those tables to check
+
+
+curl -L "http://localhost:8080/firethorn/tap/376723/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR7.Unknown&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+..
+<TD><TD>-9999.0</TD><TD>-9999.0</TD><TD>-9999.0</TD><TD>-9999.0</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+## Query seems to have worked fine
+
+
+
+curl -L "http://localhost:8080/firethorn/tap/376723/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.Sky&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+..
+</FIELD><DATA><TABLEDATA></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+## Query completed, but empty table
+
+
+
+curl -L "http://localhost:8080/firethorn/tap/376723/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.PhotoPrimary&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+..
+<TD>4.413178758876864E9</TD><TD>4.413178830610624E9</TD><TD>4.413178974039232E9</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+## Query seems to have worked fine
+
+
+curl -L "http://localhost:8080/firethorn/tap/376723/sync?QUERY=SELECT+TOP+5+%2A+FROM+BestDR9.neighbors&REQUEST=doQuery&LANG=ADQL&FORMAT=VOTABLE"
+..
+<TD>0.14231449259650197</TD><TD>6</TD><TD>3</TD><TD>2</TD><TD>2</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+## Query seems to have worked fine
