@@ -38,13 +38,13 @@ extends TreeComponent
      * The special value for size to indicate a non-array field, {@value}.
      *
      */
-    public static final Integer NON_ARRAY_SIZE = new Integer(0);
+    public static final int NON_ARRAY_SIZE = 0;
 
     /**
      * The special value for size to indicate a variable size array, {@value}.
      *
      */
-    public static final Integer VAR_ARRAY_SIZE = new Integer(-1);
+    public static final int VAR_ARRAY_SIZE = -1;
 
     /**
      * {@link Entity.AliasFactory} interface.

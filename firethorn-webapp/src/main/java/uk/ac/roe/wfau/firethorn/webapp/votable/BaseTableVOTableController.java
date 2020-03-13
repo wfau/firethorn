@@ -331,11 +331,10 @@ extends AbstractTableController
             if (column.meta().adql().arraysize() != null)
                 {
             	
-            	// Changed AdqlColumn.NON_ARRAY_SIZE and AdqlColumn.VAR_ARRAY_SIZE to 0 and 1, comparison was not working correctly
-                if (column.meta().adql().arraysize()==0)
+                if (column.meta().adql().arraysize()==AdqlColumn.NON_ARRAY_SIZE)
                     {
                     }
-                else if (column.meta().adql().arraysize()==-1)
+                else if (column.meta().adql().arraysize()==AdqlColumn.VAR_ARRAY_SIZE)
                     {
                     writer.append(" arraysize='*'");
                     }
