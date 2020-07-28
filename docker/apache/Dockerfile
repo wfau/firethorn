@@ -17,7 +17,7 @@
 #
 # Based on example from the official httpd Docker container.
 # https://github.com/docker-library/httpd/blob/master/2.4/Dockerfile
-FROM firethorn/fedora:2.1.35
+FROM firethorn/fedora:2.1.35-stv-issue-1187
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
