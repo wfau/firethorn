@@ -553,8 +553,8 @@ public class UWSJob {
 			        } else {
 		            	writer.append("<uws:parameter id='lang'>None</uws:parameter>");
 			        }
-			        if (this.getQuery()!=null){
-		            	writer.append("<uws:parameter id='query'>" + this.getQuery().input() + "</uws:parameter>");
+			        if (this.getQuery()!=null){         
+		            	writer.append("<uws:parameter id='query'> <![CDATA[" + this.getQuery().input() + "]]></uws:parameter>");
 			        }
 			        if (this.getFormat()!=null){
 		            	writer.append("<uws:parameter id='format'>" + this.getFormat() + "</uws:parameter>");
