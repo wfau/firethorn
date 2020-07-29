@@ -32,7 +32,6 @@ import uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQuery.ResultState;
 import uk.ac.roe.wfau.firethorn.meta.adql.AdqlColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseColumn;
 import uk.ac.roe.wfau.firethorn.meta.base.BaseTable;
-import uk.ac.roe.wfau.firethorn.webapp.votable.AbstractTableController.AbstractFormatter;
 
 /**
  * Spring MVC controller to format a {@link BaseTable} as a <a href='http://www.ivoa.net/documents/VOTable/'>VOTable</a>.
@@ -149,30 +148,45 @@ extends AbstractTableController
 
         @Override
         public String format(final ResultSet results)
-        throws SQLException
+        throws SQLException, ProtectionException
             {
-        		String byteArrayString = "";
-    		
-	        	if (results.getObject(index())!=null){
-	        		byte[] bytes = results.getBytes(
-	                            index()
-	                            );
-	        		
-                    int aux;
-   	                final StringBuilder builder = new StringBuilder();
-			        for (byte b : bytes) {
-		                 if(b<0) aux=256+b; else aux=b; 
-		    	         builder.append(aux  + " ");
-			        }
-		
-			        byteArrayString = builder.toString();
+                String byteArrayString = "";
+                int aux;
+	            final StringBuilder builder = new StringBuilder(); 
+                
+                if (results.getObject(index())!=null){
+                	
+                   
+            		boolean isarray = column.meta().adql().type().isarray();
+            		int size =  column.meta().adql().arraysize();
+			
 
-				
-				} 
+					if (!isarray && size<=0) {
+						byte[] bytes = results.getBytes(
+					            index()
+					        );
+						
+						int intval = java.nio.ByteBuffer.wrap(bytes).getInt();
+
+					    builder.append(intval);       
+							
+					} else {
 					    
-			    return byteArrayString.trim();
+					    byte[] bytes = results.getBytes(
+					        index()
+					    );
+					    
+					    for (byte b : bytes) {
+					        if(b<0) aux=256+b; else aux=b; 
+					            builder.append(aux  + " ");
+					    } 
+						  
+					}
+				
+                }
 
-            
+                byteArrayString = builder.toString();
+                return byteArrayString.trim();
             }
         }
     
@@ -191,9 +205,6 @@ extends AbstractTableController
         public String format(final ResultSet results)
         throws SQLException
             {
-        		System.out.println(results.getString(index()));
-        		System.out.println(String.valueOf(results.getInt(index())));
-
 	    		if (results.getObject(index())!=null){
 	    			return  results.getString(index());
 	    		} else {
@@ -312,56 +323,35 @@ extends AbstractTableController
 
         if (column.meta().adql().type() != null)
             {
-            if (column.meta().adql().type() == AdqlColumn.AdqlType.DATE)
-                {
-                writer.append(" datatype='char'");
-                writer.append(" arraysize='*'");
-                }
-            else if (column.meta().adql().type() == AdqlColumn.AdqlType.TIME)
-                {
-                writer.append(" datatype='char'");
-                writer.append(" arraysize='*'");
-                }
-            else if (column.meta().adql().type() == AdqlColumn.AdqlType.DATETIME)
-                {
-                writer.append(" datatype='char'");
-                writer.append(" arraysize='*'");
-                }
-            else if (column.meta().adql().type() == AdqlColumn.AdqlType.INTEGER) {
-		writer.append(" datatype='int'");
-                writer.append(" arraysize='1'");
-		}
-	    else if (column.meta().adql().type() == AdqlColumn.AdqlType.BYTE) {
-		writer.append(" datatype='unsignedByte'");
-                writer.append(" arraysize='*'");
-		}
-            else {
-                writer.append(" datatype='");
-                writer.append(column.meta().adql().type().name().toString().replace("'", "''").toLowerCase());
-                writer.append("'");
 
-                
-                if (column.meta().adql().arraysize() != null)
+            writer.append(" datatype='");
+            writer.append(column.meta().adql().type().votype());
+            writer.append("'");
+
+            if (column.meta().adql().arraysize() != null)
+                {
+            	
+                if (column.meta().adql().arraysize()==AdqlColumn.NON_ARRAY_SIZE)
                     {
-                    if (column.meta().adql().arraysize() == AdqlColumn.NON_ARRAY_SIZE)
-                        {
-                        }
-                    else if (column.meta().adql().arraysize() == AdqlColumn.VAR_ARRAY_SIZE || column.meta().adql().arraysize() <= 0)
-                        {
-                        writer.append(" arraysize='*'");
-                        }
-                    else {
-                        writer.append(" arraysize='");
-                        writer.append(column.meta().adql().arraysize().toString());
-                        writer.append("'");
-                        }
                     }
+                else if (column.meta().adql().arraysize()==AdqlColumn.VAR_ARRAY_SIZE)
+                    {
+                    writer.append(" arraysize='*'");
+                    }
+                else {
+                    writer.append(" arraysize='");
+                    writer.append(column.meta().adql().arraysize().toString());
+                    writer.append("'");
                 }
+            }
+                
             if (column.meta().adql() != null)
                 {
-                writer.append(" xtype='");
-                writer.append(column.meta().adql().type().xtype());
-                writer.append("'");
+                    if (column.meta().adql().type().xtype() != null) {
+	                    writer.append(" xtype='");
+	                    writer.append(column.meta().adql().type().xtype());
+	                    writer.append("'");
+	                }
                 }
             }
 
@@ -408,7 +398,7 @@ extends AbstractTableController
 
     @Override
     public void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
         writer.append("<TR>");
         cells(
@@ -421,7 +411,7 @@ extends AbstractTableController
 
     @Override
     public void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
     	String content =  formatter.format(results);
         writer.append("<TD>");

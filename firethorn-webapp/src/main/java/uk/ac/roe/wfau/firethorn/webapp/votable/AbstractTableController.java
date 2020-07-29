@@ -64,7 +64,7 @@ extends AbstractController
          *
          */
         public String format(final ResultSet results)
-        throws SQLException;
+        throws SQLException, ProtectionException;
 
         /**
          * The field index in a JDBC ResultSet.
@@ -252,7 +252,7 @@ extends AbstractController
      *
      */
     public void rows(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
         while (results.next())
             {
@@ -269,10 +269,11 @@ extends AbstractController
      * @param formatters The {@link List} of {@link FieldFormatter}s to use.
      * @param writer     The {@link PrintWriter} to write the field to.
      * @param results    The {@link ResultSet} to get the row from.
+     * @throws ProtectionException 
      *
      */
     public abstract void row(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException;
+    throws SQLException, ProtectionException;
 
     /**
      * Write all the fields from a {@link ResultSet} to a {@link PrintWriter} using a {@link List} of {@link FieldFormatter}s.
@@ -282,7 +283,7 @@ extends AbstractController
      *
      */
     public void cells(final List<FieldFormatter> formatters, final PrintWriter writer, final ResultSet results)
-    throws SQLException
+    throws SQLException, ProtectionException
         {
         for (final FieldFormatter formatter : formatters)
             {
@@ -299,10 +300,11 @@ extends AbstractController
      * @param formatter The {@link FieldFormatter} to use to get the field and format it.
      * @param writer    The {@link PrintWriter} to write the field to.
      * @param results   The {@link ResultSet} to get the field from.
+     * @throws ProtectionException 
      *
      */
     public abstract void cell(final FieldFormatter formatter, final PrintWriter writer, final ResultSet results)
-    throws SQLException;
+    throws SQLException, ProtectionException;
     
     /**
      * Write the footer for a {@link BaseTable} to a {@link PrintWriter}.
