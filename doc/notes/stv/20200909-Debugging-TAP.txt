@@ -1,0 +1,895 @@
+
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2020, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+
+
+# Query: Select top 1 * from VHSDR6.vhsSource
+
+
+# Try with CURL
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+VHSDR6.vhsSource&LANG=ADQL"
+ 
+  > .... <TD>7.3028411865234375</TD><TD>1</TD><TD>23.328332901000977</TD><TD>1</TD><TD>2.5094616413116455</TD><TD>4194496</TD><TD>1</TD><TD>-0.06073231250047684</TD><TD>0.22702492773532867</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+
+  # Success
+
+
+# Try with TOPCAT
+
+  # Success
+
+
+# ---------------------------------------------
+
+# Query: Select top 1000 * from VHSDR6.vhsSource
+
+# Try with CURL
+
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1000+*+from+VHSDR6.vhsSource&LANG=ADQL"
+..
+<TD>26.910812377929688</TD><TD>0</TD><TD>99.51732635498047</TD><TD>1</TD><TD>0.25515878200531006</TD><TD>0</TD><TD>728</TD><TD>0.06916654109954834</TD><TD>-0.1225629523396492</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+
+  # Success
+
+
+# Try with TOPCAT
+
+  # Success
+
+
+# ---------------------------------------------
+
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+10000+*+from+VHSDR6.vhsSource&LANG=ADQL"
+
+...
+<TD>0.006278033368289471</TD><TD>15.26
+* transfer closed with outstanding read data remaining
+* stopped the pause stream!
+* Closing connection 0
+curl: (18) transfer closed with outstanding read data remaining
+
+# Seems to return a truncated VOTable..
+
+# Checking logs:
+
+  # Apache logs:
+  	[Wed Sep 09 10:49:58.303000 2020] [proxy_http:error] [pid 926:tid 140533098985216] (20014)Internal error (specific information not available): [client 195.194.121.66:39078] AH01110: error reading response
+
+  # Ogsadai logs:
+	2020-09-09 10:49:48,039 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:157] callback(String, Long)
+	2020-09-09 10:49:48,039 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:158]   task    [COMPLETED]
+	2020-09-09 10:49:48,040 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:159]   results [COMPLETED]
+	2020-09-09 10:49:48,040 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:160]   count   [10000]
+	2020-09-09 10:49:48,040 DEBUG context.RequestContextFactory [pool-1-thread-100,endpoint:130] endpoint [http://gillian:8081/firethorn]
+	2020-09-09 10:49:48,040 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:178] Before callback
+	2020-09-09 10:49:48,040 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:179]   Ident    [4797034]
+	2020-09-09 10:49:48,041 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:180]   Endpoint [http://gillian:8081/firethorn/blue/query/callback/4797034]
+	2020-09-09 10:49:48,137 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:215] Response bean
+	2020-09-09 10:49:48,137 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:216]   Ident [4797034]
+	2020-09-09 10:49:48,138 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:217]   Name  [XX_CTSPD6O3TJQHMAAAAF2HE7CMZY]
+	2020-09-09 10:49:48,138 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:218]   State [COMPLETED]
+	2020-09-09 10:49:48,139 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:219]   Self  [http://gillian:8081/firethorn/blue/query/4797034]
+	2020-09-09 10:49:48,139 DEBUG blue.CallbackHandler [pool-1-thread-100,callback:226] After callback
+	2020-09-09 10:49:48,140 DEBUG activity.MatchedIterativeActivity [pool-1-thread-100,debug:84] performing last stage of processing
+	2020-09-09 10:49:48,140 DEBUG activity.MatchedIterativeActivity [pool-1-thread-100,debug:84] performing clean-up
+	2020-09-09 10:49:48,141 DEBUG event.LoggingActivityListener [pool-1-thread-100,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-cb5d7eea-574a-4111-87ea-51335ddb60c8)
+	2020-09-09 10:49:48,141 DEBUG event.LoggingActivityListener [pool-1-thread-101,debug:84] COMPLETED: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-a10c1158-2d56-46eb-b307-b7cfe1d791b9)
+
+
+  # FT logs:
+   
+   .. Nothing obvious, no exceptions
+	  2020-09-09 10:57:12,720 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838690] 
+	2020-09-09 10:57:12,720 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_A3EM5JPMDT2EWAAAAF2HFAYX7E] 
+	2020-09-09 10:57:12,720 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,720 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,720 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838692] 
+	2020-09-09 10:57:12,720 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_NUSL7IL4WC3ZWAAAAF2HFAYX7M] 
+	2020-09-09 10:57:12,721 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,721 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,721 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838694] 
+	2020-09-09 10:57:12,721 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_Q6CGVJI643GSMAAAAF2HFAYX7U] 
+	2020-09-09 10:57:12,721 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,722 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,722 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838696] 
+	2020-09-09 10:57:12,722 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListeneramses2/LIVEFirethornUserdataULOV20190307
+r]  name  [XX_VT3W2VVTXXMQKAAAAF2HFAYX7Y] 
+	2020-09-09 10:57:12,722 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,723 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,723 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838698] 
+	2020-09-09 10:57:12,723 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_7LG5FBZQKARPMAAAAF2HFAYYAA] 
+	2020-09-09 10:57:12,723 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,724 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,724 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838700] 
+	2020-09-09 10:57:12,724 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_3HF5I37ECZSUWAAAAF2HFAYYAE] 
+	2020-09-09 10:57:12,724 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,725 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,725 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838702] 
+	2020-09-09 10:57:12,725 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_BNQP6PHMCQLSIAAAAF2HFAYYAM] 
+	2020-09-09 10:57:12,725 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,726 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,726 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838704] 
+	2020-09-09 10:57:12,726 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_JLIHPTZVIGS6AAAAAF2HFAYYAU] 
+	2020-09-09 10:57:12,726 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,726 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,727 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838706] 
+	2020-09-09 10:57:12,727 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_HDIGVPG43RI5AAAAAF2HFAYYAY] 
+	2020-09-09 10:57:12,727 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,727 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,727 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838708] 
+	2020-09-09 10:57:12,727 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_DQBOPG6TRKRC2AAAAF2HFAYYBA] 
+	2020-09-09 10:57:12,727 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,728 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,728 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838710] 
+	2020-09-09 10:57:12,728 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_ZYFKY7UTX6SEYAAAAF2HFAYYBI] 
+	2020-09-09 10:57:12,728 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,729 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,729 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838712] 
+	2020-09-09 10:57:12,729 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_RARKLQI3WZVA6AAAAF2HFAYYBM] 
+	2020-09-09 10:57:12,729 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,730 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,730 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838714] 
+	2020-09-09 10:57:12,730 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_YNDSMAEDAJ5Z4AAAAF2HFAYYBU] 
+	2020-09-09 10:57:12,730 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,730 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,730 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838716] 
+	2020-09-09 10:57:12,730 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_4NWBU3F2JEYFOAAAAF2HFAYYBY] 
+	2020-09-09 10:57:12,731 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,731 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+	2020-09-09 10:57:12,731 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  ident [4838718] 
+	2020-09-09 10:57:12,731 DEBUG [main-interface-6] [JdbcColumnEntity$EntityListener]  name  [XX_JMV36QWEQMRQEAAAAF2HFAYYCA] 
+	2020-09-09 10:57:12,731 DEBUG [main-interface-6] [AdqlColumnEntity] services() 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307][1] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307] 
+	2020-09-09 10:57:12,733 DEBUG [main-interface-6] [JdbcConnectionEntity] Source is null, updating to EMPTY 
+	2020-09-09 10:57:12,734 DEBUG [main-interface-6] [JdbcConnectionEntity] State is EMPTY, initialising DataSource 
+	2020-09-09 10:57:12,734 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,734 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,734 DEBUG [main-interface-6] [JdbcConnectionEntity] State is READY, initialising Connection 
+	2020-09-09 10:57:12,734 DEBUG [main-interface-6] [JdbcConnectionEntity] With user/pass 
+	2020-09-09 10:57:12,734 DEBUG [main-interface-6] [JdbcConnectionEntity] connecting .... 
+	2020-09-09 10:57:12,738 DEBUG [main-interface-6] [JdbcConnectionEntity] .... connected 
+	2020-09-09 10:57:12,738 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,739 DEBUG [main-interface-6] [JdbcConnectionEntity] operator() for [mssql] 
+	2020-09-09 10:57:12,739 DEBUG [main-interface-6] [AdqlTableEntity] columns() for [4797445][temp.XX_LFK6AXALUMWMAAAAAF2HFAYXBE] 
+	2020-09-09 10:57:12,739 DEBUG [main-interface-6] [BaseComponentEntity] scan for [4797445][XX_LFK6AXALUMWMAAAAAF2HFAYXBE] 
+	2020-09-09 10:57:12,739 DEBUG [main-interface-6] [BaseComponentEntity] scantest for [4797445][XX_LFK6AXALUMWMAAAAAF2HFAYXBE] 
+	2020-09-09 10:57:12,739 DEBUG [main-interface-6] [BaseComponentEntity$EntityFactory] scanperiod() 
+	2020-09-09 10:57:12,739 DEBUG [main-interface-6] [BaseComponentEntity$EntityFactory]   value [PT25H] 
+	2020-09-09 10:57:12,740 DEBUG [main-interface-6] [BaseComponentEntity] Factory scanperiod  [PT25H] 
+	2020-09-09 10:57:12,740 DE# Let's test the same query in TopcatBUG [main-interface-6] [BaseComponentEntity] prevscan   [2020-09-09T10:57:07.905Z] 
+	2020-09-09 10:57:12,740 DEBUG [main-interface-6] [BaseComponentEntity] scanperiod [PT25H] 
+	2020-09-09 10:57:12,740 DEBUG [main-interface-6] [BaseComponentEntity] prev scan is recent - skipping 
+	2020-09-09 10:57:12,754 DEBUG [main-interface-6] [AbstractTableController] VOTABLE SQL [SELECT [XX_D5R7LSSJDZ67EAAAAF2HFAYXIA] AS sourceID, [XX_XDYPRTASPNO7UAAAAF2HFAYXII] AS cuEventID, [XX_QJACWNV4NT73QAAAAF2HFAYXIQ] AS frameSetID, [XX_DOBUTGLPQD426AAAAF2HFAYXIY] AS ra, [XX_QFURFRAQH6IUCAAAAF2HFAYXJA] AS dec, [XX_HGHEHDF6FECRYAAAAF2HFAYXJI] AS cx, [XX_SUOAVUHZDCFPIAAAAF2HFAYXJM] AS cy, [XX_W4FTTOA75T2HEAAAAF2HFAYXJU] AS cz, [XX_2UZ3IPJU4IXWWAAAAF2HFAYXJ4] AS htmID, [XX_67B6L3KTAYKVKAAAAF2HFAYXKA] AS l, [XX_GI2D53TH4Y67MAAAAF2HFAYXKI] AS b, [XX_D6DP2QPMHPEV2AAAAF2HFAYXKM] AS lambda, [XX_AHSMMTIJGVKRMAAAAF2HFAYXKU] AS eta, [XX_W6VNJE6VJ2IJQAAAAF2HFAYXK4] AS priOrSec, [XX_HYD33RWOVASQEAAAAF2HFAYXLA] AS ymjPnt, [XX_N6IBKAIYZHSAMAAAAF2HFAYXLI] AS ymjPntErr, [XX_KQCG2TJD4RZCKAAAAF2HFAYXLM] AS jmhPnt, [XX_WILIA24TI3QBYAAAAF2HFAYXLU] AS jmhPntErr, [XX_VSJX3VD3B7TZ2AAAAF2HFAYXLY] AS hmksPnt, [XX_KY24L7CZNG7UEAAAAF2HFAYXMA] AS hmksPntErr, [XX_ELAJLVNRDK434AAAAF2HFAYXMI] AS jmksPnt, [XX_QUWGNHEBEQSFKAAAAF2HFAYXMM] AS jmksPntErr, [XX_PHJQLUCSZQMI2AAAAF2HFAYXMU] AS ymjExt, [XX_BT3KS7EEAY2SMAAAAF2HFAYXMY] AS ymjExtErr, [XX_QHXYJQSK7JZEMAAAAF2HFAYXNA] AS jmhExt, [XX_XH72BD47VCCPQAAAAF2HFAYXNE] AS jmhExtErr, [XX_AOCPZMTFTGC5OAAAAF2HFAYXNI] AS hmksExt, [XX_747D2DLQPDHQMAAAAF2HFAYXNQ] AS hmksExtErr, [XX_XHLGOKI6RBCWEAAAAF2HFAYXNU] AS jmksExt, [XX_FAYHH3UCOOAPWAAAAF2HFAYXN4] AS jmksExtErr, [XX_TUZ3TNDGJCEL6AAAAF2HFAYXOA] AS mergedClassStat, [XX_RRTHE5N2SQKXOAAAAF2HFAYXOE] AS mergedClass, [XX_PWZ6EZDCBKH7OAAAAF2HFAYXOM] AS pStar, [XX_YCH6FI2LAY7JCAAAAF2HFAYXOQ] AS pGalaxy, [XX_O6A5ITVPWZK4UAAAAF2HFAYXOU] AS pNoise, [XX_RU6T7P23MHQFAAAAAF2HFAYXO4] AS pSaturated, [XX_DIHKIDLB3SZCUAAAAF2HFAYXPA] AS eBV, [XX_Q7DTVU5NPPNTCAAAAF2HFAYXPE] AS aY, [XX_GO5LIOV2XJGL4AAAAF2HFAYXPM] AS aJ, [XX_QYHC6MSOSWTKIAAAAF2HFAYXPQ] AS aH, [XX_CPD7D6VIWZPWAAAAAF2HFAYXPU] AS aKs, [XX_ZIB2N26T6W5Y6AAAAF2HFAYXPY] AS yMjd, [XX_XSTSC4RKA5EKAAAAAF2HFAYXQA] AS yPetroMag, [XX_VYX66WFZGLHMSAAAAF2HFAYXQE] AS yPetroMagErr, [XX_6DZDUSIIM3XD4AAAAF2HFAYXQI] AS yPsfMag, [XX_2CS33EZVXPN2AAAAAF2HFAYXQQ] AS yPsfMagErr, [XX_HWS5ILGRADX3GAAAAF2HFAYXQU] AS ySerMag2D, [XX_GYK6F62GM37FIAAAAF2HFAYXQY] AS ySerMag2DErr, [XX_ERV2GT4IASUKSAAAAF2HFAYXQ4] AS yAperMag3, [XX_UL2RDMVXCEPJSAAAAF2HFAYXRE] AS yAperMag3Err, [XX_KEEAJZK2QUBX4AAAAF2HFAYXRI] AS yAperMag4, [XX_OTS3CINPTBVBSAAAAF2HFAYXRM] AS yAperMag4Err, [XX_KU6JXJ34SAN4MAAAAF2HFAYXRQ] AS yAperMag6, [XX_TLL4E45GXOPPAAAAAF2HFAYXRU] AS yAperMag6Err, [XX_X2Y7YU3UVCYMMAAAAF2HFAYXRY] AS yAperMagNoAperCorr3, [XX_42INKF5EVATC4AAAAF2HFAYXSA] AS yAperMagNoAperCorr4, [XX_PK5GUKKRBNT7UAAAAF2HFAYXSE] AS yAperMagNoAperCorr6, [XX_22HAWQDOID7FSAAAAF2HFAYXSI] AS yHlCorSMjRadAs, [XX_MP72G3VGNHPY6AAAAF2HFAYXSM] AS yGausig, [XX_ENZC4Y4JNB26QAAAAF2HFAYXSQ] AS yEll, [XX_QZW333ODAWIOSAAAAF2HFAYXSU] AS yPA, [XX_2BY5HPYJ2224SAAAAF2HFAYXSY] AS yErrBits, [XX_DXWRG4ZUKSBR6AAAAF2HFAYXS4] AS yAverageConf, [XX_HJXZBT55I4N5YAAAAF2HFAYXTA] AS yClass, [XX_SS6T4TUYTHGXUAAAAF2HFAYXTI] AS yClassStat, [XX_UW5D7WU5AZSXKAAAAF2HFAYXTM] AS yppErrBits, [XX_Z2BSLV5ZDPU7UAAAAF2HFAYXTQ] AS ySeqNum, [XX_C2PVIZTCFOU54AAAAF2HFAYXTU] AS yXi, [XX_3VOBVZQU4LL5CAAAAF2HFAYXTY] AS yEta, [XX_2VBT7O5ZAYSNEAAAAF2HFAYXT4] AS jMjd, [XX_22EAIVSXFAG6KAAAAF2HFAYXUA] AS jPetroMag, [XX_3FY6K3GXRHIQIAAAAF2HFAYXUE] AS jPetroMagErr, [XX_3R6JXCVP4I6VEAAAAF2HFAYXUI] AS jPsfMag, [XX_P5MR7TBJYTJJMAAAAF2HFAYXUQ] AS jPsfMagErr, [XX_TRZ3RZ5IC3R6MAAAAF2HFAYXUU] AS jSerMag2D, [XX_KJPVI4C6U6Y2EAAAAF2HFAYXUY] AS jSerMag2DErr, [XX_NXDLAVWW3OXKIAAAAF2HFAYXU4] AS jAperMag3, [XX_N6EBRM26VJSLKAAAAF2HFAYXVA] AS jAperMag3Err, [XX_7GUL3RGPGGWEEAAAAF2HFAYXVE] AS jAperMag4, [XX_7UMOMNM5DAVU4AAAAF2HFAYXVI] AS jAperMag4Err, [XX_2IJIDIV2ERH2UAAAAF2HFAYXVM] AS jAperMag6, [XX_PFX56WWEBQ4GIAAAAF2HFAYXVQ] AS jAperMag6Err, [XX_U3YI2Z2T2ZBH2AAAAF2HFAYXVU] AS jAperMagNoAperCorr3, [XX_F47KHSPSNEWN2AAAAF2HFAYXVY] AS jAperMagNoAperCorr4, [XX_3DTQACLNMYDYWAAAAF2HFAYXV4] AS jAperMagNoAperCorr6, [XX_6GNTJ3FCKVRBQAAAAF2HFAYXWA] AS jHlCorSMjRadAs, [XX_AE6DFBNI2RWVYAAAAF2HFAYXWE] AS jGausig, [XX_L2MOU4WWAYCGIAAAAF2HFAYXWI] AS jEll, [XX_U26HIYG7K3IKUAAAAF2HFAYXWM] AS jPA, [XX_JNNXNUKX4L6YMAAAAF2HFAYXWQ] AS jErrBits, [XX_X6UNQHEFX4XOKAAAAF2HFAYXWU] AS jAverageConf, [XX_VDK7XO5SJWXTQAAAAF2HFAYXWY] AS jClass, [XX_2EBQ7RDN4QEK4AAAAF2HFAYXW4] AS jClassStat, [XX_ESUC5MACSR62IAAAAF2HFAYXXA] AS jppErrBits, [XX_OPEFSY3XGIKFYAAAAF2HFAYXXE] AS jSeqNum, [XX_AXFY227R3UU62AAAAF2HFAYXXI] AS jXi, [XX_ZDWXXCY32HAHUAAAAF2HFAYXXM] AS jEta, [XX_JEBKE47OB76KMAAAAF2HFAYXXQ] AS hMjd, [XX_5UW5DUSLBKDEMAAAAF2HFAYXXU] AS hPetroMag, [XX_ZU6FTDRUBXAFQAAAAF2HFAYXXY] AS hPetroMagErr, [XX_ZX7WST5MZYGDIAAAAF2HFAYXX4] AS hPsfMag, [XX_OROWIRK3XKGACAAAAF2HFAYXYA] AS hPsfMagErr, [XX_3E7C2IZ5SUMGUAAAAF2HFAYXYE] AS hSerMag2D, [XX_PEQ242G5U5OZAAAAAF2HFAYXYI] AS hSerMag2DErr, [XX_4FQCF2ZM7BJUCAAAAF2HFAYXYM] AS hAperMag3, [XX_34D6FDLZMSCGUAAAAF2HFAYXYQ] AS hAperMag3Err, [XX_HBCLOTQMV3M4UAAAAF2HFAYXYU] AS hAperMag4, [XX_ZV4P5CD2Y3N6QAAAAF2HFAYXYY] AS hAperMag4Err, [XX_OLYRU5FI3SQEMAAAAF2HFAYXY4] AS hAperMag6, [XX_3OO7P5E3VHK5OAAAAF2HFAYXY4] AS hAperMag6Err, [XX_QDF2ZDKV3KSK2AAAAF2HFAYXZA] AS hAperMagNoAperCorr3, [XX_Z2KXBMVG7BKPMAAAAF2HFAYXZE] AS hAperMagNoAperCorr4, [XX_YEUHUSA24LYSSAAAAF2HFAYXZI] AS hAperMagNoAperCorr6, [XX_B75XWZIRAZLXWAAAAF2HFAYXZM] AS hHlCorSMjRadAs, [XX_RI4MSWHEJJXJQAAAAF2HFAYXZY] AS hGausig, [XX_F32W74TQQVYY6AAAAF2HFAYX2A] AS hEll, [XX_ESX3J6WTGKDQ2AAAAF2HFAYX2I] AS hPA, [XX_CIZ5ABRCTYL42AAAAF2HFAYX2Q] AS hErrBits, [XX_S6W5U2WT3SME4AAAAF2HFAYX2Y] AS hAverageConf, [XX_DWODXEDL6644OAAAAF2HFAYX3A] AS hClass, [XX_YDDBK2O7BE3FQAAAAF2HFAYX3I] AS hClassStat, [XX_OKGXKQQXXGWICAAAAF2HFAYX3Q] AS hppErrBits, [XX_DQWUZO5OBU65OAAAAF2HFAYX3Y] AS hSeqNum, [XX_TXXXOE7MZ3SPIAAAAF2HFAYX4A] AS hXi, [XX_KFTU5KZUQ23K6AAAAF2HFAYX4I] AS hEta, [XX_POAZNQSQ62BIYAAAAF2HFAYX4M] AS ksMjd, [XX_CEBL3A7F3ODHMAAAAF2HFAYX4U] AS ksPetroMag, [XX_2IMLUSIYNMU2WAAAAF2HFAYX44] AS ksPetroMagErr, [XX_CA3AYF5H5PZPOAAAAF2HFAYX5E] AS ksPsfMag, [XX_GC7ZY3OQFMXCIAAAAF2HFAYX5I] AS ksPsfMagErr, [XX_65XYUPKXUL2LAAAAAF2HFAYX5Q] AS ksSerMag2D, [XX_4DVSCNWIFOG4AAAAAF2HFAYX5Y] AS ksSerMag2DErr, [XX_5EVICSXPJZMVIAAAAF2HFAYX54] AS ksAperMag3, [XX_KY2LU3WB765LYAAAAF2HFAYX6E] AS ksAperMag3Err, [XX_32NWBH5R5C3EWAAAAF2HFAYX6M] AS ksAperMag4, [XX_MBGNYJTPYA3ESAAAAF2HFAYX6Q] AS ksAperMag4Err, [XX_PACPUHBZX4VS2AAAAF2HFAYX6Y] AS ksAperMag6, [XX_RALYCLW6HH5QWAAAAF2HFAYX7A] AS ksAperMag6Err, [XX_A3EM5JPMDT2EWAAAAF2HFAYX7E] AS ksAperMagNoAperCorr3, [XX_NUSL7IL4WC3ZWAAAAF2HFAYX7M] AS ksAperMagNoAperCorr4, [XX_Q6CGVJI643GSMAAAAF2HFAYX7U] AS ksAperMagNoAperCorr6, [XX_VT3W2VVTXXMQKAAAAF2HFAYX7Y] AS ksHlCorSMjRadAs, [XX_7LG5FBZQKARPMAAAAF2HFAYYAA] AS ksGausig, [XX_3HF5I37ECZSUWAAAAF2HFAYYAE] AS ksEll, [XX_BNQP6PHMCQLSIAAAAF2HFAYYAM] AS ksPA, [XX_JLIHPTZVIGS6AAAAAF2HFAYYAU] AS ksErrBits, [XX_HDIGVPG43RI5AAAAAF2HFAYYAY] AS ksAverageConf, [XX_DQBOPG6TRKRC2AAAAF2HFAYYBA] AS ksClass, [XX_ZYFKY7UTX6SEYAAAAF2HFAYYBI] AS ksClassStat, [XX_RARKLQI3WZVA6AAAAF2HFAYYBM] AS ksppErrBits, [XX_YNDSMAEDAJ5Z4AAAAF2HFAYYBU] AS ksSeqNum, [XX_4NWBU3F2JEYFOAAAAF2HFAYYBY] AS ksXi, [XX_JMV36QWEQMRQEAAAAF2HFAYYCA] AS ksEta FROM [LIVEFirethornUserdataULOV20190307].[dbo].[XX_LFK6AXALUMWMAAAAAF2HFAYXBE]] 
+
+
+# Try with TOPCAT
+
+
+java.io.IOException: TAP response is not a VOTable - <?xml version='1.0' encoding='UTF-8'?><VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3' version='1.3'><RESOURCE type='results'><INFO name='QUERY_STATUS' value='OK'></INFO><INFO name='link' value='http://tap.roe.ac.uk/firethorn/adql/table/4841161'/><TABLE ID='table.4841161' name='XX_FGSDFKQBDH526AAAAF2HFQSSZ4'><FIELD ID='column.4845559' name='sourceID' datatype='long'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845559'/></FIELD><FIELD ID='column.4845561' name='cuEventID' datatype='int'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845561'/></FIELD><FIELD ID='column.4845563' name='frameSetID' datatype='long'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845563'/></FIELD><FIELD ID='column.4845565' name='ra' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845565'/></FIELD><FIELD ID='column.4845567' name='dec' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845567'/></FIELD><FIELD ID='column.4845569' name='cx' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845569'/></FIELD><FIELD ID='column.4845571' name='cy' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845571'/></FIELD><FIELD ID='column.4845573' name='cz' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4845573'/></FIELD><FIELD ID='column.4845575' name='htmID' datatype='long'><LINK content-type='application/json' con ...
+	at uk.ac.starlink.vo.TapQuery.readResultVOTable(TapQuery.java:637)
+	at uk.ac.starlink.vo.TapQuery.executeSync(TapQuery.java:244)
+	at uk.ac.starlink.vo.TapTableLoadDialog$6.loadTables(TapTableLoadDialog.java:538)
+	at uk.ac.starlink.table.gui.TableLoadWorker.run(TableLoadWorker.java:118)
+Caused by: org.xml.sax.SAXParseException; systemId: http://tap.roe.ac.uk/vsa/sync; lineNumber: 1; columnNumber: 531783; The element type "TD" must be terminated by the matching end-tag "</TD>".
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:203)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:177)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:327)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(XMLScanner.java:1473)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1749)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2967)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:842)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:771)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.votable.VOElementFactory.parseToDOM(VOElementFactory.java:536)
+	at uk.ac.starlink.votable.VOElementFactory.transformToDOM(VOElementFactory.java:391)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:221)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:241)
+	at uk.ac.starlink.vo.TapQuery.readResultVOTable(TapQuery.java:622)
+	... 3 more
+
+
+# Check the query results for the failed Topcat query:
+
+curl http://tap.roe.ac.uk/firethorn/blue/query/4797046
+
+   >	.. 
+	"input": "select top 10000 * from VHSDR6.vhsSource",
+	"status": "COMPLETED",
+	"results": {
+	"formats": {
+	"datatable": "http://tap.roe.ac.uk/firethorn/adql/table/4841161/datatable",
+	"votable": "http://tap.roe.ac.uk/firethorn/adql/table/4841161/votable"
+	},
+	"count": 10000,
+	"state": "COMPLETED",
+	"table": "http://tap.roe.ac.uk/firethorn/adql/table/4841161"
+	},
+
+# Query History shows a series of RUNNING, then a COMPLETED status
+
+
+# Check table results in User database
+
+SELECT 
+  COUNT(*)
+  FROM [LIVEFirethornUserdataULOV20190307].[dbo].[XX_FGSDFKQBDH526AAAAF2HFQSSZ4]
+
+# 10000
+
+
+
+
+# ---------------------------------------------
+
+
+
+# Query: Select top 100000 * from VHSDR6.vhsSource
+
+
+# Try with CURL
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+100000+*+from+VHSDR6.vhsSource&LANG=ADQL"
+ 
+
+	> ...
+
+	<TD>-39.39365211355716</TD><T* transfer closed with outstanding read data remaining
+	* stopped the pause stream!
+	* Closing connection 0
+	curl: (18) transfer closed with outstanding read data remaining
+	D>-0.6068918682117606</TD><TD>0.4784434292944761</TD><TD>-0.6346448969804931</TD><TD>10978704616990</TD><TD>265.5078937947085</TD><TD>8.188101610321466</TD><TD>-31.972820809886624</TD><TD>-80.92933
+
+# Failed, same as above example
+	
+
+
+# Try again
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+100000+*+from+VHSDR6.vhsSource&LANG=ADQL"
+
+	> ...
+	</TD><* Connection #0 to host tap.roe.ac.uk left intact
+	TD>1.4068139791488647</TD><TD>0.24551093578338623</TD><TD>7.3028411865234375</TD><TD>1</TD><TD>23.328332901000977</TD><TD>1</TD><TD>2.5094616413116455</TD><TD>4194496</TD><TD>1</TD><TD>-0.06073231250047684</TD><TD>0.22702492773532867</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+
+
+# Success
+
+
+# Try a third time
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+100000+*+from+VHSDR6.vhsSource&LANG=ADQL"
+
+	> ...
+	<TD>-9.99999488E8</TD><TD>-9.99999488E8<
+	* transfer closed with outstanding read data remaining
+	* stopped the pause stream!
+	* Closing connection 0
+	curl: (18) transfer closed with outstanding read data remaining
+
+
+# Failed, truncated VOTable again
+# Same exception in Apache:
+ 
+ [Wed Sep 09 12:27:50.016880 2020] [proxy_http:error] [pid 927:tid 140532974073600] (20014)Internal error (specific information not available): [client 195.194.121.66:41516] AH01110: error reading response
+
+
+# ---------------------------------------------
+
+
+
+# Query: Select top 1000000 * from VHSDR6.vhsSource
+
+
+# Try with CURL
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1000000+*+from+VHSDR6.vhsSource&LANG=ADQL"
+
+*   Trying 129.215.175.100...
+* TCP_NODELAY set
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1000000+*+from+VHSDR6.vhsSource&LANG=ADQL HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+
+# Hangs..
+
+
+# Last OGSADAI Logs:
+
+2020-09-09 12:31:13,576 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:217]   Name  [XX_37Z3QZKEUAQ7IAAAAF2HFWIZPY]
+2020-09-09 12:31:13,577 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:218]   State [RUNNING]
+2020-09-09 12:31:13,577 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:219]   Self  [http://gillian:8081/firethorn/blue/query/4797050]
+2020-09-09 12:31:13,577 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:226] After callback
+2020-09-09 12:31:19,627 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:157] callback(String, Long)
+2020-09-09 12:31:19,627 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:158]   task    [RUNNING]
+2020-09-09 12:31:19,627 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:159]   results [PARTIAL]
+2020-09-09 12:31:19,628 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:160]   count   [65535]
+2020-09-09 12:31:19,628 DEBUG context.RequestContextFactory [pool-1-thread-173,endpoint:130] endpoint [http://gillian:8081/firethorn]
+2020-09-09 12:31:19,629 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:178] Before callback
+2020-09-09 12:31:19,629 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:179]   Ident    [4797050]
+2020-09-09 12:31:19,629 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:180]   Endpoint [http://gillian:8081/firethorn/blue/query/callback/4797050]
+2020-09-09 12:31:19,730 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:215] Response bean
+2020-09-09 12:31:19,730 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:216]   Ident [4797050]
+2020-09-09 12:31:19,731 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:217]   Name  [XX_37Z3QZKEUAQ7IAAAAF2HFWIZPY]
+2020-09-09 12:31:19,732 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:218]   State [RUNNING]
+2020-09-09 12:31:19,732 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:219]   Self  [http://gillian:8081/firethorn/blue/query/4797050]
+2020-09-09 12:31:19,733 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:226] After callback
+
+
+
+# Last FT logs
+ ..
+
+  # Very verbose, output mostly system info checks, not sure which part to post here.. 
+ 2OBEY] BIGINT , [XX_QP345KQ7Z6LKCAAAAF2HF2OBFA] INTEGER , [XX_46PZMHS5BF6GWAAAAF2HF2OBFE] BIGINT , [XX_5YM4SEA72PIHMAAAAF2HF2OBFI] FLOAT , [XX_MNHMQI67LH64WAAAAF2HF2OBFQ] FLOAT , [XX_OFQ2G7RNFRRI4AAAAF2HF2OBFU] FLOAT , [XX_2NDKVBQFGWPHIAAAAF2HF2OBF4] FLOAT , [XX_4HGLH3UNCHKHEAAAAF2HF2OBGA] FLOAT , [XX_D6SGD5BBFPJ3MAAAAF2HF2OBGI] BIGINT , [XX_R7QONZD3Z5N5UAAAAF2HF2OBGQ] FLOAT , [XX_MARA3YHZT3YFOAAAAF2HF2OBGU] FLOAT , [XX_NRHYXYZCZ3XTOAAAAF2HF2OBGY] FLOAT , [XX_JHE52A2IN3PQ4AAAAF2HF2OBHA] FLOAT , [XX_ZN2TD5P4EUUCUAAAAF2HF2OBHE] BIGINT , [XX_ANDTDVNOKCWQSAAAAF2HF2OBHI] FLOAT , [XX_MFEJIJ6FY33AWAAAAF2HF2OBHQ] FLOAT , [XX_V6D5OGPUTTSGQAAAAF2HF2OBHU] FLOAT , [XX_Z2FJMC4B2MQGGAAAAF2HF2OBHY] FLOAT , [XX_QKPUIUKHT23L6AAAAF2HF2OBIA] FLOAT , [XX_UBEVANMETGMXEAAAAF2HF2OBIE] FLOAT , [XX_AEO7EQMKVX3ZQAAAAF2HF2OBII] FLOAT , [XX_6MECZPZ4JKQKUAAAAF2HF2OBIM] FLOAT , [XX_DZHL66IGTXTO6AAAAF2HF2OBIQ] FLOAT , [XX_AMPRHRJRO62TCAAAAF2HF2OBIU] FLOAT , [XX_JIGGJRD2JLF3IAAAAF2HF2OBIY] FLOAT , [XX_2QRKPZ522BMGGAAAAF2HF2OBIY] FLOAT , [XX_EMQPTNYEKBPEYAAAAF2HF2OBI4] FLOAT , [XX_YFTZFTYBYSQE4AAAAF2HF2OBJA] FLOAT , [XX_N5QYSKLUGMBRCAAAAF2HF2OBJE] FLOAT , [XX_HHZODIKA66NDKAAAAF2HF2OBJI] FLOAT , [XX_F333LNKQQXKM2AAAAF2HF2OBJM] FLOAT , [XX_EJUXDDEYVN6Q4AAAAF2HF2OBJQ] SMALLINT , [XX_DSFW4OSG257UGAAAAF2HF2OBJQ] FLOAT , [XX_K7IGYQTQSGWAIAAAAF2HF2OBJY] FLOAT , [XX_WA7LEW6JN7U2MAAAAF2HF2OBJ4] FLOAT , [XX_SYYNI5ZBVCEPKAAAAF2HF2OBJ4] FLOAT , [XX_Y6WWOACWFCYSAAAAAF2HF2OBKA] FLOAT , [XX_SZYCEY4OCELPIAAAAF2HF2OBKE] FLOAT , [XX_NFRTVVCA5JZU2AAAAF2HF2OBKI] FLOAT , [XX_R3X7AR3AAZWMQAAAAF2HF2OBKM] FLOAT , [XX_WZ4ZVRHDTDUL2AAAAF2HF2OBKQ] FLOAT , [XX_MLDLNYHEMD3WYAAAAF2HF2OBKU] FLOAT , [XX_AFH3NBOEO7HXKAAAAF2HF2OBKY] FLOAT , [XX_WORZT5OYJ6GI2AAAAF2HF2OBKY] FLOAT , [XX_FSHJKD43KKSW4AAAAF2HF2OBK4] FLOAT , [XX_XKXUJUINGBGQ6AAAAF2HF2OBLA] FLOAT , [XX_5HVTSHA46EZRKAAAAF2HF2OBLE] FLOAT , [XX_IT55NPLYWNLYSAAAAF2HF2OBLI] FLOAT , [XX_FRMNLKY3ULS4UAAAAF2HF2OBLM] FLOAT , [XX_OBK57DJCWFFMIAAAAF2HF2OBLM] FLOAT , [XX_EWORE7W25L5GCAAAAF2HF2OBLQ] FLOAT , [XX_ZWEGYFLFL6MD6AAAAF2HF2OBLU] FLOAT , [XX_ON4GBH3LS532IAAAAF2HF2OBLY] FLOAT , [XX_LVTCFLQ7ZSTK4AAAAF2HF2OBL4] FLOAT , [XX_WTKF5VUEZT4M4AAAAF2HF2OBMA] FLOAT , [XX_OYUW7NONZXCHOAAAAF2HF2OBME] FLOAT , [XX_TOVE4NEV2FEBCAAAAF2HF2OBME] FLOAT , [XX_7364EDPTZDVDGAAAAF2HF2OBMI] FLOAT , [XX_WSJZNDF3T3EREAAAAF2HF2OBMM] FLOAT , [XX_S7B5PGPQARGTGAAAAF2HF2OBMQ] FLOAT , [XX_RE3FV5O4RKZWQAAAAF2HF2OBMU] FLOAT , [XX_GNRRTRIOMXA7SAAAAF2HF2OBMY] INTEGER , [XX_O4AB4S3LRAOSAAAAAF2HF2OBM4] FLOAT , [XX_MM5AT6NOZPXLUAAAAF2HF2OBNA] SMALLINT , [XX_R7QHPLB32HKTYAAAAF2HF2OBNE] FLOAT , [XX_CJ734LDJNNG6GAAAAF2HF2OBNE] INTEGER , [XX_D325N6S5AUHC6AAAAF2HF2OBNI] INTEGER , [XX_XCUG2T273EAJCAAAAF2HF2OBNM] FLOAT , [XX_65PFSXRO63MGEAAAAF2HF2OBNQ] FLOAT , [XX_DIPQXXCUVVYROAAAAF2HF2OBNU] FLOAT , [XX_Q6PK3QN3ZZWLGAAAAF2HF2OBNY] FLOAT , [XX_Q3S7QUFW5DCXYAAAAF2HF2OBN4] FLOAT , [XX_ZBIQSVPOFZDPCAAAAF2HF2OBN4] FLOAT , [XX_E3YLPLUJQMQ7UAAAAF2HF2OBOE] FLOAT , [XX_QEHCYDLIOYIGCAAAAF2HF2OBOI] FLOAT , [XX_JREMD6PS2K5YCAAAAF2HF2OBOM] FLOAT , [XX_BLBHKHEZM5NDYAAAAF2HF2OBOQ] FLOAT , [XX_6NHV5PKKWG5DCAAAAF2HF2OBOY] FLOAT , [XX_VLQQPAZJW4UC4AAAAF2HF2OBO4] FLOAT , [XX_SGXJDAVRRXV6GAAAAF2HF2OBPE] FLOAT , [XX_34TP47IFKZFNSAAAAF2HF2OBPI] FLOAT , [XX_CTFRMXUVZRDKCAAAAF2HF2OBPM] FLOAT , [XX_OXQLEDQSPKFFAAAAAF2HF2OBPU] FLOAT , [XX_PDEW4ZIQFI5SUAAAAF2HF2OBPY] FLOAT , [XX_DLRQW7I7WKQJYAAAAF2HF2OBP4] FLOAT , [XX_WF37YLNLA3LW6AAAAF2HF2OBQE] FLOAT , [XX_CWVOTVNRR4CDWAAAAF2HF2OBQI] FLOAT , [XX_W2YDAV73XW4RSAAAAF2HF2OBQQ] FLOAT , [XX_KFKJMZY7VGBJYAAAAF2HF2OBQU] FLOAT , [XX_MYAMMBDQPXIAAAAAAF2HF2OBQY] INTEGER , [XX_NNOUSQ7ACWVKIAAAAF2HF2OBRA] FLOAT , [XX_SOZQ6VWYIXYLKAAAAF2HF2OBRE] SMALLINT , [XX_OJQL3RHXQQDSYAAAAF2HF2OBRM] FLOAT , [XX_CV6VD6LV6E3PSAAAAF2HF2OBRQ] INTEGER , [XX_GJCNOA2DUIUYAAAAAF2HF2OBRU] INTEGER , [XX_ZF2DHGHCPU4EIAAAAF2HF2OBR4] FLOAT , [XX_M6CVIXN4QGB6CAAAAF2HF2OBSA] FLOAT , [XX_TQGTMZM56QDD6AAAAF2HF2OBSI] FLOAT , [XX_66IZL6GZB4KAIAAAAF2HF2OBSM] FLOAT , [XX_LBCELFXRUQAUUAAAAF2HF2OBSU] FLOAT , [XX_LBXHCO7Z4XOZEAAAAF2HF2OBSY] FLOAT , [XX_TU3FDZFRR55POAAAAF2HF2OBTA] FLOAT , [XX_UYHBKUQ5AY2KMAAAAF2HF2OBTE] FLOAT , [XX_VTBP4DD6HYUI2AAAAF2HF2OBTM] FLOAT , [XX_QAH77KJEHPMFEAAAAF2HF2OBTQ] FLOAT , [XX_44DVWTTDLJSYMAAAAF2HF2OBTU] FLOAT , [XX_V3NQA45HHTORUAAAAF2HF2OBTY] FLOAT , [XX_V3B3L3YSYRDBCAAAAF2HF2OBUA] FLOAT , [XX_XNBU6K5BZNTXMAAAAF2HF2OBUE] FLOAT , [XX_EL7HDOMHAR4ZAAAAAF2HF2OBUM] FLOAT , [XX_DAXK6C2NMQ3FKAAAAF2HF2OBUQ] FLOAT , [XX_SJ27M6MLJD6RWAAAAF2HF2OBUU] FLOAT , [XX_HHUKHDY5IP6ZKAAAAF2HF2OBU4] FLOAT , [XX_ZWZ2ZAMCKWO7YAAAAF2HF2OBVA] FLOAT , [XX_7MMLJ7JCZWIIYAAAAF2HF2OBVI] FLOAT , [XX_QTJASJOJCJGDCAAAAF2HF2OBVM] FLOAT , [XX_7OGMJXAXTLOIEAAAAF2HF2OBVU] FLOAT , [XX_VZD2WQB4UE6O4AAAAF2HF2OBVY] INTEGER , [XX_HFEXE5PJYKZTIAAAAF2HF2OBV4] FLOAT , [XX_RREYPK57E3ORQAAAAF2HF2OBWE] SMALLINT , [XX_ACJI6WPODVSVGAAAAF2HF2OBWI] FLOAT , [XX_I2LCLSYRVWJ4UAAAAF2HF2OBWM] INTEGER , [XX_OPO2HXGLSIWQGAAAAF2HF2OBWU] INTEGER , [XX_G256YA74Z5KNIAAAAF2HF2OBWY] FLOAT , [XX_LDQIHE6JW5UFYAAAAF2HF2OBXA] FLOAT , [XX_6UWHYPUNB4BTOAAAAF2HF2OBXE] FLOAT , [XX_RQW7DW3MJ6R62AAAAF2HF2OBXI] FLOAT , [XX_5WXSA2A3BOR2UAAAAF2HF2OBXM] FLOAT , [XX_PEJFMUJMNV2TIAAAAF2HF2OBXQ] FLOAT , [XX_YICEN4PS65PRQAAAAF2HF2OBXU] FLOAT , [XX_G6RICWNPJASSOAAAAF2HF2OBXY] FLOAT , [XX_BHGA6UFR7RKSAAAAAF2HF2OBX4] FLOAT , [XX_P4XIBHASBMVK4AAAAF2HF2OBYA] FLOAT , [XX_B4A6M7W3PE7JIAAAAF2HF2OBYE] FLOAT , [XX_N6FIHAOBFJ2SMAAAAF2HF2OBYM] FLOAT , [XX_72PTG553H7P7UAAAAF2HF2OBYU] FLOAT , [XX_J7P47O6ZAWDN6AAAAF2HF2OBY4] FLOAT , [XX_UU3RHPLFH5GA4AAAAF2HF2OBZE] FLOAT , [XX_YX34LPJ44NPZ6AAAAF2HF2OBZM] FLOAT , [XX_G6OSPVEGIP3D4AAAAF2HF2OBZY] FLOAT , [XX_WUZPKPDISE3R4AAAAF2HF2OB2A] FLOAT , [XX_27UW7R6EW6KS2AAAAF2HF2OB2I] FLOAT , [XX_5CPEDMUAFYDYQAAAAF2HF2OB2Q] FLOAT , [XX_P5VTPINDRLKTAAAAAF2HF2OB2Y] FLOAT , [XX_47MBNY2I5TT74AAAAF2HF2OB3A] FLOAT , [XX_WZORH5RUWLNNIAAAAF2HF2OB3I] INTEGER , [XX_3K322TME3A3RKAAAAF2HF2OB3Q] FLOAT , [XX_BJV64WDL4SKVMAAAAF2HF2OB3Y] SMALLINT , [XX_FPUF5O5C36KVKAAAAF2HF2OB34] FLOAT , [XX_QVRSDYMNO7QSSAAAAF2HF2OB4E] INTEGER , [XX_V3VQVNWTXKX3WAAAAF2HF2OB4M] INTEGER , [XX_PWH2PMAITR5HIAAAAF2HF2OB4U] FLOAT , [XX_NIXYWDS3NLNDOAAAAF2HF2OB44] FLOAT )] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] operator() for [mssql] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] open [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307][1] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] operator() for [mssql] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] operator() for [mssql] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] initialValue() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] operator() for [mssql] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] connect [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307] 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] State is CLOSED, updating to READY 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] State is READY, initialising Connection 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] With user/pass 
+2020-09-09 12:49:16,499 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] connecting .... 
+2020-09-09 12:49:16,503 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] .... connected 
+2020-09-09 12:49:16,518 DEBUG [FireThornTaskExecutor-40] [SQLServerOperator] SQL result [0] 
+2020-09-09 12:49:16,518 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] operator() for [mssql] 
+2020-09-09 12:49:16,518 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] close [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307][1] 
+2020-09-09 12:49:16,518 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] operator() for [mssql] 
+2020-09-09 12:49:16,518 DEBUG [FireThornTaskExecutor-40] [JdbcConnectionEntity] get() [jdbc:jtds:sqlserver://ramses2/LIVEFirethornUserdataULOV20190307] 
+2020-09-09 12:49:16,518 INFO  [FireThornTaskExecutor-40] [AdqlQueryTimings] TIMING - jdbcdone() 
+2020-09-09 12:49:16,523 DEBUG [FireThornTaskExecutor-40] [AdqlQueryTimings] AdqlQueryTimings() 
+2020-09-09 12:49:16,532 DEBUG [FireThornTaskExecutor-32] [BlueQueryEntity] before refresh() 
+2020-09-09 12:49:16,536 DEBUG [FireThornTaskExecutor-32] [AdqlQueryTimings] AdqlQueryTimings() 
+2020-09-09 12:49:16,536 DEBUG [FireThornTaskExecutor-32] [AdqlQueryTimings] AdqlQueryTimings() 
+2020-09-09 12:49:16,537 DEBUG [FireThornTaskExecutor-32] [BlueQueryEntity] after refresh() 
+2020-09-09 12:49:16,537 DEBUG [FireThornTaskExecutor-32] [BlueQueryEntity] Getting base BaseResource 
+2020-09-09 12:49:16,537 DEBUG [FireThornTaskExecutor-32] [BlueQueryEntity] Found base BaseResource [VVV JDBC] 
+2020-09-09 12:49:16,537 DEBUG [FireThornTaskExecutor-32] [BlueQueryEntity] Getting direct resource 
+2020-09-09 12:49:16,537 DEBUG [FireThornTaskExecutor-32] [OgsaJdbcResourceEntity$EntityFactory] primary(JdbcResource) [59] 
+2020-09-09 12:49:16,538 DEBUG [FireThornTaskExecutor-32] [OgsaServiceEntity] primary() 
+2020-09-09 12:49:16,542 DEBUG [FireThornTaskExecutor-32] [OgsaJdbcResourceEntity$EntityFactory] primary(OgsaService, JdbcResource) [847552][59] 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [OgsaJdbcResourceEntity$EntityFactory] Found primary OgsaJdbcResource [4785931] 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [OgsaJdbcResourceEntity$EntityFactory] Checking ogsaid ... 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] ogsaid [ACTIVE][ogsadai-b39cde91-5008-4119-8fb6-77f411c045e1] 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] scan for [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] scantest() 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   name   [XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   ident  [4785931] 
+2020-09-09 12:49:16,546 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b39cde91-5008-4119-8fb6-77f411c045e1] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] prevscan   [2020-09-09T12:22:12.664Z] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] start time [2020-09-08T20:53:54.993Z] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] scantest for [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [OgsaJdbcResourceEntity] factory() 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity$EntityFactory] scanperiod() 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity$EntityFactory]   value [PT11M] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] Factory scanperiod  [PT11M] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] prevscan   [2020-09-09T12:22:12.664Z] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] scanperiod [PT11M] 
+2020-09-09 12:49:16,547 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] scan period expired - scanning 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] No existing lock found [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] Adding new lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [BaseComponentEntity] Running scan [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] scanimpl() 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   name   [XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   ident  [4785931] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b39cde91-5008-4119-8fb6-77f411c045e1] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] ping() 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   name   [XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   ident  [4785931] 
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b39cde91-5008-4119-8fb6-77f411c045e1] 
+2020-09-09 12:49:16,549 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] Service request [4785931][http://jarmila:8080/ogsadai/services/dataResources/ogsadai-b39cde91-5008-4119-8fb6-77f411c045e1] 
+
+
+
+..
+
+
+# Try again, but follow FT output 
+
+# Try with CURL
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1000000+*+from+VHSDR6.vhsSource&LANG=ADQL"
+*   Trying 129.215.175.100...
+* TCP_NODELAY set
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1000000+*+from+VHSDR6.vhsSource&LANG=ADQL HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+
+
+
+
+# FT logs:
+..
+2020-09-09 12:49:16,548 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity]   ogsaid [ogsadai-b39cde91-5008-4119-8fb6-77f411c045e1] 
+2020-09-09 12:49:16,549 DEBUG [FireThornTaskExecutor-32] [OgsaBaseResourceEntity] Service request [4785931][http://jarmila:8080/ogsadai/services/dataResources/ogsadai-b39cde91-5008-4119-8fb6-77f411c045e1]
+..
+
+
+
+# ---------------------------------------------
+
+# Try a simple query again to see if the service is working still
+
+
+# Query: Select top 1 * from VHSDR6.vhsSource
+
+
+# Try with CURL
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+VHSDR6.vhsSource&LANG=ADQL"
+*   Trying 129.215.175.100...
+* TCP_NODELAY set
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+VHSDR6.vhsSource&LANG=ADQL HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+
+# Hangs..
+
+
+# Check OGSADAI Logs:
+
+2020-09-09 12:31:19,732 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:218]   State [RUNNING]
+2020-09-09 12:31:19,732 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:219]   Self  [http://gillian:8081/firethorn/blue/query/4797050]
+2020-09-09 12:31:19,733 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:226] After callback
+
+
+
+
+2020-09-09 12:56:42,728 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:62] createContext(HttpServletRequest)
+2020-09-09 12:56:42,728 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:64] remote [10.0.0.2]
+
+
+# Try again and check logs
+# Query: Select top 1 * from VHSDR6.vhsSource
+# Check OGSADAI Logs:
+
+
+2020-09-09 12:31:19,732 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:219]   Self  [http://gillian:8081/firethorn/blue/query/4797050]
+2020-09-09 12:31:19,733 DEBUG blue.CallbackHandler [pool-1-thread-173,callback:226] After callback
+2020-09-09 12:56:42,728 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:62] createContext(HttpServletRequest)
+2020-09-09 12:56:42,728 DEBUG context.RequestContextFactory [http-nio-8080-exec-3,createContext:64] remote [10.0.0.2]
+2020-09-09 12:58:25,758 DEBUG context.RequestContextFactory [http-nio-8080-exec-2,createContext:62] createContext(HttpServletRequest)
+2020-09-09 12:58:25,759 DEBUG context.RequestContextFactory [http-nio-8080-exec-2,createContext:64] remote [10.0.0.2]
+
+
+
+# So new createContext is called for each incoming query, but nothing happens after
+# Ogsadai logs stop there, and FT logs only show system info checks
+# Curl request hang..
+
+
+# curl http://tap.roe.ac.uk/osa/tables
+# Works fine
+# So new queries are hanging, FT still works, but query mechanism is either not working, or queries are getting stuck in queue
+
+
+# Run simple query again (SELECT TOP 1 * from ATLASDR1 Filter) and follow FT logs when creating new queries, match "query" keyword
+
+tail -f -n 1000 firethorn-debug.log | grep -C 5  "query"
+
+2020-09-09 13:06:46,777 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:06:46,777 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:06:46,777 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug] Request properties 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug]   requestURL  [http://tap.roe.ac.uk/firethorn/tap/54/sync] 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug]   queryString [REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL] 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug]   authType    [null] 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug]   remoteAddr  [10.255.0.2] 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug] Request headers 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug]   [host][tap.roe.ac.uk] 
+2020-09-09 13:06:46,869 DEBUG [main-interface-10] [HttpRequestDebug]   [upgrade-insecure-requests][1] 
+--
+2020-09-09 13:06:46,944 DEBUG [FireThornTaskExecutor-61] [BlueQueryEntity] prepare() [null][EDITING] 
+2020-09-09 13:06:46,944 DEBUG [FireThornTaskExecutor-61] [AdqlQueryTimings] AdqlQueryTimings() 
+2020-09-09 13:06:46,944 INFO  [FireThornTaskExecutor-61] [AdqlQueryTimings] TIMING - adqlstart() 
+2020-09-09 13:06:46,944 DEBUG [FireThornTaskExecutor-61] [MySearchTableList] MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode) 
+2020-09-09 13:06:46,944 DEBUG [FireThornTaskExecutor-61] [MySearchTableList] MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode) 
+2020-09-09 13:06:46,944 DEBUG [FireThornTaskExecutor-61] [BlueQueryEntity] Processing as [DIRECT] query 
+2020-09-09 13:06:46,945 DEBUG [FireThornTaskExecutor-61] [MySearchTableList] search(ADQLTable) 
+2020-09-09 13:06:46,945 DEBUG [FireThornTaskExecutor-61] [MySearchTableList]   target [null][ATLASDR1][Filter] 
+2020-09-09 13:06:46,945 DEBUG [FireThornTaskExecutor-61] [MySearchTableList] search schema [ATLASDR1] 
+2020-09-09 13:06:46,945 DEBUG [FireThornTaskExecutor-61] [AdqlResourceEntity] schemas() for [54][OSA ADQL resource] 
+2020-09-09 13:06:46,945 DEBUG [FireThornTaskExecutor-61] [BaseComponentEntity] scan for [54][OSA ADQL resource] 
+--
+2020-09-09 13:06:46,963 DEBUG [FireThornTaskExecutor-61] [BaseComponentEntity] scanperiod [PT25H] 
+2020-09-09 13:06:46,963 DEBUG [FireThornTaskExecutor-61] [BaseComponentEntity] prev scan is recent - skipping 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLQuery) 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ADQLObject [adql.query.ClauseSelect] 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ClauseSelect 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ClauseSelect) 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  Select item ---- 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]   name  [*] 
+2020-09-09 13:06:46,966 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]   alias [null] 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]   class [adql.query.SelectAllColumns] 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, SelectAllColumns) 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] fields(AdqlParserQuery, ADQLQuery) 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]   ADQLQuery [{ADQL query}] 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [AdqlParserTableImpl] Iterator<DBColumn> iterator() 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [AdqlTableEntity] columns() for [5272][ATLASDR1.Filter] 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [BaseComponentEntity] scan for [5272][Filter] 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [BaseComponentEntity] scantest for [5272][Filter] 
+2020-09-09 13:06:46,967 DEBUG [FireThornTaskExecutor-61] [BaseComponentEntity$EntityFactory] scanperiod() 
+--
+2020-09-09 13:06:46,991 DEBUG [FireThornTaskExecutor-61] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+2020-09-09 13:06:46,991 DEBUG [FireThornTaskExecutor-61] [JdbcColumnEntity$EntityListener]  ident [5471] 
+2020-09-09 13:06:46,991 DEBUG [FireThornTaskExecutor-61] [JdbcColumnEntity$EntityListener]  name  [isSectioned] 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [BlueQueryEntity] add(SelectField) [isSectioned][0][BYTE] 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ADQLObject [adql.query.from.ADQLTable] 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ADQLTable [Filter] 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLTable) 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]    ---- 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]    AdqlTable [ATLASDR1.Filter] 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]    BaseTable [ATLASDR1.dbo.Filter] 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]    RootTable [ATLASDR1.dbo.Filter] 
+2020-09-09 13:06:46,992 DEBUG [FireThornTaskExecutor-61] [BlueQueryEntity] add(AdqlTable) [5272][Filter] 
+2020-09-09 13:06:46,994 DEBUG [FireThornTaskExecutor-61] [BlueQueryEntity] add(BaseResource) [53][OSA JDBC] 
+2020-09-09 13:06:46,994 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,994 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ADQLObject [adql.query.ClauseConstraints] 
+2020-09-09 13:06:46,994 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:46,994 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,994 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ADQLObject [adql.query.ClauseADQL] 
+2020-09-09 13:06:46,994 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ADQLObject [adql.query.ClauseConstraints] 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl]  ADQLObject [adql.query.ClauseADQL] 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [JdbcConnectionEntity] translator() for [mssql] 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [SQLServerTranslator] translate(ADQLQuery) 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [SQLServerTranslator] translate(ClauseSelect) 
+2020-09-09 13:06:46,995 DEBUG [FireThornTaskExecutor-61] [AdqlParserTableImpl] Iterator<DBColumn> iterator() 
+--
+2020-09-09 13:06:47,048 DEBUG [FireThornTaskExecutor-59] [BlueTaskEntity]   state [READY] 
+2020-09-09 13:06:47,048 DEBUG [FireThornTaskExecutor-59] [BlueQueryEntity] prepare() [4850807][READY] 
+2020-09-09 13:06:47,048 INFO  [FireThornTaskExecutor-59] [AdqlQueryTimings] TIMING - adqlstart() 
+2020-09-09 13:06:47,048 DEBUG [FireThornTaskExecutor-59] [MySearchTableList] MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode) 
+2020-09-09 13:06:47,048 DEBUG [FireThornTaskExecutor-59] [MySearchTableList] MySearchTableList(AdqlResource, AdqlParserTable.Factory, AdqlQuery.Mode) 
+2020-09-09 13:06:47,048 DEBUG [FireThornTaskExecutor-59] [BlueQueryEntity] Processing as [DIRECT] query 
+2020-09-09 13:06:47,049 DEBUG [FireThornTaskExecutor-59] [MySearchTableList] search(ADQLTable) 
+2020-09-09 13:06:47,049 DEBUG [FireThornTaskExecutor-59] [MySearchTableList]   target [null][ATLASDR1][Filter] 
+2020-09-09 13:06:47,049 DEBUG [FireThornTaskExecutor-59] [MySearchTableList] search schema [ATLASDR1] 
+2020-09-09 13:06:47,051 DEBUG [FireThornTaskExecutor-59] [AdqlResourceEntity] schemas() for [54][OSA ADQL resource] 
+2020-09-09 13:06:47,051 DEBUG [FireThornTaskExecutor-59] [BaseComponentEntity] scan for [54][OSA ADQL resource] 
+--
+2020-09-09 13:06:47,067 DEBUG [FireThornTaskExecutor-59] [BaseComponentEntity] scanperiod [PT25H] 
+2020-09-09 13:06:47,067 DEBUG [FireThornTaskExecutor-59] [BaseComponentEntity] prev scan is recent - skipping 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLQuery) 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ADQLObject [adql.query.ClauseSelect] 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ClauseSelect 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ClauseSelect) 
+2020-09-09 13:06:47,073 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  Select item ---- 
+2020-09-09 13:06:47,074 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]   name  [*] 
+2020-09-09 13:06:47,074 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]   alias [null] 
+2020-09-09 13:06:47,075 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]   class [adql.query.SelectAllColumns] 
+2020-09-09 13:06:47,075 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, SelectAllColumns) 
+2020-09-09 13:06:47,075 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] fields(AdqlParserQuery, ADQLQuery) 
+2020-09-09 13:06:47,075 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]   ADQLQuery [{ADQL query}] 
+2020-09-09 13:06:47,075 DEBUG [FireThornTaskExecutor-59] [AdqlParserTableImpl] Iterator<DBColumn> iterator() 
+2020-09-09 13:06:47,075 DEBUG [FireThornTaskExecutor-59] [AdqlTableEntity] columns() for [5272][ATLASDR1.Filter] 
+2020-09-09 13:06:47,075 DEBUG [FireThornTaskExecutor-59] [BaseComponentEntity] scan for [5272][Filter] 
+2020-09-09 13:06:47,076 DEBUG [FireThornTaskExecutor-59] [BaseComponentEntity] scantest for [5272][Filter] 
+2020-09-09 13:06:47,076 DEBUG [FireThornTaskExecutor-59] [BaseComponentEntity$EntityFactory] scanperiod() 
+--
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [JdbcColumnEntity$EntityListener] load(JdbcColumnEntity) 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [JdbcColumnEntity$EntityListener]  ident [5471] 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [JdbcColumnEntity$EntityListener]  name  [isSectioned] 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [BlueQueryEntity] add(SelectField) [isSectioned][0][BYTE] 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ADQLObject [adql.query.from.ADQLTable] 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ADQLTable [Filter] 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, ADQLTable) 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]    ---- 
+2020-09-09 13:06:47,098 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]    AdqlTable [ATLASDR1.Filter] 
+2020-09-09 13:06:47,099 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]    BaseTable [ATLASDR1.dbo.Filter] 
+2020-09-09 13:06:47,099 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]    RootTable [ATLASDR1.dbo.Filter] 
+2020-09-09 13:06:47,099 DEBUG [FireThornTaskExecutor-59] [BlueQueryEntity] add(AdqlTable) [5272][Filter] 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [BlueQueryEntity] add(BaseResource) [53][OSA JDBC] 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ADQLObject [adql.query.ClauseConstraints] 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ADQLObject [adql.query.ClauseADQL] 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ADQLObject [adql.query.ClauseConstraints] 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:47,100 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ---- 
+2020-09-09 13:06:47,101 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl]  ADQLObject [adql.query.ClauseADQL] 
+2020-09-09 13:06:47,101 DEBUG [FireThornTaskExecutor-59] [AdqlParserImpl] process(AdqlParserQuery, ADQLQuery, Iterable<ADQLObject>) 
+2020-09-09 13:06:47,101 DEBUG [FireThornTaskExecutor-59] [JdbcConnectionEntity] translator() for [mssql] 
+2020-09-09 13:06:47,102 DEBUG [FireThornTaskExecutor-59] [SQLServerTranslator] translate(ADQLQuery) 
+2020-09-09 13:06:47,102 DEBUG [FireThornTaskExecutor-59] [SQLServerTranslator] translate(ClauseSelect) 
+2020-09-09 13:06:47,102 DEBUG [FireThornTaskExecutor-59] [AdqlParserTableImpl] Iterator<DBColumn> iterator() 
+--
+2020-09-09 13:06:47,113 DEBUG [FireThornTaskExecutor-59] [BlueTaskEntity]   state [READY] 
+2020-09-09 13:06:47,113 DEBUG [FireThornTaskExecutor-59] [BlueTaskEntity] Before execute() 
+2020-09-09 13:06:47,113 DEBUG [FireThornTaskExecutor-59] [BlueTaskEntity]   state [READY] 
+2020-09-09 13:06:47,113 DEBUG [FireThornTaskExecutor-59] [BlueQueryEntity] execute() [4850807][READY] 
+2020-09-09 13:06:47,114 DEBUG [FireThornTaskExecutor-59] [BlueTaskLogEntity] LogEntryEntity() 
+2020-09-09 13:06:47,114 DEBUG [FireThornTaskExecutor-59] [BlueTaskLogEntity]   task    [entity[class[uk.ac.roe.wfau.firethorn.adql.query.blue.BlueQueryEntity] ident[4850807]]] 
+2020-09-09 13:06:47,115 DEBUG [FireThornTaskExecutor-59] [BlueTaskLogEntity]   level   [INFO] 
+2020-09-09 13:06:47,115 DEBUG [FireThornTaskExecutor-59] [BlueTaskLogEntity]   source  [uk.ac.roe.wfau.firethorn.adql.query.blue.BlueTaskLogEntity$EntityFactory] 
+2020-09-09 13:06:47,115 DEBUG [FireThornTaskExecutor-59] [BlueTaskLogEntity]   message [Executing query] 
+2020-09-09 13:06:47,118 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:06:47,118 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:06:47,118 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:06:47,150 DEBUG [FireThornTaskExecutor-59] [BlueTaskEntity$TaskRunner] thread(Updator) [4850807] 
+2020-09-09 13:06:47,151 DEBUG [FireThornTaskExecutor-64] [BlueTaskEntity$TaskRunner] future(Updator) [4850807] 
+
+
+# Check latest FT logs without keyword match:
+
+2020-09-09 13:09:38,776 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:38,925 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:38,925 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:38,925 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,276 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:39,276 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,276 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,425 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:39,425 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,425 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,776 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:39,777 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,777 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,926 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:39,926 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:39,926 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:40,277 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:40,277 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:40,277 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:40,426 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:40,426 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:40,426 DEBUG [FireThornTaskExecutor-39] [BaseComponentEntity] Waiting on lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+2020-09-09 13:09:40,777 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Checking for existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM] 
+2020-09-09 13:09:40,778 DEBUG [FireThornTaskExecutor-49] [BaseComponentEntity] Found existing lock [4785931][XX_Y7CKNTMFTETACAAAAF2HAPXHYM][2020-09-09T12:49:16.548Z] 
+
+
+
+# Seems to be stuck
+
+
+
+# --------------------------------------------
+
+# After aprox. one hour simple queries start working again, but all the ones that were hanging
+
+# Check Containers
+
+[Stevedore@Araybwyn ~]$ docker ps
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                       PORTS               NAMES
+4f999370d506        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   About an hour ago   Up About an hour (healthy)   8080/tcp            ft_gillian.1.nakc60mxdc1lx9v72aj6nm6hl
+4fece98eb050        firethorn/ogsadai:2.1.36        "/bin/sh -c '/var/lo…"   About an hour ago   Up About an hour (healthy)   8080/tcp            ft_jarmila.1.yd6m68dtl198p6rrfbf4ni3y1
+bff3f7d8343e        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   11 days ago         Up 11 days                   5432/tcp            ft_carolina.1.kq9krov9tvlt1tvtyhvgi6xbd
+2d1c14fa2631        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   11 days ago         Up 11 days                   5432/tcp            ft_bethany.1.4o8yg7e9zhuf404vhz2m8yt68
+fa88eb69066f        firethorn/firethorn-py:latest   "python3"                11 days ago         Up 11 days                                       ft_firethorn-py.1.sdusyp77tns4g2nouo0wi3v9k
+
+# Service restarted themselves after healthchecker failed
+
+
+
+# --------------------------------------------
+
+# Check a simple query
+
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+sourceID+from+VHSDR6.vhsSource&LANG=ADQL"
+*   Trying 129.215.175.100...
+* TCP_NODELAY set
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+sourceID+from+VHSDR6.vhsSource&LANG=ADQL HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+< HTTP/1.1 303 
+< Date: Wed, 09 Sep 2020 14:37:47 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< Location: http://tap.roe.ac.uk/firethorn/adql/table/4857605/votable
+< firethorn.auth.identity: http://tap.roe.ac.uk/firethorn/community-member/4858482
+< firethorn.auth.username: anon-6MCKRUMGDMMMQAAAAF2HGTITL4
+< firethorn.auth.community: friends
+< Content-Type: text/xml;charset=ISO-8859-1
+< Content-Length: 67
+< 
+* Ignoring the response-body
+* Connection #0 to host tap.roe.ac.uk left intact
+* Issue another request to this URL: 'http://tap.roe.ac.uk/firethorn/adql/table/4857605/votable'
+* Found bundle for host tap.roe.ac.uk: 0x564923e8ca50 [can pipeline]
+* Re-using existing connection! (#0) with host tap.roe.ac.uk
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /firethorn/adql/table/4857605/votable HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+< HTTP/1.1 200 
+< Date: Wed, 09 Sep 2020 14:37:47 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< firethorn.auth.identity: http://tap.roe.ac.uk/firethorn/community-member/4858485
+< firethorn.auth.username: anon-JNE4XFFL57ISIAAAAF2HGTI6FQ
+< firethorn.auth.community: friends
+< Content-Type: text/xml;charset=UTF-8
+< Content-Length: 747
+< 
+* Connection #0 to host tap.roe.ac.uk left intact
+<?xml version='1.0' encoding='UTF-8'?><VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3' version='1.3'><RESOURCE type='results'><INFO name='QUERY_STATUS' value='OK'></INFO><INFO name='link' value='http://tap.roe.ac.uk/firethorn/adql/table/4857605'/><TABLE ID='table.4857605' name='XX_6RVYMVMECDFYIAAAAF2HGTIUPM'><FIELD ID='column.4857673' name='sourceID' datatype='long'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/4857673'/></FIELD><DATA><TABLEDATA><TR><TD>472446402561</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+
+
+
+
+# ---------------------------------------------
+
+# Try some more queries
+
+# Query: Select top 1000000 * from VHSDR6.vhsSource
+
+
+# Try with CURL
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+VHSDR6.vhsSource&LANG=ADQL"
+ 
+<TR><TD>472446642836</TD></TR><TR><TD>472
+* transfer closed with outstanding read data remaining
+* stopped the pause stream!
+* Closing connection 0
+curl: (18) transfer closed with outstanding read data remaining
+
+
+# Apache logs:
+        [Wed Sep 09 14:44:37.158441 2020] [proxy_http:error] [pid 926:tid 140532965680896] (20014)Internal error (specific information not available): [client 195.194.121.66:42850] AH01110: error reading response
+
+# OGSADAI logs:
+..
+	2020-09-09 14:44:32,428 DEBUG blue.CallbackHandler [pool-1-thread-17,callback:215] Response bean
+	2020-09-09 14:44:32,428 DEBUG blue.CallbackHandler [pool-1-thread-17,callback:216]   Ident [4857405]
+	2020-09-09 14:44:32,429 DEBUG blue.CallbackHandler [pool-1-thread-17,callback:217]   Name  [XX_POECQ3QSSVVDOAAAAF2HGUVCBI]
+	2020-09-09 14:44:32,429 DEBUG blue.CallbackHandler [pool-1-thread-17,callback:218]   State [COMPLETED]
+	2020-09-09 14:44:32,429 DEBUG blue.CallbackHandler [pool-1-thread-17,callback:219]   Self  [http://gillian:8081/firethorn/blue/query/4857405]
+	2020-09-09 14:44:32,429 DEBUG blue.CallbackHandler [pool-1-thread-17,callback:226] After callback
+	2020-09-09 14:44:32,430 DEBUG activity.MatchedIterativeActivity [pool-1-thread-17,debug:84] performing last stage of processing
+	2020-09-09 14:44:32,431 DEBUG activity.MatchedIterativeActivity [pool-1-thread-17,debug:84] performing clean-up
+	2020-09-09 14:44:32,431 DEBUG event.LoggingActivityListener [pool-1-thread-17,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.JdbcInsertData (instance name = uk.ac.roe.wfau.firethorn.JdbcInsertData-ogsadai-7fd8c885-8c1a-4d08-98ce-93cdf97b48e3)
+	2020-09-09 14:44:32,432 DEBUG event.LoggingActivityListener [pool-1-thread-19,debug:84] COMPLETED: Activity uk.org.ogsadai.DeliverToRequestStatus (instance name = uk.org.ogsadai.DeliverToRequestStatus-ogsadai-71c29abf-bb0b-41bf-a34b-fae8985c3270)
+
+
+# ---------------------------------------------
+
+# What are the max limits in our service?
+# Check firethorn.properties
+
+...
+firethorn.limits.rows.absolute=10000000
+firethorn.limits.rows.default=1000000
+..
+
+
+# ---------------------------------------------
+
+# So what happens if we try 2 million rows
+
+curl -v -L "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+2000000+sourceID+from+VHSDR6.vhsSource&LANG=ADQL"
+
+> ..	
+</TD></TR* Connection #0 to host tap.roe.ac.uk left intact
+><TR><TD>472447450576</TD></TR><TR><TD>472447450577</TD></TR><TR><TD>472447450578</TD></TR><TR><TD>472447450579</TD></TR><TR><TD>472447450580</TD></TR><TR><TD>472447450581</TD></TR><TR><TD>472447450582</TD></TR><TR><TD>472447450583</TD></TR><TR><TD>472447450584</TD></TR><TR><TD>472447450585</TD></TR><TR><TD>472447450586</TD></TR><TR><TD>472447450587</TD></TR><TR><TD>472447450588</TD></TR><TR><TD>472447450589</TD></TR><TR><TD>472447450590</TD></TR><TR><TD>472447450591</TD></TR><TR><TD>472447450592</TD></TR><TR><TD>472447450593</TD></TR></TABLEDATA></DATA></TABLE><INFO name="QUERY_STATUS" value="OVERFLOW" /></RESOURCE></VOTABLE>
+
+# Success
+# VOTable correctly gives us an overflow status
+
+## Check User database:
+
+SELECT 
+  COUNT(*)
+  FROM [LIVEFirethornUserdataULOV20190307].[dbo].[XX_UPJRKLTFGX7W4AAAAF2HGUVCZQ]
+
+  1000000
+
+# So our maxlimit is reached, and 1million rows are written to DB
+
+
+
+
+# ---------------------------------------------
+
+
+# After checking OGSADAI logs for older errors we see this one from Sep 08 2020:
+
+
+2020-09-08 18:23:07,442 WARN  data.LimitsActivity [pool-1-thread-370,inner:487] Unknown Throwable during processing [java.lang.OutOfMemoryError][GC overhead limit exceeded]
+2020-09-08 18:23:08,425 DEBUG data.LimitsActivity [pool-1-thread-370,inner:493] Finished inner
+2020-09-08 18:23:08,425 DEBUG activity.MatchedIterativeActivity [pool-1-thread-370,debug:84] performing clean-up
+2020-09-08 18:23:08,425 DEBUG event.LoggingActivityListener [pool-1-thread-370,debug:84] uk.org.ogsadai.activity.ActivityProcessingException: A problem has occured during activity processing.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data.LimitsActivity.inner(LimitsActivity.java:488)
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.data.LimitsActivity.processIteration(LimitsActivity.java:198)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.OutOfMemoryError: GC overhead limit exceeded
+
+2020-09-08 18:23:08,426 WARN  event.LoggingActivityListener [pool-1-thread-370,warnExceptionAndChildren:343] #1599589388425:142130# A problem has occurred during processing of activity uk.ac.roe.wfau.firethorn.Limits with instance name uk.ac.roe.wfau.firethorn.Limits-ogsadai-3d458a9a-35dc-4fae-8635-d2fc1c125c4c.
+2020-09-08 18:23:08,426 WARN  event.LoggingActivityListener [pool-1-thread-370,warnExceptionAndChildren:343] #1599589388425:142130# A problem has occured during activity processing.
+2020-09-08 18:23:08,426 WARN  event.LoggingActivityListener [pool-1-thread-370,warnExceptionAndChildren:343] #1599589388425:142130# java.lang.OutOfMemoryError: GC overhead limit exceeded
+2020-09-08 18:23:08,427 WARN  data.DelaysActivity [pool-1-thread-371,processIteration:178] PipeClosed during processing
+2020-09-08 18:23:08,427 WARN  data.DelaysActivity [pool-1-thread-371,done:227] PipeClosed during done
+2020-09-08 18:23:08,427 DEBUG activity.MatchedIterativeActivity [pool-1-thread-371,debug:84] performing last stage of processing
+2020-09-08 18:23:08,427 DEBUG data.DelaysActivity [pool-1-thread-371,postprocess:198] postprocess()
+2020-09-08 18:23:08,428 DEBUG activity.MatchedIterativeActivity [pool-1-thread-371,debug:84] performing clean-up
+2020-09-08 18:23:08,428 DEBUG event.LoggingActivityListener [pool-1-thread-371,debug:84] COMPLETED: Activity uk.ac.roe.wfau.firethorn.Delays (instance name = uk.ac.roe.wfau.firethorn.Delays-ogsadai-c9e00f18-1011-4753-a000-9432c980e21b)
+2020-09-08 18:23:11,403 ERROR sql.SQLQueryActivity [pool-1-thread-372,processIteration:345] Caught a Throwable, wrapping it in an ActivityProcessingException
+2020-09-08 18:23:11,403 DEBUG activity.MatchedIterativeActivity [pool-1-thread-372,debug:84] performing clean-up
+2020-09-08 18:23:11,403 DEBUG sql.SQLQueryActivity [pool-1-thread-372,cleanUp:482] cleanUp()
+2020-09-08 18:23:11,403 DEBUG sql.SQLQueryActivity [pool-1-thread-372,cleanUp:486] Shutting down ExecutorService
+2020-09-08 18:23:11,404 DEBUG sql.SQLQueryActivity [pool-1-thread-372,cleanUp:498] Closing Statement
+2020-09-08 18:23:11,404 DEBUG sql.SQLQueryActivity [pool-1-thread-372,cleanUp:511] Releasing Connection
+2020-09-08 18:23:11,404 DEBUG event.LoggingActivityListener [pool-1-thread-372,debug:84] uk.org.ogsadai.activity.ActivityProcessingException: A problem has occured during activity processing.
+	at uk.ac.roe.wfau.firethorn.ogsadai.activity.server.sql.SQLQueryActivity.processIteration(SQLQueryActivity.java:346)
+	at uk.org.ogsadai.activity.MatchedIterativeActivity.process(MatchedIterativeActivity.java:90)
+	at uk.org.ogsadai.activity.event.EventfulActivity.process(EventfulActivity.java:78)
+	at uk.org.ogsadai.activity.concurrency.ActivityProcessingTask.call(ActivityProcessingTask.java:81)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.OutOfMemoryError: GC overhead limit exceeded
+
+
