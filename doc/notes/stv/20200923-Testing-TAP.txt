@@ -1,0 +1,385 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2020, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# Issue:
+# VOTables returned by our TAP services seem to be truncated
+# This error can be consistently triggered with more than a given number of rows 
+
+# VOTable output looks like this:
+
+
+...
+9.65625667214931</TD></TR><TR><TD>109.62212172676182</TD></TR><TR><TD>109.82132512506422</TD></TR><TR><TD>109.77561428791701</TD></TR><TR><TD>109.63504919764875</TD></TR><TR><TD>110.45040772872322</TD></TR><TR><TD>110.45131931158252</TD></TR><TR><TD>110.15717620699772</TD></TR><TR><TD>110.29345188762996</TD></TR><TR><TD>109.95862493983326</TD></TR><TR><TD>109.7350586318248</TD></TR><TR><TD>109.73490663540423</TD></TR><TR><TD>109.9977095896801</TD></TR><TR><TD>110.18859049281163</TD></TR><TR><TD>110.53472669946927</TD></TR><TR><TD>110.46531602470012</TD></TR><TR><TD>110.42798049207829</TD></TR><TR><TD>110.39882295772489</TD></TR><TR><TD>110.4923552017286</TD></TR><TR><TD>110.60117875054998</TD></TR><TR><TD>109.82753590911958</TD></TR><TR><TD>109.95249256230588</TD></TR><TR><TD>109.93898932548879</TD></TR><TR><TD>110.04532991176723</TD></TR><TR><TD>110.05490317834001</TD></TR><TR><TD>110.11107385660198</TD></TR><TR><TD>109.87508599869692</TD></TR><TR><TD>109.87432040565857</TD></TR><TR><TD>110.12976038240315</TD></TR><TR><TD>110.3143862399054</TD></TR><TR><TD>110.33296709679703</TD></TR><TR><TD>110.2655445319218</TD></TR><TR><TD>110.58714512465156</TD></TR><TR><TD>110.35993552182396</TD></TR><TR><TD>110.3
+
+# Notice incomplete ending to the VOTable file
+
+
+# ------------------------------------------
+# Testing with CURL
+# ------------------------------------------
+
+# SELECT TOP 30000 * FROM VHSDR6.vhsSource ORDER BY sourceID
+
+curl -v -L  "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+30000+*+from+VHSDR6.vhsSource+ORDER+BY+sourceID&LANG=ADQL" > out.xml
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 129.215.175.100...
+* TCP_NODELAY set
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+30000+*+from+VHSDR6.vhsSource+ORDER+BY+sourceID&LANG=ADQL HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0< HTTP/1.1 303 
+< Date: Wed, 23 Sep 2020 17:01:11 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< Location: http://tap.roe.ac.uk/firethorn/adql/table/5706490/votable
+< firethorn.auth.identity: http://tap.roe.ac.uk/firethorn/community-member/5711548
+< firethorn.auth.username: anon-EQEDXTPJHVNI2AAAAF2LX2KODM
+< firethorn.auth.community: friends
+< Content-Type: text/xml;charset=ISO-8859-1
+< Content-Length: 67
+< 
+* Ignoring the response-body
+{ [67 bytes data]
+100    67  100    67    0     0      7      0  0:00:09  0:00:08  0:00:01    19
+* Connection #0 to host tap.roe.ac.uk left intact
+* Issue another request to this URL: 'http://tap.roe.ac.uk/firethorn/adql/table/5706490/votable'
+* Found bundle for host tap.roe.ac.uk: 0x56200fc1ca50 [can pipeline]
+* Re-using existing connection! (#0) with host tap.roe.ac.uk
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /firethorn/adql/table/5706490/votable HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+< HTTP/1.1 200 
+< Date: Wed, 23 Sep 2020 17:01:11 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< Content-Type: text/xml;charset=UTF-8
+< Transfer-Encoding: chunked
+< 
+{ [1248 bytes data]
+100 18.1M    0 18.1M    0     0   757k      0 --:--:--  0:00:24 --:--:--  927k* transfer closed with outstanding read data remaining
+* stopped the pause stream!
+100 18.4M    0 18.4M    0     0   759k      0 --:--:--  0:00:24 --:--:--  932k
+* Closing connection 0
+curl: (18) transfer closed with outstanding read data remaining
+
+
+##-------------------------- FAILED
+
+
+
+# SELECT TOP 30000 ra FROM VHSDR6.vhsSource ORDER BY sourceID
+
+curl -v -L  "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+30000+ra+from+VHSDR6.vhsSource+ORDER+BY+sourceID&LANG=ADQL" > out.xml
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 129.215.175.100...
+* TCP_NODELAY set
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+30000+ra+from+VHSDR6.vhsSource+ORDER+BY+sourceID&LANG=ADQL HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0< HTTP/1.1 303 
+< Date: Wed, 23 Sep 2020 17:03:08 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< Location: http://tap.roe.ac.uk/firethorn/adql/table/5706492/votable
+< firethorn.auth.identity: http://tap.roe.ac.uk/firethorn/community-member/5712454
+< firethorn.auth.username: anon-NFWPQRWRT2RRQAAAAF2LX2ZLLY
+< firethorn.auth.community: friends
+< Content-Type: text/xml;charset=ISO-8859-1
+< Content-Length: 67
+< 
+* Ignoring the response-body
+{ [67 bytes data]
+100    67  100    67    0     0     16      0  0:00:04  0:00:03  0:00:01    16
+* Connection #0 to host tap.roe.ac.uk left intact
+* Issue another request to this URL: 'http://tap.roe.ac.uk/firethorn/adql/table/5706492/votable'
+* Found bundle for host tap.roe.ac.uk: 0x560763089a50 [can pipeline]
+* Re-using existing connection! (#0) with host tap.roe.ac.uk
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /firethorn/adql/table/5706492/votable HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+< HTTP/1.1 200 
+< Date: Wed, 23 Sep 2020 17:03:08 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< Content-Type: text/xml;charset=UTF-8
+< Transfer-Encoding: chunked
+< 
+{ [1248 bytes data]
+100 1046k    0 1046k    0     0   197k      0 --:--:--  0:00:05 --:--:--  980k
+* Connection #0 to host tap.roe.ac.uk left intact
+
+##-------------------------- SUCCESS
+
+
+# SELECT TOP 200000 ra FROM VHSDR6.vhsSource ORDER BY sourceID
+
+curl -v -L  "http://tap.roe.ac.uk/vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+200000+ra+from+VHSDR6.vhsSource+ORDER+BY+sourceID&LANG=ADQL" > out.xml
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 129.215.175.100...
+* TCP_NODELAY set
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /vsa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+200000+ra+from+VHSDR6.vhsSource+ORDER+BY+sourceID&LANG=ADQL HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+  0     0    0     0    0     0      0      0 --:--:--  0:00:08 --:--:--     0< HTTP/1.1 303 
+< Date: Wed, 23 Sep 2020 17:04:47 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< Location: http://tap.roe.ac.uk/firethorn/adql/table/5706496/votable
+< firethorn.auth.identity: http://tap.roe.ac.uk/firethorn/community-member/5712602
+< firethorn.auth.username: anon-FMJ2Q4UOAVO7WAAAAF2LX3EWRI
+< firethorn.auth.community: friends
+< Content-Type: text/xml;charset=ISO-8859-1
+< Content-Length: 67
+< 
+* Ignoring the response-body
+{ [67 bytes data]
+100    67  100    67    0     0      7      0  0:00:09  0:00:08  0:00:01    17
+* Connection #0 to host tap.roe.ac.uk left intact
+* Issue another request to this URL: 'http://tap.roe.ac.uk/firethorn/adql/table/5706496/votable'
+* Found bundle for host tap.roe.ac.uk: 0x5589d08dba50 [can pipeline]
+* Re-using existing connection! (#0) with host tap.roe.ac.uk
+* Connected to tap.roe.ac.uk (129.215.175.100) port 80 (#0)
+> GET /firethorn/adql/table/5706496/votable HTTP/1.1
+> Host: tap.roe.ac.uk
+> User-Agent: curl/7.58.0
+> Accept: */*
+> 
+< HTTP/1.1 200 
+< Date: Wed, 23 Sep 2020 17:04:47 GMT
+< Server: Apache/2.4.34 (Fedora)
+< X-Clacks-Overhead: GNU Terry Pratchett
+< Content-Type: text/xml;charset=UTF-8
+< Transfer-Encoding: chunked
+< 
+{ [1248 bytes data]
+100 5691k    0 5691k    0     0   308k      0 --:--:--  0:00:18 --:--:--  537k* transfer closed with outstanding read data remaining
+* stopped the pause stream!
+100 6033k    0 6033k    0     0   314k      0 --:--:--  0:00:19 --:--:--  495k
+* Closing connection 0
+curl: (18) transfer closed with outstanding read data remaining
+
+##-------------------------- SUCCESS
+
+
+
+
+
+# ------------------------------------------
+# Testing with PyVO
+# ------------------------------------------
+
+
+from pyvo.dal import TAPService
+
+tap = TAPService("http://tap.roe.ac.uk/vsa/")
+query_text = """ SELECT top 1000000 * FROM VHSDR6.vhsSource"""
+results = tap.search(query_text,  mode="sync")
+len(results)
+
+​
+​
+WARNING: W45: None:1:523: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:711: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:901: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:1085: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:1270: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:1454: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:1638: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:1822: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:2007: W45: content-role attribute 'metadata' invalid [astropy.io.votable.tree]
+WARNING: W45: None:1:2190: W45: content-role attribute 'metadata' invalid (suppressing further warnings of this type...) [astropy.io.votable.tree]
+<Table masked=True length=1000000>
+column.5712992 column.5712994 column.5712996 ... column.5713644 column.5713646
+    int64          int32          int64      ...    float32        float32    
+-------------- -------------- -------------- ... -------------- --------------
+  472446402561         587931   472446402561 ...   -0.060732313     0.22702493
+  472446402562         587931   472446402561 ...   -0.099288151   -0.084525801
+  472446402563         587931   472446402561 ... -9.9999949e+08 -9.9999949e+08
+  472446402564         587931   472446402561 ...    0.049529336  -0.0054591252
+  472446402565         587931   472446402561 ... -9.9999949e+08 -9.9999949e+08
+  472446402566         587931   472446402561 ... -9.9999949e+08 -9.9999949e+08
+  472446402567         587931   472446402561 ... -9.9999949e+08 -9.9999949e+08
+  472446402568         587931   472446402561 ...    0.075626761    0.060546089
+  472446402569         587931   472446402561 ... -9.9999949e+08 -9.9999949e+08
+  472446402570         587931   472446402561 ...   -0.016573736     0.13590318
+           ...            ...            ... ...            ...            ...
+  472447402551         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402552         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402553         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402554         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402555         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402556         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402557         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402558         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402559         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+  472447402560         587931   472446402570 ... -9.9999949e+08 -9.9999949e+08
+
+
+len(results)
+1000000
+
+##-------------------------- SUCCESS
+
+
+
+
+# ------------------------------------------
+# Testing with Topcat
+# ------------------------------------------
+
+
+# SELECT top 1000000 * FROM VHSDR6.vhsSource where ra>0
+
+java.io.IOException: TAP response is not a VOTable - <?xml version='1.0' encoding='UTF-8'?><VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3' version='1.3'><RESOURCE type='results'><INFO name='QUERY_STATUS' value='OK'></INFO><INFO name='link' value='http://tap.roe.ac.uk/firethorn/adql/table/5706478'/><TABLE ID='table.5706478' name='XX_TQCT2RCCF34DGAAAAF2LXXQFPY'><FIELD ID='column.5708902' name='sourceID' datatype='long'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708902'/></FIELD><FIELD ID='column.5708904' name='cuEventID' datatype='int'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708904'/></FIELD><FIELD ID='column.5708906' name='frameSetID' datatype='long'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708906'/></FIELD><FIELD ID='column.5708908' name='ra' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708908'/></FIELD><FIELD ID='column.5708910' name='dec' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708910'/></FIELD><FIELD ID='column.5708912' name='cx' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708912'/></FIELD><FIELD ID='column.5708914' name='cy' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708914'/></FIELD><FIELD ID='column.5708916' name='cz' datatype='double'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/5708916'/></FIELD><FIELD ID='column.5708918' name='htmID' datatype='long'><LINK content-type='application/json' con ...
+	at uk.ac.starlink.vo.TapQuery.readResultVOTable(TapQuery.java:637)
+	at uk.ac.starlink.vo.TapQuery.executeSync(TapQuery.java:244)
+	at uk.ac.starlink.vo.TapTableLoadDialog$6.loadTables(TapTableLoadDialog.java:538)
+	at uk.ac.starlink.table.gui.TableLoadWorker.run(TableLoadWorker.java:118)
+Caused by: org.xml.sax.SAXParseException; systemId: http://tap.roe.ac.uk/vsa/sync; lineNumber: 2; columnNumber: 8193; The content of elements must consist of well-formed character data or markup.
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:203)
+	at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.fatalError(ErrorHandlerWrapper.java:177)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:400)
+	at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:327)
+	at com.sun.org.apache.xerces.internal.impl.XMLScanner.reportFatalError(XMLScanner.java:1473)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.startOfMarkup(XMLDocumentFragmentScannerImpl.java:2635)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2732)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:842)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:771)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.votable.VOElementFactory.parseToDOM(VOElementFactory.java:536)
+	at uk.ac.starlink.votable.VOElementFactory.transformToDOM(VOElementFactory.java:391)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:221)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:241)
+	at uk.ac.starlink.vo.TapQuery.readResultVOTable(TapQuery.java:622)
+	... 3 more
+
+
+
+
+# SELECT top 100000 * FROM VHSDR6.vhsSource where ra>0
+
+java.io.IOException: Premature EOF
+	at sun.net.www.http.ChunkedInputStream.readAheadBlocking(ChunkedInputStream.java:565)
+	at sun.net.www.http.ChunkedInputStream.readAhead(ChunkedInputStream.java:609)
+	at sun.net.www.http.ChunkedInputStream.read(ChunkedInputStream.java:696)
+	at java.io.FilterInputStream.read(FilterInputStream.java:133)
+	at sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3454)
+	at uk.ac.starlink.util.HeadBufferInputStream.read(HeadBufferInputStream.java:77)
+	at com.sun.org.apache.xerces.internal.impl.XMLEntityManager$RewindableInputStream.read(XMLEntityManager.java:2931)
+	at com.sun.org.apache.xerces.internal.impl.io.UTF8Reader.read(UTF8Reader.java:302)
+	at com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.load(XMLEntityScanner.java:1895)
+	at com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.peekChar(XMLEntityScanner.java:508)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2716)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:842)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:771)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.votable.VOElementFactory.parseToDOM(VOElementFactory.java:536)
+	at uk.ac.starlink.votable.VOElementFactory.transformToDOM(VOElementFactory.java:391)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:221)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:241)
+	at uk.ac.starlink.vo.TapQuery.readResultVOTable(TapQuery.java:622)
+	at uk.ac.starlink.vo.TapQuery.executeSync(TapQuery.java:244)
+	at uk.ac.starlink.vo.TapTableLoadDialog$6.loadTables(TapTableLoadDialog.java:538)
+	at uk.ac.starlink.table.gui.TableLoadWorker.run(TableLoadWorker.java:118)
+
+
+# SELECT top 10000 * FROM VHSDR6.vhsSource where ra>0
+
+java.io.IOException: Premature EOF
+	at sun.net.www.http.ChunkedInputStream.readAheadBlocking(ChunkedInputStream.java:565)
+	at sun.net.www.http.ChunkedInputStream.readAhead(ChunkedInputStream.java:609)
+	at sun.net.www.http.ChunkedInputStream.read(ChunkedInputStream.java:696)
+	at java.io.FilterInputStream.read(FilterInputStream.java:133)
+	at sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(HttpURLConnection.java:3454)
+	at uk.ac.starlink.util.HeadBufferInputStream.read(HeadBufferInputStream.java:77)
+	at com.sun.org.apache.xerces.internal.impl.XMLEntityManager$RewindableInputStream.read(XMLEntityManager.java:2931)
+	at com.sun.org.apache.xerces.internal.impl.io.UTF8Reader.read(UTF8Reader.java:302)
+	at com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.load(XMLEntityScanner.java:1895)
+	at com.sun.org.apache.xerces.internal.impl.XMLEntityScanner.skipSpaces(XMLEntityScanner.java:1685)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.seekCloseOfStartTag(XMLDocumentFragmentScannerImpl.java:1375)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanStartElement(XMLDocumentFragmentScannerImpl.java:1309)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2784)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:842)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:771)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at uk.ac.starlink.votable.VOElementFactory.parseToDOM(VOElementFactory.java:536)
+	at uk.ac.starlink.votable.VOElementFactory.transformToDOM(VOElementFactory.java:391)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:221)
+	at uk.ac.starlink.votable.VOElementFactory.makeVOElement(VOElementFactory.java:241)
+	at uk.ac.starlink.vo.TapQuery.readResultVOTable(TapQuery.java:622)
+	at uk.ac.starlink.vo.TapQuery.executeSync(TapQuery.java:244)
+	at uk.ac.starlink.vo.TapTableLoadDialog$6.loadTables(TapTableLoadDialog.java:538)
+	at uk.ac.starlink.table.gui.TableLoadWorker.run(TableLoadWorker.java:118)	
+
+
+
+# SELECT top 10000 * FROM VHSDR6.vhsSource where ra>0
+
+##-------------------------- SUCCESS
+# Table loaded successfully
+
+
+
+
+# ------------------------------------------
+# Testing with Chrome
+# ------------------------------------------
+
+http://tap.roe.ac.uk/firethorn/adql/table/5673958/votable
+
+##-------------------------- FAILED
+
+# Chrome exception: 
+
+   "error on line 2 at column 1: expected '>'"
+   net::ERR_INCOMPLETE_CHUNKED_ENCODING 200
