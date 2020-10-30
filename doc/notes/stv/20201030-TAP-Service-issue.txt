@@ -1,0 +1,76 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2020, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+
+
+# Issue with Live WFAU TAP Services (October)
+
+# On the weekend of October 17th our healthchecker started producing a number of error messages:
+
+..
+Health Check Results for: http://tap.roe.ac.uk/firethorn/system/info
+HTTP Error 503: Service Unavailable /
+
+Health Check Results for: http://tap.roe.ac.uk/firethorn/system/info
+HTTP Error 503: Service Unavailable /
+..
+
+
+# Check 1: Sync query
+# -------------------
+
+# First check was to check a simple query to the sync endpoint of one of our TAP services
+# firefox http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL
+
+
+# Exception 503
+
+
+# Check 2: Docker ps
+# ------------------
+
+# Second check was to log into the VM to see if the Docker containers are up and running
+
+# ssh Stevedore@Lothigometh
+
+# ..ssh exception
+# Not able to log into the machine at all
+# It looks like the VM got locked up, an issue we've seen before
+
+
+
+# See if we can restart machine
+# ------------------------------
+
+# VM did not successfully restart after kvm restart command
+
+
+# Recreate VM and run import
+# ------------------------------
+
+# Service recovered after recreating Lothigometh and running the import scripts as defined here:
+# http://wfau.metagrid.co.uk/code/firethorn/file/310132961970/doc/notes/stv/20200514-TAP-Swarm-deploy-2.1.36.txt
+
+# As the endpoints produced matched what is already there in the Apache proxy, we did not have to edit the proxy config
+
+
+# Service back up & running ..
+
+
