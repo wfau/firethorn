@@ -1,0 +1,70 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2020, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# Healthhecker producing 503 exceptions again..
+
+ssh Stevedore@Lothigometh 
+ssh_exchange_identification: Connection closed by remote host
+
+# VM not responding to ssh requests
+
+ssh trop02
+
+	stv@trop02:~$ virsh -c 'qemu:///system' shutdown Lothigometh
+	> Domain Lothigometh is being shutdown
+
+	stv@trop02:~$ virsh -c 'qemu:///system' start Lothigometh
+	> error: Domain is already active
+
+	ssh Stevedore@Lothigometh 
+	> ssh_exchange_identification: Connection closed by remote host
+
+	# Nope..
+	
+	# Pull the plug
+
+	stv@trop02:~$ virsh -c 'qemu:///system' destroy Lothigometh
+	> Domain Lothigometh destroyed
+
+	stv@trop02:~$ virsh -c 'qemu:///system' start Lothigometh
+	> Domain Lothigometh started
+
+	ssh Stevedore@Lothigometh 
+	> ssh_exchange_identification: Connection closed by remote host
+
+	# Nope..
+	
+	# Recreate VM
+	createvm 
+
+		..
+
+		Vol Lothigometh.iso deleted
+		Vol Lothigometh.iso created
+		Creating new virtual machine [Lothigometh]
+		Domain Lothigometh defined from /tmp/tmp.Qfa22JjbRH
+		Starting new virtual machine [Lothigometh]
+		Domain Lothigometh started
+
+# Run TAP Deploy..
+http://wfau.metagrid.co.uk/code/firethorn/file/ba9eff2eed8a/doc/notes/stv/20200514-TAP-Swarm-deploy-2.1.36.txt
