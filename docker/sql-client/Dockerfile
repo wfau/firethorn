@@ -23,7 +23,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Install the EPEL repository.
-RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 #
 # Install misc tools.
