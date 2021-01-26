@@ -1,0 +1,1084 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2021, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#zrq-notes-time
+#zrq-notes-indent
+#zrq-notes-crypto
+#zrq-notes-ansible
+#zrq-notes-osformat
+#zrq-notes-zeppelin
+#
+
+    Target:
+
+        Move firethrn from Mercurial repository to GitHub.
+
+    Results:
+
+        Work in progress ..
+
+
+# -----------------------------------------------------
+# List the directories and their size.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_CODE:?}"
+
+        du -h .
+
+    popd
+
+    >   21M     attic
+    >   24K     bin
+    >   247M    doc
+    >   ....
+    >   2.3M    docker
+    >   ....
+    >   16K     firethorn-admin
+    >   ....
+    >   1.3M    firethorn-cds
+    >   ....
+    >   2.2M    firethorn-core
+    >   ....
+    >   12K     firethorn-annotations
+    >   ....
+    >   7.5M    firethorn-ogsadai
+    >   16K     firethorn-logging
+    >   8.0K    firethorn-jdbc
+    >   16K     firethorn-stil
+    >   ....
+    >   1.4M    firethorn-webapp
+    >   4.0K    firethorn-testing
+    >   12K     firethorn-spring
+    >   ....
+    >   376K    metadata
+    >   776K    patches
+
+# -----------------------------------------------------
+# Enable the Convert extension
+#[user@desktop]
+
+    gedit ${HOME}/.hgrc
+
+    +   [extensions]
+    +   hgext.convert=
+
+# -----------------------------------------------------
+# Choose the directories we want to exclude.
+#[user@desktop]
+
+    ....
+    ....
+
+# -----------------------------------------------------
+# Run the convert to remove unwanted directories.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        cat > excludes << EOF
+exclude doc/examples
+exclude doc/gaia
+exclude doc/logos
+exclude doc/plans
+exclude doc/presentations
+exclude doc/specifications
+exclude doc/white-board
+exclude doc/scribbles
+EOF
+
+    hg convert \
+        --filemap excludes \
+            working \
+            filtered
+
+    popd
+
+    >   initializing destination filtered repository
+    >   scanning source...
+    >   sorting...
+    >   converting...
+    >   4317 Imported main project structure from experimental sites
+    >   4316 Geting the TAp build to work
+    >   4315 Updated GPL license headers
+    >   4314 Updated Maven POM structure and added Hg ignore file
+    >   ....
+    >   ....
+    >   3 Added some notes on recent issue with the TAP services
+    >   2 Added some notes on recent issue with VM/TAP services
+    >   1 Notes on latest TAP/Firethorn (WFAU) deploy
+    >   0 Merged upstream changes
+
+
+# -----------------------------------------------------
+# Use fast-export to convert to git.
+#[user@desktop]
+
+    git clone https://github.com/frej/fast-export.git /tmp/fast-export
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        mkdir converted
+        pushd converted
+
+            git init
+
+    >   Initialized empty Git repository in /var/local/projects/WFAU/firethorn/converted/.git/
+
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered
+
+    >   Warning: sanitized branch [{newbranch:?}] to [{newbranch_}]
+    >   Error: repository has an unnamed head: hg r3765
+    >   /usr/libexec/git-core/git-fast-import statistics:
+    >   ---------------------------------------------------------------------
+    >   Alloc'd objects:       5000
+    >   Total objects:            0 (         0 duplicates                  )
+    >         blobs  :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >         trees  :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >         commits:            0 (         0 duplicates          0 deltas of          0 attempts)
+    >         tags   :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >   Total branches:           0 (         0 loads     )
+    >         marks:           1024 (         0 unique    )
+    >         atoms:              0
+    >   Memory total:          2360 KiB
+    >          pools:          2048 KiB
+    >        objects:           312 KiB
+    >   ---------------------------------------------------------------------
+    >   pack_report: getpagesize()            =       4096
+    >   pack_report: core.packedGitWindowSize = 1073741824
+    >   pack_report: core.packedGitLimit      = 35184372088832
+    >   pack_report: pack_used_ctr            =          0
+    >   pack_report: pack_mmap_calls          =          0
+    >   pack_report: pack_open_windows        =          0 /          0
+    >   pack_report: pack_mapped              =          0 /          0
+
+        popd
+    popd
+
+
+# -----------------------------------------------------
+# Identify the unnamed head, r3765.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        pushd filtered
+
+            hg log
+
+    >   ....
+    >   changeset:   3765:5890a967a909
+    >   branch:      2.1.19-zrq-metadoc-parser
+    >   parent:      3763:9cfc0f960d02
+    >   user:        Dave Morris <dmr@roe.ac.uk>
+    >   date:        Fri May 18 04:24:42 2018 +0100
+    >   summary:     Close dev branch [2.1.19-zrq-metadoc-parser]
+    >   
+    >   changeset:   3764:cfc225ef4f2a
+    >   tag:         version-2.1.20
+    >   parent:      3761:7db3e91e45b8
+    >   user:        Dave Morris <dmr@roe.ac.uk>
+    >   date:        Fri May 18 04:24:39 2018 +0100
+    >   summary:     Merging [2.1.19-zrq-metadoc-parser] into [2.1.20]
+    >   ....
+
+            #
+            # Previous commit merges the changes, so not a problem.
+            #
+
+
+# -----------------------------------------------------
+# Use fast-export to convert to git.
+#[user@desktop]
+
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered \
+                --ignore-unnamed-heads
+
+    >   Warning: sanitized branch [{newbranch:?}] to [{newbranch_}]
+    >   Error: repository has an unnamed head: hg r3765
+    >   master: Exporting full revision 1/4177 with 891/0/0 added/changed/removed files
+    >   master: Exporting simple delta revision 2/4177 with 1/4/0 added/changed/removed files
+    >   master: Exporting simple delta revision 3/4177 with 8/18/0 added/changed/removed files
+    >   ....
+    >   ....
+    >   Exporting tag [version-2.1.32] at [hg r4113] [git :4114]
+    >   Exporting tag [version-2.1.33] at [hg r4126] [git :4127]
+    >   Exporting tag [version-2.1.34] at [hg r4141] [git :4142]
+    >   Exporting tag [version-2.1.35] at [hg r4148] [git :4149]
+    >   Issued 4338 commands
+    >   /usr/libexec/git-core/git-fast-import statistics:
+    >   ---------------------------------------------------------------------
+    >   Alloc'd objects:     100000
+    >   Total objects:        98785 (     44565 duplicates                  )
+    >         blobs  :        35524 (     34263 duplicates      32258 deltas of      35149 attempts)
+    >         trees  :        59084 (     10302 duplicates      26497 deltas of      56963 attempts)
+    >         commits:         4177 (         0 duplicates          0 deltas of          0 attempts)
+    >         tags   :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >   Total branches:         372 (       294 loads     )
+    >         marks:        1048576 (      4177 unique    )
+    >         atoms:           7264
+    >   Memory total:          8985 KiB
+    >          pools:          2735 KiB
+    >        objects:          6250 KiB
+    >   ---------------------------------------------------------------------
+    >   pack_report: getpagesize()            =       4096
+    >   pack_report: core.packedGitWindowSize = 1073741824
+    >   pack_report: core.packedGitLimit      = 35184372088832
+    >   pack_report: pack_used_ctr            =      26077
+    >   pack_report: pack_mmap_calls          =       9354
+    >   pack_report: pack_open_windows        =          1 /          1
+    >   pack_report: pack_mapped              =  100873797 /  100873797
+    >   ---------------------------------------------------------------------
+
+
+# -----------------------------------------------------
+# Checkout the HEAD branch.
+#[user@desktop]
+
+
+            git checkout HEAD
+
+            git status
+
+
+    >   On branch master
+    >   nothing to commit, working tree clean
+
+
+# -----------------------------------------------------
+# List the branches.
+#[user@desktop]
+
+
+            git branch
+
+    >     01.08-RELEASE
+    >     01.09-20140106-zrq-community
+    >     1.10.0-zrq-rowlimits
+    >     1.10.2-dev-SNAPSHOT
+    >     1.10.2-release
+    >     1.10.2-stv-paper-queries
+    >     1.10.3-zrq-backlog
+    >     1.10.4-zrq-adql-parser
+    >   ....
+    >   ....
+    >     2.1.5-zrq-bug-fixes
+    >     2.1.6-zrq-bug-fixes
+    >     2.1.7-zrq-docker-demo
+    >     2.1.8-zrq-fedora-image
+    >     2.1.9-stv-tap
+    >     2.1.9-zrq-bug-fixes
+    >     dave-adql-parsing
+    >     dave-auth-guard
+    >     delete-node
+    >     hibernate-collections
+    >   * master
+    >     stelios-adql-parsing
+    >     stelios-tap
+    >     swap-names
+    >     zrq-20140103-housekeeping
+    >     {newbranch_}
+
+
+# -----------------------------------------------------
+# Rename the '{newbranch_}' branch.
+#[user@desktop]
+
+            git branch -m '{newbranch_}' 'newbranch'
+
+
+# -----------------------------------------------------
+# Rename the 'master' branch.
+#[user@desktop]
+
+            git branch -m 'master' 'main'
+
+
+# -----------------------------------------------------
+# Add our GitHub firethorn-test repository as our origin.
+#[user@desktop]
+
+            git remote add origin 'git@github.com:Zarquan/firethorn-test.git'
+
+            git remote -v
+
+    >   origin	git@github.com:Zarquan/firethorn-test.git (fetch)
+    >   origin	git@github.com:Zarquan/firethorn-test.git (push)
+
+
+# -----------------------------------------------------
+# Push everything into GitHub.
+#[user@desktop]
+
+            git push --mirror origin
+
+    >   Enumerating objects: 98784, done.
+    >   Counting objects: 100% (98784/98784), done.
+    >   Delta compression using up to 4 threads
+    >   Compressing objects: 100% (21022/21022), done.
+    >   Writing objects: 100% (98784/98784), 96.20 MiB | 102.00 KiB/s, done.
+    >   Total 98784 (delta 58653), reused 98581 (delta 58552), pack-reused 0
+    >   remote: Resolving deltas: 100% (58653/58653), done.
+    >   To github.com:Zarquan/firethorn-test.git
+    >    + d0450f41f...053c57d46 main -> main (forced update)
+    >    * [new branch]          01.08-RELEASE -> 01.08-RELEASE
+    >    * [new branch]          01.09-20140106-zrq-community -> 01.09-20140106-zrq-community
+    >    * [new branch]          1.10.0-zrq-rowlimits -> 1.10.0-zrq-rowlimits
+    >    * [new branch]          1.10.2-dev-SNAPSHOT -> 1.10.2-dev-SNAPSHOT
+    >    * [new branch]          1.10.2-release -> 1.10.2-release
+    >    ....
+    >    ....
+    >    * [new tag]             version-2.1.6 -> version-2.1.6
+    >    * [new tag]             version-2.1.7 -> version-2.1.7
+    >    * [new tag]             version-2.1.8 -> version-2.1.8
+    >    * [new tag]             version-2.1.9 -> version-2.1.9
+
+
+
+    #
+    # Everything worked, but ... Identities.
+    #
+    # GitHub matched Dave Morris with Zarquan.
+    #
+    # GitHub created a new identity for Stelios
+    # https://github.com/svoutsinas
+    # Need to have a mapping during the conversion.
+    #
+    # One unmatched 'Dave Morris'.
+    #   "Closing [branch-1.10.5-zrq-cast]"
+    #
+    # One unmatched 'Stelios'.
+    #   "Close dev branch [2.1.34-stv-tap-reserved]"
+    #
+
+
+    git log | grep 'Dave' | sort | uniq
+
+    >   Author: Dave <devnull@localhost>
+    >   Author: Dave Morris <dave.morris@bristol.ac.uk>
+    >   Author: Dave Morris <dmr@roe.ac.uk>
+
+
+    git log | grep 'Stelios' | sort | uniq
+
+    >   Author: Stelios <devnull@localhost>
+    >   Author: Stelios <stv@roe.ac.uk>
+    >   Author: Stelios Voutsinas <stv@roe.ac.uk>
+
+
+    git log | grep 'Author:' | sort | uniq
+
+    >   Author: Dave <devnull@localhost>
+    >   Author: Dave Morris <dave.morris@bristol.ac.uk>
+    >   Author: Dave Morris <dmr@roe.ac.uk>
+    >   Author: Keith Noddle <keith@keithnoddle.org>
+    >   Author: Stelios <devnull@localhost>
+    >   Author: Stelios <stv@roe.ac.uk>
+    >   Author: Stelios Voutsinas <stv@roe.ac.uk>
+    >   Author: Test User <test@example.com>
+    >   Author: Zarquan <devnull@localhost>
+    >   Author: Zarquan <zarquan@metagrid.co.uk>
+
+    #
+    # Try the same thing on our current project.
+    #
+
+    source "${HOME}/aglais.env"
+    pushd  "${AGLAIS_CODE}"
+
+        git log | grep 'Author:' | sort | uniq
+
+    popd
+
+    >   Author: Dave Morris <dmr@roe.ac.uk>
+    >   Author: Dave Morris <Zarquan@methionine.metagrid.co.uk>
+    >   Author: Dave Morris <zrq-github@metagrid.co.uk>
+    >   Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+    >   Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    >   Author: Wizzard Zarquan <Zarquan@methionine.metagrid.co.uk>
+    >   Author: Wizzard Zarquan <Zarquan@valine.metagrid.co.uk>
+    >   Author: Zarquan <Zarquan@users.noreply.github.com>
+    >   Author: zrq-github@metagrid.co.uk <Zarquan@methionine.metagrid.co.uk>
+    >   Author: zrq-github@metagrid.co.uk <zrq-github@metagrid.co.uk>
+
+    #
+    # OK, that was unexpected.
+    # Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    #
+    # Dave's commits are a mess, depending on what machine I was using that day.
+    # Stelios's commits are very consistent.
+    #
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the export again, with a user identity map.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        cat > authors << EOF
+"Stelios <devnull@localhost>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios Voutsinas <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Dave <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dave.morris@bristol.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dmr@roe.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <zarquan@metagrid.co.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+EOF
+
+        rm -rf converted
+        mkdir converted
+        pushd converted
+
+            git init
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered \
+                --ignore-unnamed-heads \
+                -A ../authors
+
+
+    >   Loaded 8 authors
+    >   Warning: sanitized branch [{newbranch:?}] to [{newbranch_}]
+    >   Error: repository has an unnamed head: hg r3765
+    >   master: Exporting full revision 1/4177 with 891/0/0 added/changed/removed files
+    >   master: Exporting simple delta revision 2/4177 with 1/4/0 added/changed/removed files
+    >   master: Exporting simple delta revision 3/4177 with 8/18/0 added/changed/removed files
+    >   ....
+    >   ....
+    >   Exporting tag [version-2.1.33] at [hg r4126] [git :4127]
+    >   Exporting tag [version-2.1.34] at [hg r4141] [git :4142]
+    >   Exporting tag [version-2.1.35] at [hg r4148] [git :4149]
+    >   Issued 4338 commands
+    >   /usr/libexec/git-core/git-fast-import statistics:
+    >   ---------------------------------------------------------------------
+    >   Alloc'd objects:     100000
+    >   Total objects:        98785 (     44565 duplicates                  )
+    >         blobs  :        35524 (     34263 duplicates      32258 deltas of      35149 attempts)
+    >         trees  :        59084 (     10302 duplicates      26497 deltas of      56963 attempts)
+    >         commits:         4177 (         0 duplicates          0 deltas of          0 attempts)
+    >         tags   :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >   Total branches:         372 (       294 loads     )
+    >         marks:        1048576 (      4177 unique    )
+    >         atoms:           7264
+    >   Memory total:          8985 KiB
+    >          pools:          2735 KiB
+    >        objects:          6250 KiB
+    >   ---------------------------------------------------------------------
+    >   pack_report: getpagesize()            =       4096
+    >   pack_report: core.packedGitWindowSize = 1073741824
+    >   pack_report: core.packedGitLimit      = 35184372088832
+    >   pack_report: pack_used_ctr            =      26077
+    >   pack_report: pack_mmap_calls          =       9354
+    >   pack_report: pack_open_windows        =          1 /          1
+    >   pack_report: pack_mapped              =  100906487 /  100906487
+    >   ---------------------------------------------------------------------
+
+
+# -----------------------------------------------------
+# Checkout HEAD to get a working copy.
+#[user@desktop]
+
+            git checkout HEAD
+
+            git status
+
+    >   On branch master
+    >   nothing to commit, working tree clean
+
+
+# -----------------------------------------------------
+# Rename the '{newbranch_}' branch.
+#[user@desktop]
+
+            git branch -m '{newbranch_}' 'newbranch'
+
+
+# -----------------------------------------------------
+# Rename the 'master' branch.
+#[user@desktop]
+
+            git branch -m 'master' 'main'
+
+
+# -----------------------------------------------------
+# Add our GitHub firethorn-test repository as our origin.
+#[user@desktop]
+
+            git remote add origin 'git@github.com:Zarquan/firethorn-test.git'
+
+            git remote -v
+
+    >   origin	git@github.com:Zarquan/firethorn-test.git (fetch)
+    >   origin	git@github.com:Zarquan/firethorn-test.git (push)
+
+
+# -----------------------------------------------------
+# List the authors.
+#[user@desktop]
+
+        git log | grep 'Author:' | sort | uniq
+
+    >   Author: Dave <devnull@localhost>
+    >   Author: Dave Morris <zrq-github@metagrid.co.uk>
+    >   Author: Keith Noddle <keith@keithnoddle.org>
+    >   Author: Stelios <devnull@localhost>
+    >   Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    >   Author: Test User <test@example.com>
+    >   Author: Zarquan <devnull@localhost>
+
+        #
+        # Still a few that need fixing ..
+        #
+        # Dave <devnull@localhost>
+        # Zarquan <devnull@localhost>
+        #
+        # Stelios <devnull@localhost>
+        #
+
+        #
+        # Try adding \t instead of spaces.
+        #
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the export again, with a better user identity map.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        cat > authors << EOF
+"Stelios <devnull@localhost>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios Voutsinas <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Dave <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dave.morris@bristol.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dmr@roe.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <zarquan@metagrid.co.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave\t<devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan\t<devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Stelios\t<devnull@localhost>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+EOF
+
+        rm -rf converted
+        mkdir converted
+        pushd converted
+
+            git init
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered \
+                --ignore-unnamed-heads \
+                -A ../authors
+
+    >   Loaded 11 authors
+    >   Warning: sanitized branch [{newbranch:?}] to [{newbranch_}]
+    >   Error: repository has an unnamed head: hg r3765
+    >   master: Exporting full revision 1/4177 with 891/0/0 added/changed/removed files
+    >   master: Exporting simple delta revision 2/4177 with 1/4/0 added/changed/removed files
+    >   master: Exporting simple delta revision 3/4177 with 8/18/0 added/changed/removed files
+    >   ....
+    >   ....
+    >   Exporting tag [version-2.1.32] at [hg r4113] [git :4114]
+    >   Exporting tag [version-2.1.33] at [hg r4126] [git :4127]
+    >   Exporting tag [version-2.1.34] at [hg r4141] [git :4142]
+    >   Exporting tag [version-2.1.35] at [hg r4148] [git :4149]
+    >   Issued 4338 commands
+    >   /usr/libexec/git-core/git-fast-import statistics:
+    >   ---------------------------------------------------------------------
+    >   Alloc'd objects:     100000
+    >   Total objects:        98785 (     44565 duplicates                  )
+    >         blobs  :        35524 (     34263 duplicates      32258 deltas of      35149 attempts)
+    >         trees  :        59084 (     10302 duplicates      26497 deltas of      56963 attempts)
+    >         commits:         4177 (         0 duplicates          0 deltas of          0 attempts)
+    >         tags   :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >   Total branches:         372 (       294 loads     )
+    >         marks:        1048576 (      4177 unique    )
+    >         atoms:           7264
+    >   Memory total:          8985 KiB
+    >          pools:          2735 KiB
+    >        objects:          6250 KiB
+    >   ---------------------------------------------------------------------
+    >   pack_report: getpagesize()            =       4096
+    >   pack_report: core.packedGitWindowSize = 1073741824
+    >   pack_report: core.packedGitLimit      = 35184372088832
+    >   pack_report: pack_used_ctr            =      26077
+    >   pack_report: pack_mmap_calls          =       9354
+    >   pack_report: pack_open_windows        =          1 /          1
+    >   pack_report: pack_mapped              =  100906487 /  100906487
+    >   ---------------------------------------------------------------------
+
+
+# -----------------------------------------------------
+# List the authors.
+#[user@desktop]
+
+            git log | grep 'Author:' | sort | uniq
+
+    >   Author: Dave <devnull@localhost>
+    >   Author: Dave Morris <zrq-github@metagrid.co.uk>
+    >   Author: Keith Noddle <keith@keithnoddle.org>
+    >   Author: Stelios <devnull@localhost>
+    >   Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    >   Author: Test User <test@example.com>
+    >   Author: Zarquan <devnull@localhost>
+
+        #
+        # Still a few that need fixing ..
+        #
+        # Dave <devnull@localhost>
+        # Stelios <devnull@localhost>
+        # Zarquan <devnull@localhost>
+        #
+
+        #
+        # Guess - <devnull@localhost> is a replacement for <>.
+        #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the export again, with a better user identity map.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        cat > authors << EOF
+"Stelios <devnull@localhost>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios Voutsinas <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Dave <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dave.morris@bristol.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dmr@roe.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <zarquan@metagrid.co.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave <>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Stelios <>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+EOF
+
+        rm -rf converted
+        mkdir converted
+        pushd converted
+
+            git init
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered \
+                --ignore-unnamed-heads \
+                -A ../authors
+
+
+    >   Loaded 11 authors
+    >   Warning: sanitized branch [{newbranch:?}] to [{newbranch_}]
+    >   Error: repository has an unnamed head: hg r3765
+    >   master: Exporting full revision 1/4177 with 891/0/0 added/changed/removed files
+    >   master: Exporting simple delta revision 2/4177 with 1/4/0 added/changed/removed files
+    >   master: Exporting simple delta revision 3/4177 with 8/18/0 added/changed/removed files
+    >   master: Exporting simple delta revision 4/4177 with 2/6/17 added/changed/removed files
+    >   ....
+    >   ....
+    >   Exporting tag [version-2.1.32] at [hg r4113] [git :4114]
+    >   Exporting tag [version-2.1.33] at [hg r4126] [git :4127]
+    >   Exporting tag [version-2.1.34] at [hg r4141] [git :4142]
+    >   Exporting tag [version-2.1.35] at [hg r4148] [git :4149]
+    >   Issued 4338 commands
+    >   /usr/libexec/git-core/git-fast-import statistics:
+    >   ---------------------------------------------------------------------
+    >   Alloc'd objects:     100000
+    >   Total objects:        98785 (     44565 duplicates                  )
+    >         blobs  :        35524 (     34263 duplicates      32258 deltas of      35149 attempts)
+    >         trees  :        59084 (     10302 duplicates      26497 deltas of      56963 attempts)
+    >         commits:         4177 (         0 duplicates          0 deltas of          0 attempts)
+    >         tags   :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >   Total branches:         372 (       294 loads     )
+    >         marks:        1048576 (      4177 unique    )
+    >         atoms:           7264
+    >   Memory total:          8985 KiB
+    >          pools:          2735 KiB
+    >        objects:          6250 KiB
+    >   ---------------------------------------------------------------------
+    >   pack_report: getpagesize()            =       4096
+    >   pack_report: core.packedGitWindowSize = 1073741824
+    >   pack_report: core.packedGitLimit      = 35184372088832
+    >   pack_report: pack_used_ctr            =      26077
+    >   pack_report: pack_mmap_calls          =       9354
+    >   pack_report: pack_open_windows        =          1 /          1
+    >   pack_report: pack_mapped              =  100906487 /  100906487
+    >   ---------------------------------------------------------------------
+
+
+            git log | grep 'Author:' | sort | uniq
+
+    >   Author: Dave <devnull@localhost>
+    >   Author: Dave Morris <zrq-github@metagrid.co.uk>
+    >   Author: Keith Noddle <keith@keithnoddle.org>
+    >   Author: Stelios <devnull@localhost>
+    >   Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    >   Author: Test User <test@example.com>
+    >   Author: Zarquan <devnull@localhost>
+
+            #
+            # Still got the <devnull@localhost> addresses.
+            # Looking at code for fast-export.
+            # https://github.com/frej/fast-export/pull/138
+            #   if '@' not in mail:
+            #     mail = '<devnull@localhost>'
+            #   ....
+
+# -----------------------------------------------------
+# Modify the source code for fast-export.
+#[user@desktop]
+
+    pushd /tmp/fast-export
+
+        gedit hg2git.py
+
+        git diff hg2git.py
+
+    popd
+
+    >   diff --git a/hg2git.py b/hg2git.py
+    >   index e94270b..416f02c 100755
+    >   --- a/hg2git.py
+    >   +++ b/hg2git.py
+    >   @@ -60,7 +60,12 @@ def fixup_user(user,authors):
+    >        name=templatefilters.person(user)
+    >        mail=b'<%s>' % templatefilters.email(user)
+    >        if b'@' not in mail:
+    >   -      mail = b'<devnull@localhost>'
+    >   +      if name==b'Dave':
+    >   +        mail=b'<zrq-github@metagrid.co.uk>'
+    >   +      elif name==b'Stelios':
+    >   +        mail=b'<steliosvoutsinas@yahoo.com>'
+    >   +      else:
+    >   +        mail=b'<devnull@localhost>'
+    >      else:
+    >        # if we have 'Name <mail>' syntax, everything is fine :)
+    >        name,mail=m.group(1),m.group(2)
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the export again, with modified converter.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        cat > authors << EOF
+"Stelios <devnull@localhost>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios Voutsinas <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Dave <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dave.morris@bristol.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dmr@roe.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <devnull@localhost>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <zarquan@metagrid.co.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave <>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Stelios <>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+EOF
+
+        rm -rf converted
+        mkdir converted
+        pushd converted
+
+            git init
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered \
+                --ignore-unnamed-heads \
+                -A ../authors
+
+    >   ....
+    >   ....
+
+
+            git log | grep 'Author:' | sort | uniq
+
+    >   Author: Dave Morris <zrq-github@metagrid.co.uk>
+    >   Author: Dave <zrq-github@metagrid.co.uk>
+    >   Author: Keith Noddle <keith@keithnoddle.org>
+    >   Author: Stelios <steliosvoutsinas@yahoo.com>
+    >   Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    >   Author: Test User <test@example.com>
+    >   Author: Zarquan <devnull@localhost>
+
+
+# -----------------------------------------------------
+# Modify the source code for fast-export.
+#[user@desktop]
+
+    pushd /tmp/fast-export
+
+        gedit hg2git.py
+
+        git diff hg2git.py
+
+    popd
+
+    >   diff --git a/hg2git.py b/hg2git.py
+    >   index e94270b..39dc110 100755
+    >   --- a/hg2git.py
+    >   +++ b/hg2git.py
+    >   @@ -60,7 +60,14 @@ def fixup_user(user,authors):
+    >        name=templatefilters.person(user)
+    >        mail=b'<%s>' % templatefilters.email(user)
+    >        if b'@' not in mail:
+    >   -      mail = b'<devnull@localhost>'
+    >   +      if name==b'Dave':
+    >   +        mail=b'<zrq-github@metagrid.co.uk>'
+    >   +        name=b'Dave Morris'
+    >   +      elif name==b'Stelios':
+    >   +        mail=b'<steliosvoutsinas@yahoo.com>'
+    >   +        name=b'stvoutsin'
+    >   +      else:
+    >   +        mail=b'<devnull@localhost>'
+    >      else:
+    >        # if we have 'Name <mail>' syntax, everything is fine :)
+    >        name,mail=m.group(1),m.group(2)
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the export again, with modified converter.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        cat > authors << EOF
+"Stelios <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios Voutsinas <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Dave Morris <dave.morris@bristol.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dmr@roe.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <zarquan@metagrid.co.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+EOF
+
+        rm -rf converted
+        mkdir converted
+        pushd converted
+
+            git init
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered \
+                --ignore-unnamed-heads \
+                -A ../authors
+
+    >   ....
+    >   ....
+
+
+            git log | grep 'Author:' | sort | uniq
+
+    >   Author: Dave Morris <zrq-github@metagrid.co.uk>
+    >   Author: Keith Noddle <keith@keithnoddle.org>
+    >   Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    >   Author: Test User <test@example.com>
+    >   Author: Zarquan <devnull@localhost>
+
+
+
+# -----------------------------------------------------
+# Modify the source code for fast-export.
+#[user@desktop]
+
+    pushd /tmp/fast-export
+
+        gedit hg2git.py
+
+        git diff hg2git.py
+
+    popd
+
+
+    >   diff --git a/hg2git.py b/hg2git.py
+    >   index e94270b..761863b 100755
+    >   --- a/hg2git.py
+    >   +++ b/hg2git.py
+    >   @@ -60,7 +60,17 @@ def fixup_user(user,authors):
+    >        name=templatefilters.person(user)
+    >        mail=b'<%s>' % templatefilters.email(user)
+    >        if b'@' not in mail:
+    >   -      mail = b'<devnull@localhost>'
+    >   +      if name==b'Dave':
+    >   +        mail=b'<zrq-github@metagrid.co.uk>'
+    >   +        name=b'Dave Morris'
+    >   +      if name==b'Zarquan':
+    >   +        mail=b'<zrq-github@metagrid.co.uk>'
+    >   +        name=b'Dave Morris'
+    >   +      elif name==b'Stelios':
+    >   +        mail=b'<steliosvoutsinas@yahoo.com>'
+    >   +        name=b'stvoutsin'
+    >   +      else:
+    >   +        mail=b'<devnull@localhost>'
+    >      else:
+    >        # if we have 'Name <mail>' syntax, everything is fine :)
+    >        name,mail=m.group(1),m.group(2)
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Run the export again, with modified converter.
+#[user@desktop]
+
+    source "${HOME}/firethorn.env"
+    pushd  "${FIRETHORN_HOME:?}"
+
+        cat > authors << EOF
+"Stelios <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Stelios Voutsinas <stv@roe.ac.uk>"="stvoutsin <steliosvoutsinas@yahoo.com>"
+"Dave Morris <dave.morris@bristol.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Dave Morris <dmr@roe.ac.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+"Zarquan <zarquan@metagrid.co.uk>"="Dave Morris <zrq-github@metagrid.co.uk>"
+EOF
+
+        rm -rf converted
+        mkdir converted
+        pushd converted
+
+            git init
+
+            /tmp/fast-export/hg-fast-export.sh \
+                -r ../filtered \
+                --ignore-unnamed-heads \
+                -A ../authors
+
+    >   Loaded 5 authors
+    >   Warning: sanitized branch [{newbranch:?}] to [{newbranch_}]
+    >   Error: repository has an unnamed head: hg r3765
+    >   master: Exporting full revision 1/4177 with 891/0/0 added/changed/removed files
+    >   master: Exporting simple delta revision 2/4177 with 1/4/0 added/changed/removed files
+    >   master: Exporting simple delta revision 3/4177 with 8/18/0 added/changed/removed files
+    >   master: Exporting simple delta revision 4/4177 with 2/6/17 added/changed/removed files
+    >   ....
+    >   ....
+    >   Exporting tag [version-2.1.32] at [hg r4113] [git :4114]
+    >   Exporting tag [version-2.1.33] at [hg r4126] [git :4127]
+    >   Exporting tag [version-2.1.34] at [hg r4141] [git :4142]
+    >   Exporting tag [version-2.1.35] at [hg r4148] [git :4149]
+    >   Issued 4338 commands
+    >   /usr/libexec/git-core/git-fast-import statistics:
+    >   ---------------------------------------------------------------------
+    >   Alloc'd objects:     100000
+    >   Total objects:        98785 (     44565 duplicates                  )
+    >         blobs  :        35524 (     34263 duplicates      32258 deltas of      35149 attempts)
+    >         trees  :        59084 (     10302 duplicates      26497 deltas of      56963 attempts)
+    >         commits:         4177 (         0 duplicates          0 deltas of          0 attempts)
+    >         tags   :            0 (         0 duplicates          0 deltas of          0 attempts)
+    >   Total branches:         372 (       294 loads     )
+    >         marks:        1048576 (      4177 unique    )
+    >         atoms:           7264
+    >   Memory total:          8985 KiB
+    >          pools:          2735 KiB
+    >        objects:          6250 KiB
+    >   ---------------------------------------------------------------------
+    >   pack_report: getpagesize()            =       4096
+    >   pack_report: core.packedGitWindowSize = 1073741824
+    >   pack_report: core.packedGitLimit      = 35184372088832
+    >   pack_report: pack_used_ctr            =      26077
+    >   pack_report: pack_mmap_calls          =       9354
+    >   pack_report: pack_open_windows        =          1 /          1
+    >   pack_report: pack_mapped              =  100906845 /  100906845
+    >   ---------------------------------------------------------------------
+    >   
+
+
+            git log | grep 'Author:' | sort | uniq
+
+    >   Author: Dave Morris <zrq-github@metagrid.co.uk>
+    >   Author: Keith Noddle <keith@keithnoddle.org>
+    >   Author: stvoutsin <steliosvoutsinas@yahoo.com>
+    >   Author: Test User <test@example.com>
+
+        #
+        # Yay for Opensource software :-D
+        #
+
+
+# -----------------------------------------------------
+# Checkout HEAD to get a working copy.
+#[user@desktop]
+
+            git checkout HEAD
+
+            git status
+
+    >   On branch master
+    >   nothing to commit, working tree clean
+
+
+# -----------------------------------------------------
+# Rename the '{newbranch_}' branch.
+#[user@desktop]
+
+            git branch -m '{newbranch_}' 'newbranch'
+
+
+# -----------------------------------------------------
+# Rename the 'master' branch.
+#[user@desktop]
+
+            git branch -m 'master' 'main'
+
+
+# -----------------------------------------------------
+# Add our GitHub firethorn-test repository as our origin.
+#[user@desktop]
+
+            git remote add origin 'git@github.com:WFAU/firethorn.git'
+
+            git remote -v
+
+    >   origin	git@github.com:WFAU/firethorn.git (fetch)
+    >   origin	git@github.com:WFAU/firethorn.git (push)
+
+
+# -----------------------------------------------------
+# Push everything into GitHub.
+#[user@desktop]
+
+            git push --mirror origin
+
+    >   ....
+    >   ....
+
+    #
+    # All done.
+    # Over to GitHub to resolve hanging branches etc.
+    #
+
+
+
