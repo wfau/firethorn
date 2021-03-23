@@ -28,12 +28,19 @@ AdqlResource resource = (AdqlResource) request.getAttribute(
             %>
         <table type='table'>
             <name><%= new AdqlNameModifier().process(schema.name()) %>.<%= new AdqlNameModifier().process(table.name()) %></name>
-           
             <title></title>
             <utype></utype>
-            <%
 
+	    <%
+            if (table.text() != null)
+                {
+                %><description><![CDATA[<%= table.text() %>]]></description><%
+                }
+            else {
+                %><description/><%
+                }
             %>
+		
             <%
             for (AdqlColumn column : table.columns().select())
                 {
