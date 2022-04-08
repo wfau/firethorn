@@ -1,0 +1,102 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2022, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#zrq-notes-time
+#zrq-notes-indent
+#zrq-notes-crypto
+#zrq-notes-ansible
+#zrq-notes-osformat
+#zrq-notes-zeppelin
+#
+
+
+# -----------------------------------------------------
+# Create a new branch.
+#[user@desktop]
+
+    newbranch=$(date '+%Y%m%d')-zrq-updates
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE}"
+
+        git checkout main
+        git checkout -b "${newbranch:?}"
+
+        git push --set-upstream 'origin' "$(git branch --show-current)"
+
+    popd
+
+--START--
+Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
+....
+....
+To github.com:Zarquan/firethorn.git
+ * [new branch]          20220408-zrq-updates -> 20220408-zrq-updates
+Branch '20220408-zrq-updates' set up to track remote branch '20220408-zrq-updates' from 'origin'.
+--END--
+
+
+# -----------------------------------------------------
+# Save existing un-comitted changes.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE}"
+
+        git status
+
+--START--
+On branch 20220408-zrq-updates
+Your branch is up to date with 'origin/20220408-zrq-updates'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   doc/notes/zrq/20210125-01-git-move.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	doc/notes/zrq/20210208-01-float-deploy.txt
+	doc/notes/zrq/20220407-01-system-updates.txt
+--END--
+
+
+        git add doc/notes/zrq/20210125-01-git-move.txt
+        git commit -m "Minor tweaks to notes" \
+            doc/notes/zrq/20210125-01-git-move.txt
+
+--START--
+[20220408-zrq-updates 5713331a7] Minor tweaks to notes
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+--END--
+
+
+        git add doc/notes/zrq/20210208-01-float-deploy.txt
+        git commit -m "Assigning IP address to Apache proxy" \
+            doc/notes/zrq/20210208-01-float-deploy.txt
+
+
+
+
+
+
+
+
+
