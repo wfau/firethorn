@@ -28,11 +28,11 @@
 
     Target:
 
-        Move firethrn from Mercurial repository to GitHub.
+        Move firethorn from Mercurial repository to GitHub.
 
     Results:
 
-        Work in progress ..
+        Success
 
 
 # -----------------------------------------------------
@@ -196,7 +196,7 @@ EOF
     >   user:        Dave Morris <dmr@roe.ac.uk>
     >   date:        Fri May 18 04:24:42 2018 +0100
     >   summary:     Close dev branch [2.1.19-zrq-metadoc-parser]
-    >   
+    >
     >   changeset:   3764:cfc225ef4f2a
     >   tag:         version-2.1.20
     >   parent:      3761:7db3e91e45b8
@@ -1013,7 +1013,7 @@ EOF
     >   pack_report: pack_open_windows        =          1 /          1
     >   pack_report: pack_mapped              =  100906845 /  100906845
     >   ---------------------------------------------------------------------
-    >   
+    >
 
 
             git log | grep 'Author:' | sort | uniq
@@ -1055,7 +1055,7 @@ EOF
 
 
 # -----------------------------------------------------
-# Add our GitHub firethorn-test repository as our origin.
+# Add our GitHub firethorn repository as our origin.
 #[user@desktop]
 
             git remote add origin 'git@github.com:WFAU/firethorn.git'
