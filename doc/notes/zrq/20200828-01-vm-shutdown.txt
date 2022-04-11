@@ -33,26 +33,22 @@ trop01
     source ${HOME}/libvirt.settings
     virsh -c ${libvirtcon} list
 
---START--
- Id    Name                           State
-----------------------------------------------------
- 41    Froeseth                       running
- 43    Delild                         running
- 49    Cadelicia                      running
- 50    Astoalith                      running
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    41    Froeseth                       running
+    >    43    Delild                         running
+    >    49    Cadelicia                      running
+    >    50    Astoalith                      running
 
     source ${HOME}/libvirt.settings
     virsh -c ${libvirtcon} list --all
 
---START--
- Id    Name                           State
-----------------------------------------------------
- -     Astoalith                      shut off
- -     Cadelicia                      shut off
- -     Delild                         shut off
- -     Froeseth                       shut off
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    -     Astoalith                      shut off
+    >    -     Cadelicia                      shut off
+    >    -     Delild                         shut off
+    >    -     Froeseth                       shut off
 
 
 trop02
@@ -63,27 +59,23 @@ trop02
     # Firethorn services
     # Plus some test VMs ?
 
---START--
- Id    Name                           State
-----------------------------------------------------
- 3     Acilamwen                      running
- 36    Ulov                           running
- 45    Lothigometh                    running
- 46    Araybwyn                       running
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    3     Acilamwen                      running
+    >    36    Ulov                           running
+    >    45    Lothigometh                    running
+    >    46    Araybwyn                       running
 
     source ${HOME}/libvirt.settings
     virsh -c ${libvirtcon} list --all
 
---START--
- Id    Name                           State
-----------------------------------------------------
- -     Acilamwen                      shut off
- -     Araybwyn                       shut off
- -     Ibalehar                       shut off
- -     Lothigometh                    shut off
- -     Ulov                           shut off
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    -     Acilamwen                      shut off
+    >    -     Araybwyn                       shut off
+    >    -     Ibalehar                       shut off
+    >    -     Lothigometh                    shut off
+    >    -     Ulov                           shut off
 
 
 trop03
@@ -94,32 +86,28 @@ trop03
     # Kafka service, with one node on trop04
     # nodenames has a list of who is who
 
---START--
- Id    Name                           State
-----------------------------------------------------
- 86    Fosauri                        running
- 87    Marpus                         running
- 90    Edwalafia                      running
- 91    Angece                         running
- 92    Onoza                          running
- 93    Stedigo                        running
- 106   Umiawyth                       running
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    86    Fosauri                        running
+    >    87    Marpus                         running
+    >    90    Edwalafia                      running
+    >    91    Angece                         running
+    >    92    Onoza                          running
+    >    93    Stedigo                        running
+    >    106   Umiawyth                       running
 
     source ${HOME}/libvirt.settings
     virsh -c ${libvirtcon} list --all
 
---START--
- Id    Name                           State
-----------------------------------------------------
- -     Angece                         shut off
- -     Edwalafia                      shut off
- -     Fosauri                        shut off
- -     Marpus                         shut off
- -     Onoza                          shut off
- -     Stedigo                        shut off
- -     Umiawyth                       shut off
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    -     Angece                         shut off
+    >    -     Edwalafia                      shut off
+    >    -     Fosauri                        shut off
+    >    -     Marpus                         shut off
+    >    -     Onoza                          shut off
+    >    -     Stedigo                        shut off
+    >    -     Umiawyth                       shut off
 
 trop04
 
@@ -129,23 +117,19 @@ trop04
     source ${HOME}/libvirt.settings
     virsh -c ${libvirtcon} list
 
---START--
- Id    Name                           State
-----------------------------------------------------
- 18    Sendalin                       running
- 25    Wumar                          running
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    18    Sendalin                       running
+    >    25    Wumar                          running
 
 
     source ${HOME}/libvirt.settings
     virsh -c ${libvirtcon} list --all
 
---START--
- Id    Name                           State
-----------------------------------------------------
- -     Sendalin                       shut off
- -     Wumar                          shut off
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    -     Sendalin                       shut off
+    >    -     Wumar                          shut off
 
 
 # -----------------------------------------------------
@@ -154,13 +138,11 @@ trop04
     source ${HOME}/libvirt.env
     virsh -c ${libvirtcon:?} list
 
---START--
- Id    Name                           State
-----------------------------------------------------
- 1     pyratest3                      running
- 2     pyratest1                      running
- 3     pyratest2                      running
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    1     pyratest3                      running
+    >    2     pyratest1                      running
+    >    3     pyratest2                      running
 
 
     virsh -c ${libvirtcon:?} shutdown pyratest1
@@ -171,14 +153,12 @@ trop04
     source ${HOME}/libvirt.env
     virsh -c ${libvirtcon} list --all
 
---START--
- Id    Name                           State
-----------------------------------------------------
- -     amarna                         shut off
- -     pyratest1                      shut off
- -     pyratest2                      shut off
- -     pyratest3                      shut off
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    -     amarna                         shut off
+    >    -     pyratest1                      shut off
+    >    -     pyratest2                      shut off
+    >    -     pyratest3                      shut off
 
 
 
@@ -189,12 +169,10 @@ trop04
     source ${HOME}/libvirt.env
     virsh -c ${libvirtcon} list
 
---START--
- Id   Name         State
-----------------------------
- 1    Coccinea     running
- 3    Pyracantha   running
---END--
+    >    Id   Name         State
+    >   ----------------------------
+    >    1    Coccinea     running
+    >    3    Pyracantha   running
 
     virsh -c ${libvirtcon:?} shutdown Coccinea
     virsh -c ${libvirtcon:?} shutdown Pyracantha
@@ -202,16 +180,14 @@ trop04
 
     virsh -c $libvirtcon list --all
 
---START--
- Id   Name                State
-------------------------------------
- -    Coccinea            shut off
- -    Coccinea-backup     shut off
- -    malus               shut off
- -    Pyracantha          shut off
- -    Pyracantha-backup   shut off
- -    pyrus               shut off
---END--
+    >    Id   Name                State
+    >   ------------------------------------
+    >    -    Coccinea            shut off
+    >    -    Coccinea-backup     shut off
+    >    -    malus               shut off
+    >    -    Pyracantha          shut off
+    >    -    Pyracantha-backup   shut off
+    >    -    pyrus               shut off
 
 
 

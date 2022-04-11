@@ -76,44 +76,42 @@
         sudo ifconfig -a
         '
 
---START--
-Acilamwen
-Mon  8 Feb 15:51:27 GMT 2021
-docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
-        inet6 fe80::42:5aff:fee7:d404  prefixlen 64  scopeid 0x20<link>
-        ether 02:42:5a:e7:d4:04  txqueuelen 0  (Ethernet)
-        RX packets 547  bytes 44610 (43.5 KiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 611  bytes 2555117 (2.4 MiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
-        inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
-        ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
-        RX packets 42984  bytes 643382975 (613.5 MiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 22310  bytes 1799775 (1.7 MiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-        inet 127.0.0.1  netmask 255.0.0.0
-        inet6 ::1  prefixlen 128  scopeid 0x10<host>
-        loop  txqueuelen 1000  (Local Loopback)
-        RX packets 36  bytes 12690 (12.3 KiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 36  bytes 12690 (12.3 KiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-veth92b997e: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet6 fe80::38f5:aff:fec0:7cc6  prefixlen 64  scopeid 0x20<link>
-        ether 3a:f5:0a:c0:7c:c6  txqueuelen 0  (Ethernet)
-        RX packets 15  bytes 3913 (3.8 KiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 32  bytes 5126 (5.0 KiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
---END--
+    >   Acilamwen
+    >   Mon  8 Feb 15:51:27 GMT 2021
+    >   docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           inet6 fe80::42:5aff:fee7:d404  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:5a:e7:d4:04  txqueuelen 0  (Ethernet)
+    >           RX packets 547  bytes 44610 (43.5 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 611  bytes 2555117 (2.4 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
+    >           inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
+    >           RX packets 42984  bytes 643382975 (613.5 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 22310  bytes 1799775 (1.7 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 36  bytes 12690 (12.3 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 36  bytes 12690 (12.3 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   veth92b997e: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::38f5:aff:fec0:7cc6  prefixlen 64  scopeid 0x20<link>
+    >           ether 3a:f5:0a:c0:7c:c6  txqueuelen 0  (Ethernet)
+    >           RX packets 15  bytes 3913 (3.8 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 32  bytes 5126 (5.0 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 
 # -----------------------------------------------------
@@ -140,10 +138,8 @@ IPADDR=${newaddress}
 EOF
 EOSH
 
---START--
-....
-....
---END--
+    >   ....
+    >   ....
 
 
 # -----------------------------------------------------
@@ -159,10 +155,8 @@ EOSH
             ' /etc/sysconfig/network
 EOSH
 
---START--
-....
-....
---END--
+    >   ....
+    >   ....
 
 
 #---------------------------------------------------------------------
@@ -181,9 +175,7 @@ EOSH
             --live \
             --config
 
---START--
-Interface attached successfully
---END--
+    >   Interface attached successfully
 
 
     virsh -c ${libvirtcon:?} \
@@ -192,23 +184,21 @@ Interface attached successfully
         | xmllint --xpath '//interface' -
 
 
---START--
-<interface type="network">
-    <mac address="52:54:00:02:02:0f"/>
-    <source network="default"/>
-    <target dev="vnet0"/>
-    <model type="virtio"/>
-    <alias name="net0"/>
-    <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
-</interface><interface type="bridge">
-    <mac address="52:54:00:00:01:00"/>
-    <source bridge="br0"/>
-    <target dev="vnet2"/>
-    <model type="virtio"/>
-    <alias name="net1"/>
-    <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"/>
-</interface>
---END--
+    >   <interface type="network">
+    >       <mac address="52:54:00:02:02:0f"/>
+    >       <source network="default"/>
+    >       <target dev="vnet0"/>
+    >       <model type="virtio"/>
+    >       <alias name="net0"/>
+    >       <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >   </interface><interface type="bridge">
+    >       <mac address="52:54:00:00:01:00"/>
+    >       <source bridge="br0"/>
+    >       <target dev="vnet2"/>
+    >       <model type="virtio"/>
+    >       <alias name="net1"/>
+    >       <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"/>
+    >   </interface>
 
 
 # -----------------------------------------------------
@@ -245,43 +235,41 @@ EOSH
         sudo ifconfig -a
         '
 
---START--
-Mon  8 Feb 15:56:43 GMT 2021
-docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
-        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
-        ether 02:42:95:57:78:34  txqueuelen 0  (Ethernet)
-        RX packets 0  bytes 0 (0.0 B)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 0  bytes 0 (0.0 B)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
-        inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
-        ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
-        RX packets 73  bytes 10971 (10.7 KiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 52  bytes 7617 (7.4 KiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
-        inet6 fe80::5054:ff:fe00:100  prefixlen 64  scopeid 0x20<link>
-        ether 52:54:00:00:01:00  txqueuelen 1000  (Ethernet)
-        RX packets 467  bytes 28171 (27.5 KiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 11  bytes 834 (834.0 B)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-        inet 127.0.0.1  netmask 255.0.0.0
-        inet6 ::1  prefixlen 128  scopeid 0x10<host>
-        loop  txqueuelen 1000  (Local Loopback)
-        RX packets 0  bytes 0 (0.0 B)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 0  bytes 0 (0.0 B)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
---END--
+    >   Mon  8 Feb 15:56:43 GMT 2021
+    >   docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           ether 02:42:95:57:78:34  txqueuelen 0  (Ethernet)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 0  bytes 0 (0.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
+    >           inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
+    >           RX packets 73  bytes 10971 (10.7 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 52  bytes 7617 (7.4 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:100  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:00  txqueuelen 1000  (Ethernet)
+    >           RX packets 467  bytes 28171 (27.5 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 11  bytes 834 (834.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 0  bytes 0 (0.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 
 
@@ -306,14 +294,12 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 
     sysctl net.bridge
 
---START--
-net.bridge.bridge-nf-call-arptables = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-net.bridge.bridge-nf-filter-pppoe-tagged = 0
-net.bridge.bridge-nf-filter-vlan-tagged = 0
-net.bridge.bridge-nf-pass-vlan-input-dev = 0
---END--
+    >   net.bridge.bridge-nf-call-arptables = 1
+    >   net.bridge.bridge-nf-call-ip6tables = 1
+    >   net.bridge.bridge-nf-call-iptables = 1
+    >   net.bridge.bridge-nf-filter-pppoe-tagged = 0
+    >   net.bridge.bridge-nf-filter-vlan-tagged = 0
+    >   net.bridge.bridge-nf-pass-vlan-input-dev = 0
 
     #
     # Settings to allow bridged traffic to avoid the host firewall.

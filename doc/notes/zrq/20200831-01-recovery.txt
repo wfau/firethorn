@@ -31,21 +31,19 @@
 
     docker ps -a
 
---START--
-CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                     PORTS               NAMES
-a35be4a47a03        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   2 days ago          Up 2 days (healthy)        8080/tcp            ft_gillian.1.x07m4qlin6a7onczfp3hbcevx
-bff3f7d8343e        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   2 days ago          Up 2 days                  5432/tcp            ft_carolina.1.kq9krov9tvlt1tvtyhvgi6xbd
-2d1c14fa2631        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   2 days ago          Up 2 days                  5432/tcp            ft_bethany.1.4o8yg7e9zhuf404vhz2m8yt68
-4732f012f6c3        firethorn/ogsadai:2.1.36        "/bin/sh -c '/var/lo…"   2 days ago          Up 2 days (healthy)        8080/tcp            ft_jarmila.1.lpfsezv3cyw4cgz6zrytqlbdp
-fa88eb69066f        firethorn/firethorn-py:latest   "python3"                2 days ago          Up 2 days                                      ft_firethorn-py.1.sdusyp77tns4g2nouo0wi3v9k
-969ec42ca52e        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   9 days ago          Exited (143) 3 days ago                        ft_gillian.1.f39h27599vgj076xmalat1hfo
-9dae93eccbf4        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   11 days ago         Exited (137) 10 days ago                       ft_gillian.1.q1l043x6unlle57vlp2e0o9cy
-1ec21ceeb354        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   13 days ago         Exited (137) 11 days ago                       ft_gillian.1.ca9jet9o3iyxlikl14pkdabbo
-9fc8c04ae5d3        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   3 weeks ago         Exited (143) 13 days ago                       ft_gillian.1.uj09twzov0em2hqt8g152n2rb
-80d5561cf7a3        firethorn/firethorn-py:latest   "python3"                4 weeks ago         Dead                                           ft_firethorn-py.1.qyiv0gx4ygmb7givp94s94hqz
-15bb7d5287bd        284797198230                    "bash"                   4 weeks ago         Exited (0) 4 weeks ago                         stevedore_builder_run_2
-d3422fdb6110        9c51267fe107                    "bash"                   4 weeks ago         Exited (130) 4 weeks ago                       stevedore_builder_run_1
---END--
+    >   CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                     PORTS               NAMES
+    >   a35be4a47a03        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   2 days ago          Up 2 days (healthy)        8080/tcp            ft_gillian.1.x07m4qlin6a7onczfp3hbcevx
+    >   bff3f7d8343e        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   2 days ago          Up 2 days                  5432/tcp            ft_carolina.1.kq9krov9tvlt1tvtyhvgi6xbd
+    >   2d1c14fa2631        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   2 days ago          Up 2 days                  5432/tcp            ft_bethany.1.4o8yg7e9zhuf404vhz2m8yt68
+    >   4732f012f6c3        firethorn/ogsadai:2.1.36        "/bin/sh -c '/var/lo…"   2 days ago          Up 2 days (healthy)        8080/tcp            ft_jarmila.1.lpfsezv3cyw4cgz6zrytqlbdp
+    >   fa88eb69066f        firethorn/firethorn-py:latest   "python3"                2 days ago          Up 2 days                                      ft_firethorn-py.1.sdusyp77tns4g2nouo0wi3v9k
+    >   969ec42ca52e        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   9 days ago          Exited (143) 3 days ago                        ft_gillian.1.f39h27599vgj076xmalat1hfo
+    >   9dae93eccbf4        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   11 days ago         Exited (137) 10 days ago                       ft_gillian.1.q1l043x6unlle57vlp2e0o9cy
+    >   1ec21ceeb354        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   13 days ago         Exited (137) 11 days ago                       ft_gillian.1.ca9jet9o3iyxlikl14pkdabbo
+    >   9fc8c04ae5d3        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   3 weeks ago         Exited (143) 13 days ago                       ft_gillian.1.uj09twzov0em2hqt8g152n2rb
+    >   80d5561cf7a3        firethorn/firethorn-py:latest   "python3"                4 weeks ago         Dead                                           ft_firethorn-py.1.qyiv0gx4ygmb7givp94s94hqz
+    >   15bb7d5287bd        284797198230                    "bash"                   4 weeks ago         Exited (0) 4 weeks ago                         stevedore_builder_run_2
+    >   d3422fdb6110        9c51267fe107                    "bash"                   4 weeks ago         Exited (130) 4 weeks ago                       stevedore_builder_run_1
 
 # -----------------------------------------------------
 # Checking services on the Firethorn VM.
@@ -53,50 +51,42 @@ d3422fdb6110        9c51267fe107                    "bash"                   4 w
 
     curl 'http://192.168.202.8:8080/firethorn/adql/resource/select'
 
---START--
-[
-    {
-    "type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
-    "vosi":"http://192.168.202.8:8080/firethorn/adql/resource/54/vosi",....
-....
-....
-....
-    }
-]
---END--
+    >   [
+    >       {
+    >       "type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/adql-resource-1.0.json",
+    >       "vosi":"http://192.168.202.8:8080/firethorn/adql/resource/54/vosi",....
+    >   ....
+    >   ....
+    >   ....
+    >       }
+    >   ]
 
 
     curl --head 'http://192.168.202.8:8080/firethorn/adql/resource/select'
 
---START--
-HTTP/1.1 200
-X-Clacks-Overhead: GNU Terry Pratchett
-firethorn.auth.username: anon-R22BNZT2EQFJWAAAAF2EKKYLDE
-firethorn.auth.community: friends
-Content-Type: application/json;charset=UTF-8
-Transfer-Encoding: chunked
-Date: Mon, 31 Aug 2020 15:38:02 GMT
---END--
+    >   HTTP/1.1 200
+    >   X-Clacks-Overhead: GNU Terry Pratchett
+    >   firethorn.auth.username: anon-R22BNZT2EQFJWAAAAF2EKKYLDE
+    >   firethorn.auth.community: friends
+    >   Content-Type: application/json;charset=UTF-8
+    >   Transfer-Encoding: chunked
+    >   Date: Mon, 31 Aug 2020 15:38:02 GMT
 
 
     curl --head 'http://localhost:8080/firethorn/adql/resource/select'
 
---START--
-HANGS
---END--
+    >   HANGS
 
 
     curl --head 'http://araybwyn:8080/firethorn/adql/resource/select'
 
---START--
-HTTP/1.1 200
-X-Clacks-Overhead: GNU Terry Pratchett
-firethorn.auth.username: anon-YTSRYHYSJ5T6KAAAAF2EKLXUFM
-firethorn.auth.community: friends
-Content-Type: application/json;charset=UTF-8
-Transfer-Encoding: chunked
-Date: Mon, 31 Aug 2020 15:42:19 GMT
---END--
+    >   HTTP/1.1 200
+    >   X-Clacks-Overhead: GNU Terry Pratchett
+    >   firethorn.auth.username: anon-YTSRYHYSJ5T6KAAAAF2EKLXUFM
+    >   firethorn.auth.community: friends
+    >   Content-Type: application/json;charset=UTF-8
+    >   Transfer-Encoding: chunked
+    >   Date: Mon, 31 Aug 2020 15:42:19 GMT
 
     #
     # Suggests the service is listening on / mapped to external interface
@@ -110,15 +100,13 @@ Date: Mon, 31 Aug 2020 15:42:19 GMT
 
     curl --head 'http://araybwyn:8080/firethorn/adql/resource/select'
 
---START--
-HTTP/1.1 200
-X-Clacks-Overhead: GNU Terry Pratchett
-firethorn.auth.username: anon-U46NFPNOPRKFUAAAAF2EKMMLTA
-firethorn.auth.community: friends
-Content-Type: application/json;charset=UTF-8
-Transfer-Encoding: chunked
-Date: Mon, 31 Aug 2020 15:45:09 GMT
---END--
+    >   HTTP/1.1 200
+    >   X-Clacks-Overhead: GNU Terry Pratchett
+    >   firethorn.auth.username: anon-U46NFPNOPRKFUAAAAF2EKMMLTA
+    >   firethorn.auth.community: friends
+    >   Content-Type: application/json;charset=UTF-8
+    >   Transfer-Encoding: chunked
+    >   Date: Mon, 31 Aug 2020 15:45:09 GMT
 
 
 # -----------------------------------------------------
@@ -127,11 +115,9 @@ Date: Mon, 31 Aug 2020 15:45:09 GMT
 
     docker ps -a
 
---START--
-CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                      PORTS                NAMES
-fc403b749771        firethorn/apache:2.1.25   "/usr/local/bin/http…"   25 minutes ago      Exited (0) 16 minutes ago                        apache2
-bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 months ago       Up 16 minutes               0.0.0.0:80->80/tcp   apache
---END--
+    >   CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                      PORTS                NAMES
+    >   fc403b749771        firethorn/apache:2.1.25   "/usr/local/bin/http…"   25 minutes ago      Exited (0) 16 minutes ago                        apache2
+    >   bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 months ago       Up 16 minutes               0.0.0.0:80->80/tcp   apache
 
 
 # -----------------------------------------------------
@@ -142,16 +128,14 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 mont
 
         tail -f -n 1000 /var/log/httpd/tap.roe.ac.uk-error.log
 
---START--
-....
-....
-[Sat Aug 29 08:56:03.065427 2020] [proxy_http:error] [pid 11:tid 140321722160896] [client 129.215.175.97:35390] AH01114: HTTP: failed to make connection to backend: araybwyn
-[Sat Aug 29 08:56:03.065448 2020] [proxy_http:error] [pid 11:tid 140321730553600] [client 129.215.175.97:35392] AH01114: HTTP: failed to make connection to backend: araybwyn
-[Sat Aug 29 08:56:03.068289 2020] [proxy:error] [pid 11:tid 140321480505088] (113)No route to host: AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
-[Sat Aug 29 08:56:03.068291 2020] [proxy:error] [pid 11:tid 140321472112384] (113)No route to host: AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
-[Sat Aug 29 08:56:03.068323 2020] [proxy_http:error] [pid 11:tid 140321480505088] [client 129.215.175.97:35394] AH01114: HTTP: failed to make connection to backend: araybwyn
-[Sat Aug 29 08:56:03.068341 2020] [proxy_http:error] [pid 11:tid 140321472112384] [client 129.215.175.97:35396] AH01114: HTTP: failed to make connection to backend: araybwyn
---END--
+    >   ....
+    >   ....
+    >   [Sat Aug 29 08:56:03.065427 2020] [proxy_http:error] [pid 11:tid 140321722160896] [client 129.215.175.97:35390] AH01114: HTTP: failed to make connection to backend: araybwyn
+    >   [Sat Aug 29 08:56:03.065448 2020] [proxy_http:error] [pid 11:tid 140321730553600] [client 129.215.175.97:35392] AH01114: HTTP: failed to make connection to backend: araybwyn
+    >   [Sat Aug 29 08:56:03.068289 2020] [proxy:error] [pid 11:tid 140321480505088] (113)No route to host: AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
+    >   [Sat Aug 29 08:56:03.068291 2020] [proxy:error] [pid 11:tid 140321472112384] (113)No route to host: AH00957: HTTP: attempt to connect to 192.168.202.8:8080 (*) failed
+    >   [Sat Aug 29 08:56:03.068323 2020] [proxy_http:error] [pid 11:tid 140321480505088] [client 129.215.175.97:35394] AH01114: HTTP: failed to make connection to backend: araybwyn
+    >   [Sat Aug 29 08:56:03.068341 2020] [proxy_http:error] [pid 11:tid 140321472112384] [client 129.215.175.97:35396] AH01114: HTTP: failed to make connection to backend: araybwyn
 
     #
     # These entries are from a couple of days ago.
@@ -161,17 +145,15 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 mont
         tail -f -n 1000 /var/log/httpd/tap.roe.ac.uk-access.log
 
 
---START--
-....
-....
-129.215.175.97 - - [31/Aug/2020:15:48:19 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
-129.215.175.97 - - [31/Aug/2020:15:48:19 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
-129.215.175.97 - - [31/Aug/2020:15:48:19 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
-129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
-129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
-129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
-129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
---END--
+    >   ....
+    >   ....
+    >   129.215.175.97 - - [31/Aug/2020:15:48:19 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
+    >   129.215.175.97 - - [31/Aug/2020:15:48:19 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
+    >   129.215.175.97 - - [31/Aug/2020:15:48:19 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
+    >   129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
+    >   129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
+    >   129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
+    >   129.215.175.97 - - [31/Aug/2020:15:48:20 +0000] "GET /firethorn/system/info HTTP/1.1" 200 1029 "-" "Python-urllib/3.6"
 
     #
     # OK - that shows requests comming in, but not producing any error in the logs.
@@ -184,20 +166,18 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 mont
 
         tail -f -n 1000 /var/log/httpd/error_log
 
---START--
-....
-....
-[Mon Aug 31 14:47:21.980356 2020] [lbmethod_heartbeat:notice] [pid 1:tid 140350772746496] AH02282: No slotmem from mod_heartmonitor
-[Mon Aug 31 14:47:21.980942 2020] [http2:warn] [pid 1:tid 140350772746496] AH02951: mod_ssl does not seem to be enabled
-[Mon Aug 31 14:47:21.981578 2020] [mpm_event:notice] [pid 1:tid 140350772746496] AH00489: Apache/2.4.34 (Fedora) configured -- resuming normal operations
-[Mon Aug 31 14:47:21.981598 2020] [core:notice] [pid 1:tid 140350772746496] AH00094: Command line: 'httpd -D FOREGROUND'
-[Mon Aug 31 15:14:49.708567 2020] [mpm_event:notice] [pid 1:tid 140350772746496] AH00491: caught SIGTERM, shutting down
-[Mon Aug 31 15:24:50.461355 2020] [suexec:notice] [pid 1:tid 140365212715264] AH01232: suEXEC mechanism enabled (wrapper: /usr/sbin/suexec)
-[Mon Aug 31 15:24:50.480608 2020] [lbmethod_heartbeat:notice] [pid 1:tid 140365212715264] AH02282: No slotmem from mod_heartmonitor
-[Mon Aug 31 15:24:50.481352 2020] [http2:warn] [pid 1:tid 140365212715264] AH02951: mod_ssl does not seem to be enabled
-[Mon Aug 31 15:24:50.484539 2020] [mpm_event:notice] [pid 1:tid 140365212715264] AH00489: Apache/2.4.34 (Fedora) configured -- resuming normal operations
-[Mon Aug 31 15:24:50.484569 2020] [core:notice] [pid 1:tid 140365212715264] AH00094: Command line: 'httpd -D FOREGROUND'
---END--
+    >   ....
+    >   ....
+    >   [Mon Aug 31 14:47:21.980356 2020] [lbmethod_heartbeat:notice] [pid 1:tid 140350772746496] AH02282: No slotmem from mod_heartmonitor
+    >   [Mon Aug 31 14:47:21.980942 2020] [http2:warn] [pid 1:tid 140350772746496] AH02951: mod_ssl does not seem to be enabled
+    >   [Mon Aug 31 14:47:21.981578 2020] [mpm_event:notice] [pid 1:tid 140350772746496] AH00489: Apache/2.4.34 (Fedora) configured -- resuming normal operations
+    >   [Mon Aug 31 14:47:21.981598 2020] [core:notice] [pid 1:tid 140350772746496] AH00094: Command line: 'httpd -D FOREGROUND'
+    >   [Mon Aug 31 15:14:49.708567 2020] [mpm_event:notice] [pid 1:tid 140350772746496] AH00491: caught SIGTERM, shutting down
+    >   [Mon Aug 31 15:24:50.461355 2020] [suexec:notice] [pid 1:tid 140365212715264] AH01232: suEXEC mechanism enabled (wrapper: /usr/sbin/suexec)
+    >   [Mon Aug 31 15:24:50.480608 2020] [lbmethod_heartbeat:notice] [pid 1:tid 140365212715264] AH02282: No slotmem from mod_heartmonitor
+    >   [Mon Aug 31 15:24:50.481352 2020] [http2:warn] [pid 1:tid 140365212715264] AH02951: mod_ssl does not seem to be enabled
+    >   [Mon Aug 31 15:24:50.484539 2020] [mpm_event:notice] [pid 1:tid 140365212715264] AH00489: Apache/2.4.34 (Fedora) configured -- resuming normal operations
+    >   [Mon Aug 31 15:24:50.484569 2020] [core:notice] [pid 1:tid 140365212715264] AH00094: Command line: 'httpd -D FOREGROUND'
 
     #
     # Quite a few restarts in the main server log ?
@@ -213,9 +193,7 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 mont
 
     curl --head http://129.215.175.100:80
 
---START--
-HANGS
---END--
+    >   HANGS
 
 
 # -----------------------------------------------------
@@ -224,9 +202,7 @@ HANGS
 
     curl --head http://129.215.175.100:80
 
---START--
-HANGS
---END--
+    >   HANGS
 
     Is that the right external address ?
 
@@ -241,13 +217,11 @@ HANGS
         -c $libvirtcon \
         list
 
---START--
- Id    Name                           State
-----------------------------------------------------
- 2     Acilamwen                      running
- 3     Araybwyn                       running
- 6     Ulov                           running
---END--
+    >    Id    Name                           State
+    >   ----------------------------------------------------
+    >    2     Acilamwen                      running
+    >    3     Araybwyn                       running
+    >    6     Ulov                           running
 
 
 # -----------------------------------------------------
@@ -265,34 +239,32 @@ HANGS
            --template \
                --copy-of '//interface'
 
---START--
-<xsl-select>
-  <interface type="network">
-      <mac address="52:54:00:02:02:0f"/>
-      <source network="default"/>
-      <target dev="vnet0"/>
-      <model type="virtio"/>
-      <alias name="net0"/>
-      <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
-    </interface>
-  <interface type="bridge">
-      <mac address="52:54:00:00:01:01"/>
-      <source bridge="br0"/>
-      <target dev="vnet1"/>
-      <model type="virtio"/>
-      <alias name="net1"/>
-      <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"/>
-    </interface>
-  <interface type="bridge">
-      <mac address="52:54:00:00:01:00"/>
-      <source bridge="br0"/>
-      <target dev="vnet2"/>
-      <model type="virtio"/>
-      <alias name="net2"/>
-      <address type="pci" domain="0x0000" bus="0x00" slot="0x08" function="0x0"/>
-    </interface>
-</xsl-select>
---END--
+    >   <xsl-select>
+    >     <interface type="network">
+    >         <mac address="52:54:00:02:02:0f"/>
+    >         <source network="default"/>
+    >         <target dev="vnet0"/>
+    >         <model type="virtio"/>
+    >         <alias name="net0"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >       </interface>
+    >     <interface type="bridge">
+    >         <mac address="52:54:00:00:01:01"/>
+    >         <source bridge="br0"/>
+    >         <target dev="vnet1"/>
+    >         <model type="virtio"/>
+    >         <alias name="net1"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"/>
+    >       </interface>
+    >     <interface type="bridge">
+    >         <mac address="52:54:00:00:01:00"/>
+    >         <source bridge="br0"/>
+    >         <target dev="vnet2"/>
+    >         <model type="virtio"/>
+    >         <alias name="net2"/>
+    >         <address type="pci" domain="0x0000" bus="0x00" slot="0x08" function="0x0"/>
+    >       </interface>
+    >   </xsl-select>
 
     #
     # Both net1 and net2 are connected to br0 ?
@@ -306,34 +278,32 @@ HANGS
         /sbin/ifconfig -a
         '
 
---START--
-ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
-        inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
-        ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
-        RX packets 461819  bytes 119429633 (113.8 MiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 376525  bytes 56700876 (54.0 MiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 129.215.175.101  netmask 255.255.255.0  broadcast 129.215.175.255
-        inet6 fe80::5054:ff:fe00:101  prefixlen 64  scopeid 0x20<link>
-        ether 52:54:00:00:01:01  txqueuelen 1000  (Ethernet)
-        RX packets 2964555  bytes 188649317 (179.9 MiB)
-        RX errors 0  dropped 334  overruns 0  frame 0
-        TX packets 268573  bytes 94658626 (90.2 MiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-
-ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
-        inet6 fe80::5054:ff:fe00:100  prefixlen 64  scopeid 0x20<link>
-        ether 52:54:00:00:01:00  txqueuelen 1000  (Ethernet)
-        RX packets 2696547  bytes 163355072 (155.7 MiB)
-        RX errors 0  dropped 334  overruns 0  frame 0
-        TX packets 1790  bytes 125556 (122.6 KiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
---END--
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
+    >           inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
+    >           RX packets 461819  bytes 119429633 (113.8 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 376525  bytes 56700876 (54.0 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.101  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:101  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:01  txqueuelen 1000  (Ethernet)
+    >           RX packets 2964555  bytes 188649317 (179.9 MiB)
+    >           RX errors 0  dropped 334  overruns 0  frame 0
+    >           TX packets 268573  bytes 94658626 (90.2 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:100  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:00  txqueuelen 1000  (Ethernet)
+    >           RX packets 2696547  bytes 163355072 (155.7 MiB)
+    >           RX errors 0  dropped 334  overruns 0  frame 0
+    >           TX packets 1790  bytes 125556 (122.6 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 # -----------------------------------------------------
 # Check the default route.
@@ -343,13 +313,11 @@ ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         /usr/sbin/ip route
         '
 
---START--
-default via 129.215.175.126 dev ens7 proto static metric 101
-129.215.175.0/24 dev ens5 proto kernel scope link src 129.215.175.101 metric 100
-129.215.175.0/24 dev ens7 proto kernel scope link src 129.215.175.100 metric 101
-172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
-192.168.202.0/24 dev ens3 proto kernel scope link src 192.168.202.15 metric 102
---END--
+    >   default via 129.215.175.126 dev ens7 proto static metric 101
+    >   129.215.175.0/24 dev ens5 proto kernel scope link src 129.215.175.101 metric 100
+    >   129.215.175.0/24 dev ens7 proto kernel scope link src 129.215.175.100 metric 101
+    >   172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1
+    >   192.168.202.0/24 dev ens3 proto kernel scope link src 192.168.202.15 metric 102
 
     #
     # I suspect that having 2 routes to the same network, 129.215.175.0/24, might be causing issues.
@@ -371,14 +339,12 @@ default via 129.215.175.126 dev ens7 proto static metric 101
         hostname
         '
 
---START--
-Mon 31 Aug 17:25:33 BST 2020
-Acilamwen
-Mon 31 Aug 17:31:17 BST 2020
-Araybwyn
-Mon 31 Aug 17:25:34 BST 2020
-Acilamwen
---END--
+    >   Mon 31 Aug 17:25:33 BST 2020
+    >   Acilamwen
+    >   Mon 31 Aug 17:31:17 BST 2020
+    >   Araybwyn
+    >   Mon 31 Aug 17:25:34 BST 2020
+    >   Acilamwen
 
     #
     # Didn't quite work out the box, ssh keys needed to be accepted.
@@ -399,11 +365,9 @@ Acilamwen
 
         docker ps -a
 
---START--
-CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                         PORTS                NAMES
-fc403b749771        firethorn/apache:2.1.25   "/usr/local/bin/http…"   About an hour ago   Exited (0) About an hour ago                        apache2
-bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 months ago       Up About an hour               0.0.0.0:80->80/tcp   apache
---END--
+    >   CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                         PORTS                NAMES
+    >   fc403b749771        firethorn/apache:2.1.25   "/usr/local/bin/http…"   About an hour ago   Exited (0) About an hour ago                        apache2
+    >   bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 months ago       Up About an hour               0.0.0.0:80->80/tcp   apache
 
 
 # -----------------------------------------------------
@@ -420,52 +384,50 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 mont
 
     cat /etc/httpd/conf.d/tap.roe.ac.uk.conf
 
---START--
-<VirtualHost *:80>
-
-    ServerName  tap.roe.ac.uk
-    ServerAlias tap.metagrid.xyz
-    ServerAdmin tap-admin@metagrid.xyz
-
-    ErrorLog  logs/tap.roe.ac.uk-error.log
-    CustomLog logs/tap.roe.ac.uk-access.log combined
-
-    ProxyRequests Off
-    ProxyPreserveHost On
-
-
-    ProxyTimeout 6000
-    Timeout 6000
-
-    <Proxy *>
-        Order deny,allow
-        Deny from 133.40.215.
-        Allow from all
-    </Proxy>
-
-    ## PROXY ENTRIES HERE ##
-    #ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
-    #ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
-
-    ## PROXY ENTRIES HERE ##
-
-    ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
-    ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
-
-    ProxyPassMatch    ^/ssa\/(.*)$  http://araybwyn:8080/firethorn/tap/57/$1
-    ProxyPassReverse  ^/ssa\/(.*)$  http://araybwyn:8080/firethorn/tap/57/$1
-
-    ProxyPassMatch    ^/vsa\/(.*)$  http://araybwyn:8080/firethorn/tap/60/$1
-    ProxyPassReverse  ^/vsa\/(.*)$  http://araybwyn:8080/firethorn/tap/60/$1
-
-    ProxyPassMatch    ^/wsa\/(.*)$  http://araybwyn:8080/firethorn/tap/63/$1
-    ProxyPassReverse  ^/wsa\/(.*)$  http://araybwyn:8080/firethorn/tap/63/$1
-
-    ProxyPassMatch    ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
-    ProxyPassReverse  ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
-
-</VirtualHost>
---END--
+    >   <VirtualHost *:80>
+    >   
+    >       ServerName  tap.roe.ac.uk
+    >       ServerAlias tap.metagrid.xyz
+    >       ServerAdmin tap-admin@metagrid.xyz
+    >   
+    >       ErrorLog  logs/tap.roe.ac.uk-error.log
+    >       CustomLog logs/tap.roe.ac.uk-access.log combined
+    >   
+    >       ProxyRequests Off
+    >       ProxyPreserveHost On
+    >   
+    >   
+    >       ProxyTimeout 6000
+    >       Timeout 6000
+    >   
+    >       <Proxy *>
+    >           Order deny,allow
+    >           Deny from 133.40.215.
+    >           Allow from all
+    >       </Proxy>
+    >   
+    >       ## PROXY ENTRIES HERE ##
+    >       #ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    >       #ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    >   
+    >       ## PROXY ENTRIES HERE ##
+    >   
+    >       ProxyPassMatch    ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    >       ProxyPassReverse  ^/osa\/(.*)$  http://araybwyn:8080/firethorn/tap/54/$1
+    >   
+    >       ProxyPassMatch    ^/ssa\/(.*)$  http://araybwyn:8080/firethorn/tap/57/$1
+    >       ProxyPassReverse  ^/ssa\/(.*)$  http://araybwyn:8080/firethorn/tap/57/$1
+    >   
+    >       ProxyPassMatch    ^/vsa\/(.*)$  http://araybwyn:8080/firethorn/tap/60/$1
+    >       ProxyPassReverse  ^/vsa\/(.*)$  http://araybwyn:8080/firethorn/tap/60/$1
+    >   
+    >       ProxyPassMatch    ^/wsa\/(.*)$  http://araybwyn:8080/firethorn/tap/63/$1
+    >       ProxyPassReverse  ^/wsa\/(.*)$  http://araybwyn:8080/firethorn/tap/63/$1
+    >   
+    >       ProxyPassMatch    ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+    >       ProxyPassReverse  ^/firethorn\/(.*)$  http://araybwyn:8080/firethorn/$1
+    >   
+    >   </VirtualHost>
 
 
 # -----------------------------------------------------
@@ -477,17 +439,15 @@ bc8d6979e451        firethorn/apache:2.1.25   "/usr/local/bin/http…"   24 mont
     curl --head http://araybwyn:8080/firethorn/system/info
 
 
---START--
-HTTP/1.1 200
-X-Clacks-Overhead: GNU Terry Pratchett
-firethorn.auth.identity: http://araybwyn:8080/firethorn/community-member/817155
-firethorn.auth.username: anon-VUMZ5KZIUKB3WAAAAF2EK5EAMM
-firethorn.auth.community: friends
-Content-Type: application/json;charset=ISO-8859-1
-Content-Language: en-US
-Content-Length: 930
-Date: Mon, 31 Aug 2020 16:58:17 GMT
---END--
+    >   HTTP/1.1 200
+    >   X-Clacks-Overhead: GNU Terry Pratchett
+    >   firethorn.auth.identity: http://araybwyn:8080/firethorn/community-member/817155
+    >   firethorn.auth.username: anon-VUMZ5KZIUKB3WAAAAF2EK5EAMM
+    >   firethorn.auth.community: friends
+    >   Content-Type: application/json;charset=ISO-8859-1
+    >   Content-Language: en-US
+    >   Content-Length: 930
+    >   Date: Mon, 31 Aug 2020 16:58:17 GMT
 
 
 # -----------------------------------------------------
@@ -500,47 +460,39 @@ Date: Mon, 31 Aug 2020 16:58:17 GMT
 
     ls -1 .
 
---START--
-README
-autoindex.conf
-genius.roe.ac.uk.conf
-global.conf
-osa.metagrid.xyz.conf
-proxy-template
-tap.roe.ac.uk.conf
-userdir.conf
-welcome.conf
---END--
+    >   README
+    >   autoindex.conf
+    >   genius.roe.ac.uk.conf
+    >   global.conf
+    >   osa.metagrid.xyz.conf
+    >   proxy-template
+    >   tap.roe.ac.uk.conf
+    >   userdir.conf
+    >   welcome.conf
 
 
     cat genius.roe.ac.uk.conf
 
---START--
-....
-<VirtualHost *:80>
-    ServerName  genius.roe.ac.uk
-....
---END--
+    >   ....
+    >   <VirtualHost *:80>
+    >       ServerName  genius.roe.ac.uk
+    >   ....
 
 
     cat osa.metagrid.xyz.conf
 
---START--
-....
-<VirtualHost *:80>
-    ServerName  osa.metagrid.xyz
-....
---END--
+    >   ....
+    >   <VirtualHost *:80>
+    >       ServerName  osa.metagrid.xyz
+    >   ....
 
 
     cat tap.roe.ac.uk.conf
 
---START--
-....
-<VirtualHost *:80>
-    ServerName  tap.roe.ac.uk
-....
---END--
+    >   ....
+    >   <VirtualHost *:80>
+    >       ServerName  tap.roe.ac.uk
+    >   ....
 
     #
     # Config rules are - no matching host, use the first it finds.
