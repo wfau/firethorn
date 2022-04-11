@@ -26,6 +26,16 @@
 #zrq-notes-zeppelin
 #
 
+    Target:
+
+        Update the host OS, VM image OS and Java components of Firethorn.
+        Current host OS is Debian 8, latest is Debian 11.3.
+
+    Result:
+
+        Work in progress ...
+
+
 
 # -----------------------------------------------------
 # Create a new branch.
@@ -43,14 +53,12 @@
 
     popd
 
---START--
-Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
-....
-....
-To github.com:Zarquan/firethorn.git
- * [new branch]          20220408-zrq-updates -> 20220408-zrq-updates
-Branch '20220408-zrq-updates' set up to track remote branch '20220408-zrq-updates' from 'origin'.
---END--
+    >   Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
+    >   ....
+    >   ....
+    >   To github.com:Zarquan/firethorn.git
+    >    * [new branch]          20220408-zrq-updates -> 20220408-zrq-updates
+    >   Branch '20220408-zrq-updates' set up to track remote branch '20220408-zrq-updates' from 'origin'.
 
 
 # -----------------------------------------------------
@@ -62,41 +70,1176 @@ Branch '20220408-zrq-updates' set up to track remote branch '20220408-zrq-update
 
         git status
 
---START--
-On branch 20220408-zrq-updates
-Your branch is up to date with 'origin/20220408-zrq-updates'.
-
-Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git restore <file>..." to discard changes in working directory)
-	modified:   doc/notes/zrq/20210125-01-git-move.txt
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	doc/notes/zrq/20210208-01-float-deploy.txt
-	doc/notes/zrq/20220407-01-system-updates.txt
---END--
+    >   On branch 20220408-zrq-updates
+    >   Your branch is up to date with 'origin/20220408-zrq-updates'.
+    >   
+    >   Changes not staged for commit:
+    >     (use "git add <file>..." to update what will be committed)
+    >     (use "git restore <file>..." to discard changes in working directory)
+    >   	modified:   doc/notes/zrq/20210125-01-git-move.txt
+    >   
+    >   Untracked files:
+    >     (use "git add <file>..." to include in what will be committed)
+    >   	doc/notes/zrq/20210208-01-float-deploy.txt
+    >   	doc/notes/zrq/20220407-01-system-updates.txt
 
 
         git add doc/notes/zrq/20210125-01-git-move.txt
         git commit -m "Minor tweaks to notes" \
             doc/notes/zrq/20210125-01-git-move.txt
 
---START--
-[20220408-zrq-updates 5713331a7] Minor tweaks to notes
- 1 file changed, 5 insertions(+), 5 deletions(-)
---END--
+    >   [20220408-zrq-updates 5713331a7] Minor tweaks to notes
+    >    1 file changed, 5 insertions(+), 5 deletions(-)
 
 
         git add doc/notes/zrq/20210208-01-float-deploy.txt
         git commit -m "Assigning IP address to Apache proxy" \
             doc/notes/zrq/20210208-01-float-deploy.txt
 
+    >   [20220408-zrq-updates ceb5af6bb] Assigning IP address to Apache proxy
+    >    1 file changed, 327 insertions(+)
+    >    create mode 100644 doc/notes/zrq/20210208-01-float-deploy.txt
+
+
+        git add doc/notes/zrq/20220407-01-system-updates.txt
+        git commit -m "Notes on system updates ..." \
+            doc/notes/zrq/20220407-01-system-updates.txt
+
+    >   [20220408-zrq-updates 5d03bfffb] Notes on system updates ...
+    >    1 file changed, 102 insertions(+)
+    >    create mode 100644 doc/notes/zrq/20220407-01-system-updates.txt
+
+    popd
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Upgrade OS on trop01.
+# -----------------------------------------------------
+# Check the current OS version
+# https://linuxconfig.org/check-what-debian-version-you-are-running-on-your-linux-system
+#[user@trop01]
+
+    cat /etc/issue
+
+    >   Debian GNU/Linux 8 \n \l
+
+
+    cat /etc/debian_version
+
+    >   8.11
+
+
+    cat /etc/os-release
+
+    >   PRETTY_NAME="Debian GNU/Linux 8 (jessie)"
+    >   NAME="Debian GNU/Linux"
+    >   VERSION_ID="8"
+    >   VERSION="8 (jessie)"
+    >   ID=debian
+    >   HOME_URL="http://www.debian.org/"
+    >   SUPPORT_URL="http://www.debian.org/support"
+    >   BUG_REPORT_URL="https://bugs.debian.org/"
+
+
+    hostnamectl
+
+    >      Static hostname: trop01
+    >            Icon name: computer-server
+    >              Chassis: server
+    >           Machine ID: c65ef5596ca64e73b9bd3be57c773b94
+    >              Boot ID: 481adebd3c244eb9a5edfa311cbcca67
+    >     Operating System: Debian GNU/Linux 8 (jessie)
+    >               Kernel: Linux 3.16.0-11-amd64
+    >         Architecture: x86-64
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+
+    #
+    # Current Debian 'bullseye' is 11.3.
+    # https://www.debian.org/releases/stable/
+    #
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Upgrade current system
+#[root@trop01]
+
+    apt-get update
+
+    >   ....
+    >   ....
+    >   W: Failed to fetch http://ftp.uk.debian.org/debian/dists/jessie-backports/main/source/Sources  404  Not Found [IP: 78.129.164.123 80]
+    >   W: Failed to fetch http://ftp.uk.debian.org/debian/dists/jessie-backports/main/binary-amd64/Packages  404  Not Found [IP: 78.129.164.123 80]
+    >   W: Failed to fetch https://apt.dockerproject.org/repo/dists/debian-jessie/main/binary-amd64/Packages  Could not resolve host: apt.dockerproject.org
+    >   
+    >   E: Some index files failed to download. They have been ignored, or old ones used instead.
+
+
+    apt-get upgrade
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   Calculating upgrade... The following packages were automatically installed and are no longer required:
+    >     libuuid-perl linux-image-3.12-1-amd64
+    >   Use 'apt-get autoremove' to remove them.
+    >   Done
+    >   0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+
+    apt-get dist-upgrade
+
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   Calculating upgrade... The following packages were automatically installed and are no longer required:
+    >     libuuid-perl linux-image-3.12-1-amd64
+    >   Use 'apt-get autoremove' to remove them.
+    >   Done
+    >   0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+
+# -----------------------------------------------------
+# Run run autoremove and see ...
+#[root@trop01]
+
+    apt-get autoremove
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   The following packages will be REMOVED:
+    >     libuuid-perl linux-image-3.12-1-amd64
+    >   0 upgraded, 0 newly installed, 2 to remove and 0 not upgraded.
+    >   After this operation, 136 MB disk space will be freed.
+    >   Do you want to continue? [Y/n] y
+    >   (Reading database ... 45401 files and directories currently installed.)
+    >   Removing libuuid-perl (0.05-1+b1) ...
+    >   Removing linux-image-3.12-1-amd64 (3.12.6-2) ...
+    >   Examining /etc/kernel/postrm.d .
+    >   run-parts: executing /etc/kernel/postrm.d/initramfs-tools 3.12-1-amd64 /boot/vmlinuz-3.12-1-amd64
+    >   update-initramfs: Deleting /boot/initrd.img-3.12-1-amd64
+    >   run-parts: executing /etc/kernel/postrm.d/zz-update-grub 3.12-1-amd64 /boot/vmlinuz-3.12-1-amd64
+    >   Generating grub configuration file ...
+    >   Found linux image: /boot/vmlinuz-3.16.0-11-amd64
+    >   Found initrd image: /boot/initrd.img-3.16.0-11-amd64
+    >   Found linux image: /boot/vmlinuz-3.16.0-4-amd64
+    >   Found initrd image: /boot/initrd.img-3.16.0-4-amd64
+    >     No volume groups found
+    >   Adding boot menu entry for EFI firmware configuration
+    >   done
+    >   Processing triggers for man-db (2.7.0.2-5) ...
+
+
+    apt-get upgrade
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   Calculating upgrade... Done
+    >   0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+
+    apt-get dist-upgrade
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   Calculating upgrade... Done
+    >   0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+
+# -----------------------------------------------------
+# Edit sources to move to new version.
+# https://phoenixnap.com/kb/how-to-upgrade-debian-9-stretch-to-debian-10-buster
+#[root@trop01]
+
+    cp /etc/apt/sources.list \
+       /etc/apt/sources.list.bak
+
+    vi /etc/apt/sources.list
+
+        ....
+        ....
+
+        :%s/jessie/bullseye/
+
+
+    diff /etc/apt/sources.list /etc/apt/sources.list.bak
+
+    >   6,7c7,8
+    >   < deb http://ftp.uk.debian.org/debian/ bullseye main
+    >   < deb-src http://ftp.uk.debian.org/debian/ bullseye main
+    >   ---
+    >   > deb http://ftp.uk.debian.org/debian/ jessie main
+    >   > deb-src http://ftp.uk.debian.org/debian/ jessie main
+    >   9,10c10,11
+    >   < deb http://security.debian.org/ bullseye/updates main
+    >   < deb-src http://security.debian.org/ bullseye/updates main
+    >   ---
+    >   > deb http://security.debian.org/ jessie/updates main
+    >   > deb-src http://security.debian.org/ jessie/updates main
+    >   13,14c14,15
+    >   < deb http://ftp.uk.debian.org/debian/ bullseye-updates main
+    >   < deb-src http://ftp.uk.debian.org/debian/ bullseye-updates main
+    >   ---
+    >   > deb http://ftp.uk.debian.org/debian/ jessie-updates main
+    >   > deb-src http://ftp.uk.debian.org/debian/ jessie-updates main
+    >   17,18c18,19
+    >   < deb http://ftp.uk.debian.org/debian/ bullseye-backports main
+    >   < deb-src http://ftp.uk.debian.org/debian/ bullseye-backports main
+    >   ---
+    >   > deb http://ftp.uk.debian.org/debian/ jessie-backports main
+    >   > deb-src http://ftp.uk.debian.org/debian/ jessie-backports main
+
+
+    vi /etc/apt/sources.list.d/docker.list
+
+        ....
+        ....
+
+        :%s/jessie/bullseye/
+
+
+    cat /etc/apt/sources.list.d/docker.list
+
+    >   deb https://apt.dockerproject.org/repo debian-bullseye main
+
+
+# -----------------------------------------------------
+# Upgrade the system
+#[root@trop01]
+
+    apt-get update
+
+    >   ....
+    >   ....
+    >   W: GPG error: http://ftp.uk.debian.org bullseye InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 648ACFD622F3D138 NO_PUBKEY 0E98404D386FA1D9 NO_PUBKEY 605C66F00D6C9793
+    >   W: GPG error: http://ftp.uk.debian.org bullseye-updates InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 648ACFD622F3D138 NO_PUBKEY 0E98404D386FA1D9
+    >   W: GPG error: http://ftp.uk.debian.org bullseye-backports InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 648ACFD622F3D138 NO_PUBKEY 0E98404D386FA1D9
+    >   W: Failed to fetch http://security.debian.org/dists/bullseye/updates/main/source/Sources  404  Not Found [IP: 151.101.2.132 80]
+    >   W: Failed to fetch http://security.debian.org/dists/bullseye/updates/main/binary-amd64/Packages  404  Not Found [IP: 151.101.2.132 80]
+    >   W: Failed to fetch https://apt.dockerproject.org/repo/dists/debian-bullseye/main/binary-amd64/Packages  Could not resolve host: apt.dockerproject.org
+    >   E: Some index files failed to download. They have been ignored, or old ones used instead.
+
+
+    apt-get upgrade
+
+    >   ....
+    >   ....
+    >   233 upgraded, 0 newly installed, 0 to remove and 278 not upgraded.
+    >   Need to get 39.5 MB of archives.
+    >   After this operation, 12.8 MB of additional disk space will be used.
+    >   Do you want to continue? [Y/n] y
+    >   WARNING: The following packages cannot be authenticated!
+    >   ....
+    >   ....
+    >   Install these packages without verification? [y/N] n
+    >   E: Some packages could not be authenticated
+
+
+    apt-get dist-upgrade
+
+    >   ....
+    >   ....
+    >   511 upgraded, 430 newly installed, 37 to remove and 0 not upgraded.
+    >   Need to get 505 MB of archives.
+    >   After this operation, 1,277 MB of additional disk space will be used.
+    >   Do you want to continue? [Y/n]
+    >   WARNING: The following packages cannot be authenticated!
+    >   ....
+    >   ....
+    >   Install these packages without verification? [y/N] n
+    >   E: Some packages could not be authenticated
+
+
+# -----------------------------------------------------
+# Add the missing keys ..
+# https://www.linuxuprising.com/2019/06/fix-missing-gpg-key-apt-repository.html
+#[root@trop01]
+
+    keylist=(
+        648ACFD622F3D138
+        0E98404D386FA1D9
+        605C66F00D6C9793
+        648ACFD622F3D138
+        0E98404D386FA1D9
+        )
+
+    for keycode in ${keylist[@]}
+    do
+        echo "Key [${keycode}]"
+        apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys "${keycode}"
+    done
+
+
+    >   Key [648ACFD622F3D138]
+    >   Executing: gpg --ignore-time-conflict --no-options --no-default-keyring --homedir /tmp/tmp.SmJoDByMEB --no-auto-check-trustdb --trust-model always --keyring /etc/apt/trusted.gpg --primary-keyring /etc/apt/trusted.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-security-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-stretch-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-stretch-security-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-stretch-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-stable.gpg --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys 648ACFD622F3D138
+    >   gpg: requesting key 22F3D138 from hkp server pool.sks-keyservers.net
+    >   ?: pool.sks-keyservers.net: Host not found
+    >   gpgkeys: HTTP fetch error 7: couldn't connect: Success
+    >   gpg: no valid OpenPGP data found.
+    >   gpg: Total number processed: 0
+    >   ....
+    >   ....
+
+    #
+    # Host not found ?
+    #
+
+    host pool.sks-keyservers.net
+
+    >   Host pool.sks-keyservers.net not found: 2(SERVFAIL)
+
+
+    #
+    # Site is no longer available.
+    # https://github.com/rvm/rvm/issues/5096#issuecomment-876723722
+
+        > This site is no longer available, see website:
+        > http://sks-keyservers.net/
+        > Update 2021-06-21: Due to even more GDPR takedown requests, the DNS records for the pool will no longer be provided at all.
+
+    #
+    # https://github.com/SKS-Keyserver/sks-keyserver/issues/88#issuecomment-886522815
+
+        > The sks-keyservers.net pools are no longer maintained.
+        > Please see https://lists.gnupg.org/pipermail/gnupg-users/2021-June/065261.html
+
+    #
+    # gpg: keyserver receive failed: No name - for gpg --keyserver hkp://pool.sks-keyservers.net
+    # https://lists.gnupg.org/pipermail/gnupg-users/2021-June/065261.html
+
+        > Most of the individual keyservers that used to be in the pools are still
+        > working, however. There is a service at https://sks-status.gwolf.org/
+        > that monitors the known keyservers. Scroll to the bottom and click on
+        > the latest "Success" link to see a graph of keyservers that are
+        > currently responsive.
+
+
+    keyserver=pgp.uni-mainz.de
+    keyserver=pgp.mit.edu
+
+    for keycode in ${keylist[@]}
+    do
+        echo "Key [${keycode}]"
+        apt-key adv --keyserver ${keyserver} --recv-keys "${keycode}"
+    done
+
+
+    >   ....
+    >   ....
+    >   gpg: requesting key 0D6C9793 from hkp server pgp.mit.edu
+    >   gpg: key 0D6C9793: public key "Debian Stable Release Key (11/bullseye) <debian-release@lists.debian.org>" imported
+    >   gpg: Total number processed: 1
+    >   gpg:               imported: 1  (RSA: 1)
+    >   ....
+    >   gpg: requesting key 22F3D138 from hkp server pgp.mit.edu
+    >   gpg: key 3CBBABEE: "Debian Archive Automatic Signing Key (10/buster) <ftpmaster@debian.org>" not changed
+    >   gpg: Total number processed: 1
+    >   gpg:              unchanged: 1
+    >   ....
+    >   gpg: requesting key 386FA1D9 from hkp server pgp.mit.edu
+    >   gpg: key 8DD47936: "Debian Archive Automatic Signing Key (11/bullseye) <ftpmaster@debian.org>" not changed
+    >   gpg: Total number processed: 1
+    >   gpg:              unchanged: 1
+
+
+# -----------------------------------------------------
+# Upgrade the system
+#[root@trop01]
+
+    apt-get update
+
+    >   ....
+    >   ....
+    >   W: Failed to fetch https://apt.dockerproject.org/repo/dists/debian-bullseye/main/binary-amd64/Packages  Could not resolve host: apt.dockerproject.org
+    >   W: Failed to fetch http://security.debian.org/dists/bullseye/updates/main/source/Sources  404  Not Found [IP: 151.101.130.132 80]
+    >   W: Failed to fetch http://security.debian.org/dists/bullseye/updates/main/binary-amd64/Packages  404  Not Found [IP: 151.101.130.132 80]
+    >   E: Some index files failed to download. They have been ignored, or old ones used instead.
+
+
+    apt-get upgrade
+
+    >   ....
+    >   ....
+    >   Get:232 http://ftp.uk.debian.org/debian/ bullseye/main xml-core all 0.18+nmu1 [23.8 kB]
+    >   Get:233 http://ftp.uk.debian.org/debian/ bullseye/main xmlstarlet amd64 1.6.1-2.1 [268 kB]
+    >   Fetched 39.5 MB in 5s (6,817 kB/s)
+    >   Reading changelogs... Done
+    >   apt-listchanges: Mailing root: apt-listchanges: news for trop01
+    >   Extracting templates from packages: 100%
+    >   Preconfiguring packages ...
+    >   (Reading database ... 41796 files and directories currently installed.)
+    >   Preparing to unpack .../init-system-helpers_1.60_all.deb ...
+    >   Unpacking init-system-helpers (1.60) over (1.22) ...
+    >   dpkg: error processing archive /var/cache/apt/archives/init-system-helpers_1.60_all.deb (--unpack):
+    >    trying to overwrite '/usr/sbin/invoke-rc.d', which is also in package sysv-rc 2.88dsf-59
+    >   Errors were encountered while processing:
+    >    /var/cache/apt/archives/init-system-helpers_1.60_all.deb
+    >   E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+
+    apt-get dist-upgrade
+
+    >   ....
+    >   ....
+    >   bridge-utils (1.7-1) unstable; urgency=medium
+    >   
+    >     Linux kernel has changed bridge MAC address selection.
+    >   
+    >     In older Linux kernels the MAC of the bridge was the lower mac of the
+    >     devices attached to it, this is no longer the case now at Bullseye. The
+    >     kernel now makes up a completely new MAC address.
+    >   
+    >     This means that if you rely on your bridge's MAC address for something
+    >     like DHCP leases or similar stuff you'll loose this feature. The only way
+    >     to go back to your old MAC address is to assign it to the bridge
+    >     explicitly using bridge_hw followed by the wanted MAC address on your
+    >     bridge definition.
+    >   
+    >     To help with the problem caused by the kernel change of address selection
+    >     (see below for more info on this) we have overloaded bridge_hw option so
+    >     that you can specify the address you want or the name of an interface to
+    >     take the MAC address from it.
+    >   
+    >     In the past setting the bridge hardware address was not considered safe,
+    >     this is no longer a problem, currently it is necessary or recommended in a
+    >     lot of scenarios like IPv6, DHCP reservations, ... the ussage of bridge_hw
+    >     setting if the recommended way of doing this.
+    >   
+    >     Support for more than one stanza for one interface is now supported, see
+    >     README and examples.
+    >   ....
+    >   ....
+    >   iptables (1.8.1-1) unstable; urgency=medium
+    >   
+    >       By default, this package will try to use the nf_tables kernel backend
+    >       instead of the xtables one. Please, read more about this in
+    >       /usr/share/doc/iptables/README.Debian, including details about the new
+    >       update-alternatives configuration possibilities.
+    >       This is a major update on the way iptables works and may have severe impact
+    >       in running systems which are upgrading between Debian versions.
+    >       The arptables and ebtables binaries are also affected, and those packages
+    >       will be updated soon as well.
+    >   ....
+    >   ....
+    >   openssh (1:8.2p1-1) unstable; urgency=medium
+    >   
+    >     OpenSSH 8.2 includes a number of changes that may affect existing
+    >     configurations:
+    >   
+    >      * ssh(1), sshd(8), ssh-keygen(1): This release removes the "ssh-rsa"
+    >        (RSA/SHA1) algorithm from those accepted for certificate signatures
+    >        (i.e.  the client and server CASignatureAlgorithms option) and will use
+    >        the rsa-sha2-512 signature algorithm by default when the ssh-keygen(1)
+    >        CA signs new certificates.
+    >   ....
+    >   ....
+    >   
+    >   
+    >   
+    >   # -----------------------------------------------------
+    >   # -----------------------------------------------------
+    >   # Update our ssh key before we complete the update.
+    >   #[user@desktop]
+    >   
+    >       ssh-keygen \
+    >           -f /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key
+    >   
+    >       mv /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key.pub \
+    >          /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.pub
+    >   
+    >       scp /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.pub \
+    >           root@trop01:.ssh
+    >   
+    >       ssh root@trop01
+    >   
+    >           cp authorized_keys authorized_keys.bak
+    >           cat dmr.roe.ac.uk-20220408.pub >> authorized_keys
+    >   
+    >   
+    >   # -----------------------------------------------------
+    >   # Test our new ssh key before we complete the update.
+    >   #[user@desktop]
+    >   
+    >       ssh -v \
+    >           -o IdentitiesOnly=yes \
+    >           -i ~/.ssh/dmr.roe.ac.uk-20220408.key \
+    >           root@trop01.roe.ac.uk \
+    >           '
+    >           hostname
+    >           date
+    >           '
+    >   
+    >   ....
+    >   debug1: Will attempt key: /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key RSA SHA256:8gJSeUeggQbVHTzVKvaVDnHx2XwJGduxj0xzcPRDl5c explicit
+    >   debug1: SSH2_MSG_SERVICE_ACCEPT received
+    >   debug1: Authentications that can continue: publickey
+    >   debug1: Next authentication method: publickey
+    >   debug1: Offering public key: /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key RSA SHA256:8gJSeUeggQbVHTzVKvaVDnHx2XwJGduxj0xzcPRDl5c explicit
+    >   debug1: Server accepts key: /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key RSA SHA256:8gJSeUeggQbVHTzVKvaVDnHx2XwJGduxj0xzcPRDl5c explicit
+    >   Enter passphrase for key '/home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key':
+    >   debug1: Enabling compression at level 6.
+    >   debug1: Authentication succeeded (publickey).
+    >   Authenticated to trop01.roe.ac.uk ([129.215.175.96]:22).
+    >   ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Complete the upgrade ...
+#[root@trop01]
+
+
+    >   ....
+    >   ....
+    >   Restarting services possibly affected by the upgrade:
+    >     ssh: restarting...FAILED! (1)
+    >     exim4: restarting...done.
+    >     cron: restarting...done.
+    >     atd: restarting...done.
+    >   ....
+    >   ....
+    >   Installing new version of config file /etc/init.d/umountnfs.sh ...
+    >   Installing new version of config file /etc/init.d/umountroot ...
+    >   Installing new version of config file /etc/network/if-up.d/mountnfs ...
+    >   /var/lib/dpkg/info/initscripts.postinst: 8: .: Can't open /lib/init/vars.sh
+    >   dpkg: error processing package initscripts (--configure):
+    >    subprocess installed post-installation script returned error exit status 2
+    >   Processing triggers for systemd (215-17+deb8u13) ...
+    >   Errors were encountered while processing:
+    >    initscripts
+    >   E: Sub-process /usr/bin/dpkg returned an error code (1)
 
 
 
+    systemctl status ssh
+
+    >   ● ssh.service - OpenBSD Secure Shell server
+    >      Loaded: loaded (/lib/systemd/system/ssh.service; enabled)
+    >      Active: failed (Result: start-limit) since Fri 2022-04-08 18:19:32 BST; 3min 3s ago
+    >        Docs: man:sshd(8)
+    >              man:sshd_config(5)
+    >    Main PID: 1494 (code=exited, status=0/SUCCESS)
+    >   
+    >   Apr 08 18:19:32 trop01 systemd[1]: Failed to start OpenBSD Secure Shell server.
+    >   Apr 08 18:19:32 trop01 systemd[1]: Unit ssh.service entered failed state.
+    >   Apr 08 18:19:32 trop01 systemd[1]: ssh.service holdoff time over, scheduling restart.
+    >   Apr 08 18:19:32 trop01 systemd[1]: Stopping OpenBSD Secure Shell server...
+    >   Apr 08 18:19:32 trop01 systemd[1]: Starting OpenBSD Secure Shell server...
+    >   Apr 08 18:19:32 trop01 systemd[1]: ssh.service start request repeated too quickly, refusing to start.
+    >   Apr 08 18:19:32 trop01 systemd[1]: Failed to start OpenBSD Secure Shell server.
+    >   Apr 08 18:19:32 trop01 systemd[1]: Unit ssh.service entered failed state.
 
 
+    systemctl start ssh
 
+    systemctl status ssh
+
+    >   ● ssh.service - OpenBSD Secure Shell server
+    >      Loaded: loaded (/lib/systemd/system/ssh.service; enabled)
+    >      Active: active (running) since Fri 2022-04-08 18:23:29 BST; 5s ago
+    >        Docs: man:sshd(8)
+    >              man:sshd_config(5)
+    >     Process: 14525 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+    >    Main PID: 14528 (sshd)
+    >      CGroup: /system.slice/ssh.service
+    >              └─14528 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+    >   
+    >   Apr 08 18:23:29 trop01 sshd[14525]: /etc/ssh/sshd_config line 31: Deprecated option RSAAuthentication
+    >   Apr 08 18:23:29 trop01 sshd[14525]: /etc/ssh/sshd_config line 38: Deprecated option RhostsRSAAuthentication
+    >   Apr 08 18:23:29 trop01 sshd[14528]: /etc/ssh/sshd_config line 16: Deprecated option UsePrivilegeSeparation
+    >   Apr 08 18:23:29 trop01 sshd[14528]: /etc/ssh/sshd_config line 19: Deprecated option KeyRegenerationInterval
+    >   Apr 08 18:23:29 trop01 sshd[14528]: /etc/ssh/sshd_config line 20: Deprecated option ServerKeyBits
+    >   Apr 08 18:23:29 trop01 sshd[14528]: /etc/ssh/sshd_config line 31: Deprecated option RSAAuthentication
+    >   Apr 08 18:23:29 trop01 sshd[14528]: /etc/ssh/sshd_config line 38: Deprecated option RhostsRSAAuthentication
+    >   Apr 08 18:23:29 trop01 sshd[14528]: Server listening on 0.0.0.0 port 22.
+    >   Apr 08 18:23:29 trop01 sshd[14528]: Server listening on :: port 22.
+    >   Apr 08 18:23:29 trop01 systemd[1]: Started OpenBSD Secure Shell server.
+
+
+# -----------------------------------------------------
+# Test our old ssh key.
+#[user@desktop]
+
+    ssh -v \
+        -o IdentitiesOnly=yes \
+        -i ~/.ssh/dmr.roe.ac.uk.rsa \
+        root@trop01.roe.ac.uk \
+        '
+        hostname
+        date
+        '
+
+    >   ....
+    >   debug1: Offering public key: /home/Zarquan/.ssh/dmr.roe.ac.uk.rsa RSA SHA256:KmoW7OoADnKCa9LcgjwIE89fLqCRLvvHMgTsqVIJX0Q explicit agent
+    >   debug1: Server accepts key: /home/Zarquan/.ssh/dmr.roe.ac.uk.rsa RSA SHA256:KmoW7OoADnKCa9LcgjwIE89fLqCRLvvHMgTsqVIJX0Q explicit agent
+    >   debug1: Enabling compression at level 6.
+    >   debug1: Authentication succeeded (publickey).
+    >   ....
+
+
+# -----------------------------------------------------
+# Test our new ssh key.
+#[user@desktop]
+
+    ssh -v \
+        -o IdentitiesOnly=yes \
+        -i ~/.ssh/dmr.roe.ac.uk-20220408.key \
+        root@trop01.roe.ac.uk \
+        '
+        hostname
+        date
+        '
+
+    >   ....
+    >   debug1: Offering public key: /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key RSA SHA256:8gJSeUeggQbVHTzVKvaVDnHx2XwJGduxj0xzcPRDl5c explicit
+    >   debug1: Server accepts key: /home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key RSA SHA256:8gJSeUeggQbVHTzVKvaVDnHx2XwJGduxj0xzcPRDl5c explicit
+    >   Enter passphrase for key '/home/Zarquan/.ssh/dmr.roe.ac.uk-20220408.key':
+    >   debug1: Enabling compression at level 6.
+    >   debug1: Authentication succeeded (publickey).
+    >   ....
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Complete the upgrade ...
+#[root@trop01]
+
+    apt-get dist-upgrade
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   You might want to run 'apt-get -f install' to correct these.
+    >   The following packages have unmet dependencies:
+    >    libnih1 : Depends: libc6 (< 2.20) but 2.31-13+deb11u3 is installed
+    >    openssh-sftp-server : Depends: openssh-client (= 1:6.7p1-5+deb8u8) but 1:8.4p1-5 is installed
+    >   E: Unmet dependencies. Try using -f.
+
+
+    apt-get -f install
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   Correcting dependencies... Done
+    >   The following package was automatically installed and is no longer required:
+    >     libevent-2.1-7
+    >   Use 'apt-get autoremove' to remove it.
+    >   The following extra packages will be installed:
+    >     dbus init-system-helpers libcap-ng0 libdbus-1-3 libnih-dbus1 libnih1 openssh-sftp-server
+    >   Suggested packages:
+    >     default-dbus-session-bus dbus-session-bus
+    >   The following packages will be upgraded:
+    >     dbus init-system-helpers libcap-ng0 libdbus-1-3 libnih-dbus1 libnih1 openssh-sftp-server
+    >   7 upgraded, 0 newly installed, 0 to remove and 486 not upgraded.
+    >   13 not fully installed or removed.
+    >   Need to get 0 B/797 kB of archives.
+    >   After this operation, 322 kB disk space will be freed.
+    >   Do you want to continue? [Y/n] y
+    >   Can't set locale; make sure $LC_* and $LANG are correct!
+    >   Reading changelogs... Done
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   Setting up initscripts (2.96-7+deb11u1) ...
+    >   /var/lib/dpkg/info/initscripts.postinst: 8: .: Can't open /lib/init/vars.sh
+    >   dpkg: error processing package initscripts (--configure):
+    >    subprocess installed post-installation script returned error exit status 2
+    >   Errors were encountered while processing:
+    >    initscripts
+    >   E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+
+# -----------------------------------------------------
+# Try fixing the locale
+# https://askubuntu.com/a/1034682
+#[root@trop01]
+
+    dpkg-reconfigure locales
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   /usr/sbin/dpkg-reconfigure: locales is broken or not fully installed
+
+
+# -----------------------------------------------------
+# Try fixing the locale
+# https://askubuntu.com/a/817371
+#[root@trop01]
+
+     vi /etc/default/locale
+
+        #  File generated by update-locale
+        LANG=en_US.UTF-8
+
+
+    dpkg-reconfigure locales
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   /usr/sbin/dpkg-reconfigure: locales is broken or not fully installed
+
+
+# -----------------------------------------------------
+# Try fixing the locale
+# https://askubuntu.com/a/817371
+#[root@trop01]
+
+     vi /etc/default/locale
+
+        #  File generated by update-locale
+        LANG="en_GB.UTF-8"
+        LANGUAGE="en_GB:en"
+
+
+    export LC_All=C.UTF-8
+    update-locale
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LC_All = "C.UTF-8",
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   *** update-locale: Error: invalid locale settings:  LANG="en_GB.UTF-8" LANGUAGE="en_GB:en"
+
+
+     vi /etc/default/locale
+
+        #  File generated by update-locale
+        LANG=en_US.UTF-8
+
+
+    export LC_All=C.UTF-8
+    update-locale
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LC_All = "C.UTF-8",
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   *** update-locale: Error: invalid locale settings:  LANG=en_US.UTF-8
+
+
+     vi /etc/default/locale
+
+        #  File generated by update-locale
+
+
+    export LC_All=C.UTF-8
+    update-locale
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LC_All = "C.UTF-8",
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+
+
+# -----------------------------------------------------
+# Try fixing the locale
+# https://people.debian.org/~schultmc/locales.html
+#[root@trop01]
+
+    apt-get install debconf
+
+    >   Reading package lists... Done
+    >   Building dependency tree
+    >   Reading state information... Done
+    >   You might want to run 'apt-get -f install' to correct these:
+    >   The following packages have unmet dependencies:
+    >    debconf : Breaks: apt-listchanges (< 3.14) but 2.85.13+nmu1 is to be installed
+    >    debconf-i18n : Depends: debconf (= 1.5.56+deb8u1) but 1.5.77 is to be installed
+    >    libnih1 : Depends: libc6 (< 2.20) but 2.31-13+deb11u3 is to be installed
+    >    openssh-sftp-server : Depends: openssh-client (= 1:6.7p1-5+deb8u8) but 1:8.4p1-5 is to be installed
+    >   E: Unmet dependencies. Try 'apt-get -f install' with no packages (or specify a solution).
+
+    #
+    # Looking at the warnings, I think we can fix them after a reboot.
+    #
+
+
+# -----------------------------------------------------
+# Try fixing the problem with initscripts
+# https://askubuntu.com/a/1171991
+#[root@trop01]
+
+    >   ....
+    >   Setting up initscripts (2.96-7+deb11u1) ...
+    >   /var/lib/dpkg/info/initscripts.postinst: 8: .: Can't open /lib/init/vars.sh
+    >   dpkg: error processing package initscripts (--configure):
+    >    subprocess installed post-installation script returned error exit status 2
+    >   Errors were encountered while processing:
+    >    initscripts
+    >   E: Sub-process /usr/bin/dpkg returned an error code (1)
+    >   ....
+
+
+    mv /var/lib/dpkg/info/util-linux.postinst ~/util-linux.postinst.old
+
+    apt-get dist-upgrade -f
+
+    >   ....
+    >   ....
+    >   After this operation, 1261 MB of additional disk space will be used.
+    >   Do you want to continue? [Y/n] y
+    >   Can't set locale; make sure $LC_* and $LANG are correct!
+    >   Reading changelogs... Done
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LC_All = "C.UTF-8",
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   Extracting templates from packages: 100%
+    >   Preconfiguring packages ...
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   ....
+    >   ....
+    >   dpkg: python: dependency problems, but removing anyway as you requested:
+    >    reportbug depends on python.
+    >    reportbug depends on python:any (>= 2.6~).
+    >    reportbug depends on python.
+    >    reportbug depends on python:any (>= 2.6~).
+    >    python-wstools depends on python (>= 2.7).
+    >    python-wstools depends on python (<< 2.8).
+    >    python-wstools depends on python (>= 2.7).
+    >    python-wstools depends on python (<< 2.8).
+    >    python-urllib3 depends on python:any (<< 2.8).
+    >    python-urllib3 depends on python:any (>= 2.7.5-5~).
+    >    python-urllib3 depends on python:any (<< 2.8).
+    >   ....
+    >   ....
+    >    lsb-release depends on python (>= 2.7).
+    >    lsb-release depends on python (<< 2.8).
+    >    lsb-release depends on python (>= 2.7).
+    >    lsb-release depends on python (<< 2.8).
+    >    apt-listchanges depends on python (>= 2.4).
+    >   
+    >   Removing python (2.7.9-1) ...
+    >   dpkg: python-support: dependency problems, but processing triggers anyway as you requested:
+    >    python-support depends on python (>= 2.5); however:
+    >     Package python is not installed.
+    >   ....
+    >   ....
+    >   Preparing to unpack .../perl-base_5.32.1-4+deb11u2_amd64.deb ...
+    >   Unpacking perl-base (5.32.1-4+deb11u2) over (5.20.2-3+deb8u12) ...
+    >   Processing triggers for libc-bin (2.31-13+deb11u3) ...
+    >   Errors were encountered while processing:
+    >    /var/cache/apt/archives/btrfs-progs_5.10.1-2_amd64.deb
+    >   E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+
+# -----------------------------------------------------
+# Check if any of our discs use btrfs ?
+#[root@trop01]
+
+    cat /etc/fstab
+
+    >   UUID=d3fc01a6-0574-43c3-b7d4-58a714f4ade3 /         ext4    errors=remount-ro 0 1
+    >   UUID=4f2b1498-afb8-4052-9874-7c39a328c7d0 /home     ext4    defaults    0   2
+    >   UUID=2c8ebeee-62b0-4d0d-bc1d-f6ea5348a2bf /tmp      ext4    defaults    0   2
+    >   UUID=9bf9e8aa-d0de-4c58-bad3-a4d9fa4429da /var      ext4    defaults    0   2
+    >   UUID=7083fbc9-7113-43d2-9acc-0a27b8f6b1a3 /data1    ext4    defaults    0   2
+    >   UUID=b7b32ca7-62f2-41c5-8bc5-0aa75ec71abe /data2    ext4    defaults    0   2
+
+    #
+    # Nothing uses btrfs, so we should be OK.
+    #
+
+# -----------------------------------------------------
+# Check what version of Python is installed
+#[root@trop01]
+
+    python3
+
+    >   Python 3.9.2 (default, Feb 28 2021, 17:03:44)
+    >   [GCC 10.2.1 20210110] on linux
+    >   Type "help", "copyright", "credits" or "license" for more information.
+    >   >>>
+
+
+    python2.7
+
+    >   Python 2.7.9 (default, Sep 14 2019, 20:00:08)
+    >   [GCC 4.9.2] on linux2
+    >   Type "help", "copyright", "credits" or "license" for more information.
+    >   >>>
+
+
+# -----------------------------------------------------
+# Try fixing the locale.
+#[root@trop01]
+
+    dpkg-reconfigure locales
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   /usr/sbin/dpkg-reconfigure: locales is broken or not fully installed
+
+
+    update-locale
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = (unset),
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+
+
+     mv /etc/default/locale ~/default-locale-old
+
+    export LC_CTYPE=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+
+    update-locale
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = "en_US.UTF-8",
+    >   	LC_CTYPE = "en_US.UTF-8",
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+
+
+    dpkg-reconfigure locales
+
+    >   perl: warning: Setting locale failed.
+    >   perl: warning: Please check that your locale settings:
+    >   	LANGUAGE = "en_GB:en",
+    >   	LC_ALL = "en_US.UTF-8",
+    >   	LC_CTYPE = "en_US.UTF-8",
+    >   	LANG = "en_GB.UTF-8"
+    >       are supported and installed on your system.
+    >   perl: warning: Falling back to the standard locale ("C").
+    >   locale: Cannot set LC_CTYPE to default locale: No such file or directory
+    >   locale: Cannot set LC_MESSAGES to default locale: No such file or directory
+    >   locale: Cannot set LC_ALL to default locale: No such file or directory
+    >   /usr/sbin/dpkg-reconfigure: locales is broken or not fully installed
+
+    #
+    # 'locales is broken or not fully installed'
+    # NO SHIT STUPID
+    # Delete the !"£$%^ settings and start again !!!
+    #
+
+
+# -----------------------------------------------------
+# Check if the rest is healthy ..
+# https://askubuntu.com/a/1171991
+#[root@trop01]
+
+    dpkg --purge usplash
+
+    >   dpkg: warning: ignoring request to remove usplash which isn't installed
+
+
+    dpkg --purge readahead
+
+    >   dpkg: warning: ignoring request to remove readahead which isn't installed
+
+
+    dpkg --configure initscripts
+
+    >   dpkg: error processing package initscripts (--configure):
+    >    package initscripts is already installed and configured
+    >   Errors were encountered while processing:
+    >    initscripts
+
+
+    dpkg --configure util-linux
+
+    >   dpkg: error processing package util-linux (--configure):
+    >    package util-linux is already installed and configured
+    >   Errors were encountered while processing:
+    >    util-linux
+
+    #
+    # I think those stern warnings were "Debian not-warnings".
+    # Rather than just saying
+    #   'package <x> is already installed and configured'
+    # Debian developers think that should be reported as an error.
+    #
+
+
+# -----------------------------------------------------
+# Try again ...
+#[root@trop01]
+
+    apt-get dist-upgrade
+
+    >   Reading package lists... Done
+    >   Building dependency tree... Done
+    >   Reading state information... Done
+    >   You might want to run 'apt --fix-broken install' to correct these.
+    >   The following packages have unmet dependencies:
+    >    libguestfs0 : Depends: btrfs-progs but it is not installed
+    >    liblocale-gettext-perl : PreDepends: perlapi-5.20.0 but it is not installable
+    >    libnih1 : Depends: libc6 (< 2.20) but 2.31-13+deb11u3 is installed
+    >    lsb-release : Depends: python (>= 2.7)
+    >                  Depends: python (< 2.8)
+    >    python-cffi : Depends: python (< 2.8)
+    >                  Depends: python:any (>= 2.7.5-5~)
+    >                  Depends: python (>= 2.7~)
+    >    python-cryptography : Depends: python (< 2.8)
+    >                          Depends: python (>= 2.7~)
+    >                          Depends: python:any (>= 2.7.5-5~)
+    >    python-defusedxml : Depends: python:any (>= 2.7.5-5~)
+    >                        Depends: python:any (< 2.8)
+    >    python-docutils : Depends: python:any (>= 2.7.5-5~)
+    >                      Depends: python:any (< 2.8)
+    >                      Recommends: python-pil but it is not installable
+    >    python-openssl : Depends: python:any (>= 2.7.5-5~)
+    >                     Depends: python:any (< 2.8)
+    >    python-pkg-resources : Depends: python:any (>= 2.7)
+    >                           Depends: python:any (< 2.8)
+    >    python-ply : Depends: python (>= 2.7)
+    >                 Depends: python (< 2.8)
+    >    python-pyasn1 : Depends: python (>= 2.7)
+    >                    Depends: python (< 2.8)
+    >    python-pycparser : Depends: python:any (>= 2.7.5-5~)
+    >                       Depends: python:any (< 2.8)
+    >    python-pygments : Depends: python
+    >                      Depends: python:any (< 2.8)
+    >                      Depends: python:any (>= 2.7.5-5~)
+    >                      Recommends: python-chardet but it is not installable
+    >    python-roman : Depends: python (>= 2.7)
+    >                   Depends: python (< 2.8)
+    >    python-six : Depends: python:any (>= 2.7.5-5~)
+    >                 Depends: python:any (< 2.8)
+    >    python-soappy : Depends: python:any (>= 2.7.5-5~)
+    >                    Depends: python:any (< 2.8)
+    >    python-urllib3 : Depends: python:any (< 2.8)
+    >                     Depends: python:any (>= 2.7.5-5~)
+    >                     Recommends: python-ndg-httpsclient but it is not installable
+    >    python-wstools : Depends: python (>= 2.7)
+    >                     Depends: python (< 2.8)
+    >   E: Unmet dependencies. Try 'apt --fix-broken install' with no packages (or specify a solution).
+
+    #
+    # Not sure what the problem is ...
+
+    >   ....
+    >       Depends: python (>= 2.7)
+    >       Depends: python (< 2.8)
+    >   ....
+
+
+    python2.7
+
+    >   Python 2.7.9 (default, Sep 14 2019, 20:00:08)
+    >   [GCC 4.9.2] on linux2
+    >   Type "help", "copyright", "credits" or "license" for more information.
+    >   >>>
+
+    2.7.9 IS >= 2.7
+    2.7.9 IS < 2.8
+
+    So what is the problem !?
+    I'm !"£$ing fed up with Python :-(
+
+
+    #
+    # I suspect this is why we can't set locale.
+
+    >   ....
+    >   liblocale-gettext-perl : PreDepends: perlapi-5.20.0 but it is not installable
+    >   ....
+
+
+# -----------------------------------------------------
+# ...
+#[root@trop01]
+
+    apt --fix-broken install
+
+
+    >   ....
+    >   ....
+    >   Reading package lists... Done
+    >   Building dependency tree... Done
+    >   Reading state information... Done
+    >   Correcting dependencies... Done
+    >   ....
+    >   ....
+    >   
+    >   Setting up sysvinit-utils (2.96-7+deb11u1) ...
+    >   (Reading database ... 49237 files and directories currently installed.)
+    >   Preparing to unpack .../liblocale-gettext-perl_1.07-4+b1_amd64.deb ...
+    >   Unpacking liblocale-gettext-perl (1.07-4+b1) over (1.05-8+b1) ...
+    >   Preparing to unpack .../btrfs-progs_5.10.1-2_amd64.deb ...
+    >   Unpacking btrfs-progs (5.10.1-2) ...
+    >   dpkg: error processing archive /var/cache/apt/archives/btrfs-progs_5.10.1-2_amd64.deb (--unpack):
+    >    trying to overwrite '/sbin/fsck.btrfs', which is also in package btrfs-tools 3.17-1.1
+    >   dpkg-deb: error: paste subprocess was killed by signal (Broken pipe)
+    >   Errors were encountered while processing:
+    >    /var/cache/apt/archives/btrfs-progs_5.10.1-2_amd64.deb
+    >   W: No sandbox user '_apt' on the system, can not drop privileges
+    >   E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+
+# -----------------------------------------------------
+# Go for it
+#[root@trop01]
+
+    reboot
+
+    >   Connection to trop01.roe.ac.uk closed by remote host.
+    >   Connection to trop01.roe.ac.uk closed.
+
+
+    #
+    # Dead .... I killed it :-(
+    # Sent an email to Mark H. asking him to bail us out :-(
+    #
 
 
