@@ -60,193 +60,179 @@
 
     >   Dockerfile [./apache/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./builder/Dockerfile]
     >   FROM firethorn/java:2.1.36
-    >   
+    >
     >   Dockerfile [./compose/client/Dockerfile]
     >   FROM firethorn/tester:2.1.36
-    >   
+    >
     >   Dockerfile [./compose/tests/distictella/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./compose/tests/distictella/firethorn-py/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./debian/ivoatex/Dockerfile]
     >   FROM firethorn/notroot
-    >   
+    >
     >   Dockerfile [./debian/notroot/Dockerfile]
     >   FROM debian
-    >   
+    >
     >   Dockerfile [./fedora/Dockerfile]
     >   FROM fedora@sha256:7ae08e5637170eb47c01e315b6e64e0d48c6200d2942c695d0bee61b38c65b39
-    >   
+    >
     >   Dockerfile [./java/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./postgres/Dockerfile]
     >   FROM postgres:11
-    >   
+    >
     >   Dockerfile [./pyrosql/5.7/Dockerfile]
     >   FROM    andystanton/mysql:5.7
-    >   
+    >
     >   Dockerfile [./python/3.4.2/Dockerfile]
     >   FROM firethorn/ubuntu:2.1.36
-    >   
+    >
     >   Dockerfile [./pythonlibs/Dockerfile]
     >   FROM firethorn/python:2.1.36
-    >   
+    >
     >   Dockerfile [./sql-client/Dockerfile]
     >   FROM centos:6
-    >   
+    >
     >   Dockerfile [./sql-proxy/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./sql-tunnel/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./ssh-client/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./tester/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./tomcat/Dockerfile]
     >   FROM firethorn/java:2.1.36
-    >   
+    >
     >   Dockerfile [./ubuntu/14.04/Dockerfile]
     >   FROM ubuntu:14.04
 
 
-    #
-    # Most of them are based on the Fedora image.
-    # FROM firethorn/fedora:2.1.36
-    #
+    Most of them are based on the Fedora image.
+
 
     >   Dockerfile [./fedora/Dockerfile]
     >   FROM fedora@sha256:7ae08e5637170eb47c01e315b6e64e0d48c6200d2942c695d0bee61b38c65b39
-    >   
+    >
     >   Dockerfile [./apache/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./compose/tests/distictella/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./compose/tests/distictella/firethorn-py/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./java/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./sql-proxy/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./sql-tunnel/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./ssh-client/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
-    >   
+    >
     >   Dockerfile [./tester/Dockerfile]
     >   FROM firethorn/fedora:2.1.36
 
-    #
-    # Two are based on the Java image, which is based on the Fedora image.
-    #
+
+    Two are based on the Java image, which is based on the Fedora image.
 
     >   Dockerfile [./tomcat/Dockerfile]
     >   FROM firethorn/java:2.1.36
-    >   
+    >
     >   Dockerfile [./builder/Dockerfile]
     >   FROM firethorn/java:2.1.36
 
-    #
-    # One is based on tester, which is based on the Fedora image.
-    #
+
+    One is based on tester, which is based on the Fedora image.
 
     >   Dockerfile [./compose/client/Dockerfile]
     >   FROM firethorn/tester:2.1.36
 
-    #
-    # One is based on an official database image.
-    #
+
+    One is based on an official database image.
 
     >   Dockerfile [./postgres/Dockerfile]
     >   FROM postgres:11
 
-    #
-    # One is based on a personal user account.
-    # (last updated seven years ago)
-    #
+
+    One is based on a personal user account.
+    (last updated seven years ago)
 
     >   Dockerfile [./pyrosql/5.7/Dockerfile]
     >   FROM    andystanton/mysql:5.7
 
-    #
-    # Two of the images are for the ivoatex builder.
-    # Since moved to a separate ivoa repository, so we can delete these.
-    #
+
+    Two of the images are for the ivoatex builder.
+    Since moved to a separate ivoa repository, so we can delete these.
 
     >   Dockerfile [./debian/ivoatex/Dockerfile]
     >   FROM firethorn/notroot
-    >   
+    >
     >   Dockerfile [./debian/notroot/Dockerfile]
     >   FROM debian
 
-    #
-    # The Python client is based on Ubuntu 14.04.
-    #
+
+    The Python client is based on Ubuntu 14.04.
 
     >   Dockerfile [./ubuntu/14.04/Dockerfile]
     >   FROM ubuntu:14.04
-    >   
+    >
     >   Dockerfile [./python/3.4.2/Dockerfile]
     >   FROM firethorn/ubuntu:2.1.36
-    >   
+    >
     >   Dockerfile [./pythonlibs/Dockerfile]
     >   FROM firethorn/python:2.1.36
 
-    #
-    # The SQL client is fixed based on an old version of CentOS,
-    # because that is fixed by the version of sqsh.
-    #
+
+    The SQL client is fixed based on an old version of CentOS,
+    because that is fixed by the version of sqsh.
 
     >   Dockerfile [./sql-client/Dockerfile]
     >   FROM centos:6
 
-    #
-    # The Firethorn and OGSA-DAI webapps build on the tomcat container.
-    #
+
+    The Firethorn and OGSA-DAI webapps build on the tomcat container.
 
     >   FROM firethorn/tomcat:2.1.36
 
-    #
-    # The main Fedora container has a comment about OGSA-DAI having issues with Fedora 29.
-    #
+
+    The main Fedora container has a comment about OGSA-DAI having issues with Fedora 29.
 
     >   ....
     >   # FROM latest (fedora:29)
     >   # https://github.com/docker-library/repo-info/blob/master/repos/fedora/tag-details.md#fedoralatest
     >   # FROM fedora@sha256:2a60898a6dd7da9964b0c59fedcf652e24bfff04142e5488f793c9e8156afd33
-    >   
+    >
     >   # Problems with OGSA-DAI webapp meant we had to revert back to fedora:28.
     >   # FROM fedora:28
     >   FROM fedora@sha256:7ae08e5637170eb47c01e315b6e64e0d48c6200d2942c695d0bee61b38c65b39
     >   ....
 
-    #
-    # I'm not keen on openning that box.
-    # Preference is to concentrate on the main Firethorn service, and leave OGSA-DAI as-is.
-    # Update to the latest Fedora, Java and Tomcat, and publish that to our GitHub repository.
-    # Update Firethorn to use the latest Fedora, Java and Tomcat.
-    #
 
-    #
-    # Push copies of the fedora:28 binaries to our GitHub repository.
-    # Leave OGSA-DAI as-is, using the fedora:28 based Tomcat.
-    # Make sure the OGSA-DAI web service is never accessible from outside.
-    #
+    I'm not keen on openning that box.
+    Preference is to concentrate on the main Firethorn service, and leave OGSA-DAI as-is.
+    Update to the latest Fedora, Java and Tomcat, and publish that to our GitHub repository.
+    Update Firethorn to use the latest Fedora, Java and Tomcat.
+
+    Push copies of the fedora:28 binaries to our GitHub repository.
+    Leave OGSA-DAI as-is, using the fedora:28 based Tomcat.
+    Make sure the OGSA-DAI web service is never accessible from outside.
 
 
 
