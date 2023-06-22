@@ -1,0 +1,823 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2023, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#zrq-notes-time
+#zrq-notes-indent
+#zrq-notes-crypto
+#zrq-notes-ansible
+#zrq-notes-osformat
+#zrq-notes-zeppelin
+#
+# AIMetrics: [{"name": "ChatGPT","contribution": {"value": 0,"units": "%"}}]
+#
+
+
+    Target:
+
+        Merge changes from 2022 into the main repository.
+
+    Result:
+
+        Work in progress ...
+
+# -----------------------------------------------------
+# Check the status of our local copy.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE:?}"
+
+        git status
+
+    popd
+
+    >   On branch 20220408-zrq-updates
+    >   Your branch is up to date with 'origin/20220408-zrq-updates'.
+    >   
+    >   Untracked files:
+    >     (use "git add <file>..." to include in what will be committed)
+    >   	doc/notes/zrq/20230621-01-git-updates.txt
+
+
+    #
+    # Lookng through the changes in GitHub we can see two sets.
+    #
+    # 1) Notes on the changes to the system configuration.
+    #    These reflect changes made to the live system.
+    #    These should be merged into the main repository.
+    #
+    # 2) Changes to update versions of the OS, the Java SDK and the project dependencies.
+    #    These are incomplete and can't be merged.
+    #
+
+    #
+    # Do we select the commits that include the changes we want to merge
+    # and cherry-pick them into a separate branch ?
+    #
+    # Or do we just manually remove the files from this branch and then create new ones in a new branch ?
+    #
+    # Cherry-picking git commits would be a good test for ChatGTP.
+    #
+    # Plan is to make a backup and then play with ChatGTP for a bit.
+    # If it all goes pear shaped, we can apply the manual process to the backup.
+    #
+
+
+# -----------------------------------------------------
+# Make a backup of our local copy.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE:?}"
+
+        pushd ..
+
+            ls -al
+
+            cp -ra "github-zrq" "github-zrq-$(date '+%Y%m%d')-01"
+
+            ls -al
+
+        popd
+
+
+    >   drwxrwsr-x. 1 Zarquan users  60 Jan 26  2021 .
+    >   drwxrwsr-x. 1 Zarquan users 364 Mar 20 12:48 ..
+    >   ....
+    >   drwxrwsr-x. 1 Zarquan users 528 Apr 14  2022 github-zrq
+
+    >   drwxrwsr-x. 1 Zarquan users 104 Jun 21 17:34 .
+    >   drwxrwsr-x. 1 Zarquan users 364 Mar 20 12:48 ..
+    >   ....
+    >   drwxrwsr-x. 1 Zarquan users 528 Apr 14  2022 github-zrq
+    >   drwxrwsr-x. 1 Zarquan users 528 Apr 14  2022 github-zrq-20230621-01
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   How do I request the git logs for the current branch.
+
+    >   To request the Git logs for the current branch, you can use the `git log` command. Here's how you can do it:
+    >   
+    >   1. Open your terminal or command prompt.
+    >   2. Navigate to the root directory of your Git repository using the `cd` command. For example:
+    >      ```
+    >      cd /path/to/your/repository
+    >      ```
+    >   3. Ensure you are on the desired branch. You can use the `git branch` command to see the current branch and switch to a different branch if needed. For example, to switch to the "main" branch:
+    >      ```
+    >      git checkout main
+    >      ```
+    >   4. Once you are on the desired branch, execute the following command to view the Git logs:
+    >      ```
+    >      git log
+    >      ```
+    >      This will display the commit history for the current branch, starting with the most recent commits. You'll see information such as the commit hash, author, date, and commit message for each commit.
+    >   
+    >   You can further customize the output of `git log` by using various options and formatting flags. For example, you can use `git log --oneline` for a more concise log output, or `git log --author=<author>` to filter the logs by a specific author. Feel free to explore the available options in the Git documentation (`git log --help`) to tailor the logs according to your requirements.
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   How do I select commits for the whole of the current branch ?
+
+    >   To select commits for the entire current branch, you can use the range notation in Git. The range notation allows you to specify a range of commits based on their references, such as branch names, commit hashes, or other references. Here's how you can do it:
+    >   
+    >   1. Open your terminal or command prompt.
+    >   2. Navigate to the root directory of your Git repository using the `cd` command. For example:
+    >      ```
+    >      cd /path/to/your/repository
+    >      ```
+    >   3. Ensure you are on the desired branch. You can use the `git branch` command to see the current branch and switch to a different branch if needed. For example, to switch to the "main" branch:
+    >      ```
+    >      git checkout main
+    >      ```
+    >   4. Once you are on the desired branch, you can use the following command to select the commits for the whole branch:
+    >      ```
+    >      git log <branch-name>
+    >      ```
+    >      Replace `<branch-name>` with the name of your current branch. For example, if your current branch is named "main", the command will be:
+    >      ```
+    >      git log main
+    >      ```
+    >      This command will display the commit history for the specified branch, starting with the most recent commits.
+    >   
+    >   The `git log` command with a branch name as the argument will show the commits that are exclusive to that branch and not present in any other branches. If you want to see the commits that are common between branches or have a specific range of commits, you can use other forms of the range notation. For example, `git log branch1..branch2` will display the commits in "branch2" that are not in "branch1".
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   is there an option to not use a pager for the results ?
+
+    >   Yes, Git provides an option to disable the pager and display the results directly in the terminal. You can use the `--no-pager` flag with the `git log` command to achieve this. Here's how you can do it:
+    >   
+    >   ```
+    >   git log --no-pager
+    >   ```
+    >   
+    >   When you include the `--no-pager` flag, Git will bypass the pager (such as `less` or `more`) and display the log output directly in the terminal. This allows you to see the complete log without needing to navigate through a pager interface.
+    >   
+    >   By default, Git automatically uses a pager for commands that produce long outputs, including `git log`. The pager provides convenient scrolling and searching functionalities for easier navigation through the output. However, if you prefer to see the complete log output without the pager, the `--no-pager` flag is the way to go.
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   That command didn't work. The --no-pager option applies to the git command not the log command, so the --no-pager option has to be before the log command.
+    >   
+    >   ```
+    >   git --no-pager log
+    >   ```
+    >   not
+    >   ```
+    >   git log --no-pager
+    >   ```
+
+    >   Apologies for the confusion in my previous response. You are correct. The `--no-pager` option applies to the `git` command itself, rather than the specific subcommand like `log`. Therefore, you should place the `--no-pager` option before the `log` command. Here's the correct command:
+    >   
+    >   ```
+    >   git --no-pager log
+    >   ```
+    >   
+    >   This command will execute the `git log` command without invoking the pager, allowing the log output to be displayed directly in the terminal. Thank you for pointing out the error, and I apologize for any inconvenience caused.
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   Can we change this to list the modified files in each commit ?
+
+    >   Certainly! To list the modified files in each commit, you can use the `--name-only` option with the `git log` command. Here's the updated command:
+    >   
+    >   ```
+    >   git --no-pager log --name-only
+    >   ```
+    >   
+    >   Adding the `--name-only` option will display only the names of the modified files in each commit. The output will include the commit information followed by the list of modified files.
+    >   
+    >   Alternatively, if you want to include additional details about the modifications, such as the type of change (added, modified, deleted) and the number of insertions and deletions, you can use the `--stat` option instead:
+    >   
+    >   ```
+    >   git --no-pager log --stat
+    >   ```
+    >   
+    >   The `--stat` option provides a summary of the modifications, including the number of modified files and the number of insertions and deletions for each commit.
+    >   
+    >   Feel free to choose the option (`--name-only` or `--stat`) that best suits your needs for listing the modified files in each commit.
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   How can I limit the commits to only those since the start of the branch ?
+
+    >   To limit the commits displayed to only those since the start of the branch, you can use the `git log` command along with the `<branch-name>..` syntax. Here's how you can do it:
+    >   
+    >   ```
+    >   git --no-pager log <branch-name>..
+    >   ```
+    >   
+    >   Replace `<branch-name>` with the name of your current branch. This command will show the commits that are reachable from the current branch but not from its upstream or merge base.
+    >   
+    >   For example, if your current branch is named "main," the command would be:
+    >   
+    >   ```
+    >   git --no-pager log main..
+    >   ```
+    >   
+    >   This will display the commit history starting from the point where the "main" branch diverged from its upstream or merge base up to the most recent commit on the branch.
+    >   
+    >   By using the `<branch-name>..` syntax, you can limit the log output to only the commits that exist on the current branch since its starting point, excluding any commits from its upstream branch or merge base.
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   That command did not work.
+    >   
+    >   Using `<branchname>..` will list all the from the current tip of the branch, not from the start of the branch.
+    >   
+    >   The following command will get all the changes between the master branch and the tip of a specific branch.
+    >   
+    >   ```
+    >   git --no-pager log main..<branchname>
+    >   ```
+
+    >   Apologies for the confusion caused earlier. You are correct. To list all the commits since the start of the branch, you can use the `git log` command with the `<branchname>..` syntax, specifying the branch name and the two dots (`..`) operator. Here's the corrected command:
+    >   
+    >   ```
+    >   git --no-pager log <branchname>..
+    >   ```
+    >   
+    >   Replace `<branchname>` with the name of your current branch. This command will display the commit history starting from the initial commit of the branch up to the most recent commit on that branch.
+    >   
+    >   For example, if your current branch is named "my-branch," and you want to see the commits since the start of that branch, you can use:
+    >   
+    >   ```
+    >   git --no-pager log my-branch..
+    >   ```
+    >   
+    >   This command will show the commit history limited to the commits on the "my-branch" since its starting point.
+    >   
+    >   Apologies for any confusion caused by the previous responses. Thank you for bringing it to my attention, and I appreciate your understanding.
+
+
+    #
+    # Nope, ChatGPT is being persistently, confidently, wrong.
+    # https://stackoverflow.com/a/4649377
+    #
+
+        # This command requests all the commits since the *end* of the selected branch.
+        # Which returns an empty list.
+
+        git log "${thisbranch}.."
+
+
+        # Assuming the selected branch was split off from the main branch.
+        # This command requests all the commits between the main branch and the end of the selected branch.
+        # Which returns the list of commits we want.
+
+        git log "main..${thisbranch}"
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   how can we display just the filenames, without the commit author and date
+
+    >   To display only the filenames, without the commit author and date information, you can use the `--name-only` option with the `git log` command. Here's the command:
+    >   
+    >   ```shell
+    >   git --no-pager log --name-only --pretty=format:
+    >   ```
+    >   
+    >   This command will show only the modified file names in each commit, without any additional commit information. The `--pretty=format:` option specifies an empty format, which suppresses the commit author and date output.
+    >   
+    >   By using `--name-only` and `--pretty=format:`, the command will display a list of modified file names in each commit, making it easier to track the changes without any other distractions.
+    >   
+    >   Please note that this command will still show the commit hashes and the commit messages unless you specify additional formatting options to exclude them as well.
+
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   Thank you.
+    >   Can you tell me what additional formatting options I would need to exclude the commit hashes and the commit messages.
+
+    >   Certainly! To exclude the commit hashes and commit messages along with displaying only the modified file names, you can modify the `--pretty=format` option. Here's the updated command:
+    >   
+    >   ```shell
+    >   git --no-pager log --name-only --pretty=format:'' --abbrev-commit
+    >   ```
+    >   
+    >   In this command, we are using an empty format (`format:''`) to suppress all commit information. Additionally, the `--abbrev-commit` option is used to display abbreviated commit hashes instead of the full hash.
+    >   
+    >   By using this command, you will only see the modified file names in each commit, without any commit hashes, commit messages, or other commit information.
+    >   
+    >   Feel free to use this command to get a clean and concise list of modified file names for each commit in your Git repository.
+
+# -----------------------------------------------------
+#[chat.openai.com]
+
+    >   Thank you. That worked.
+    >   In fact, the `--abbrev-commit` option is not required.
+    >   Using just `--pretty=format:''` produces the list we wanted.
+    >   
+    >   ```shell
+    >   git --no-pager log --name-only --pretty=format:''
+    >   ```
+
+    >   You're absolutely right! I apologize for the confusion caused by including the `--abbrev-commit` option unnecessarily. Using just `--pretty=format:''` will indeed produce the desired result of displaying only the modified file names without any additional commit information.
+    >   
+    >   The correct and simplified command is:
+    >   
+    >   ```shell
+    >   git --no-pager log --name-only --pretty=format:''
+    >   ```
+    >   
+    >   Thank you for pointing out the redundancy. By using this command, you will get a clean list of modified file names for each commit, making it easier to track the changes in your repository.
+    >   
+    >   Once again, I apologize for any confusion caused, and I appreciate your clarification.
+
+
+# -----------------------------------------------------
+# Putting it all together ...
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE:?}"
+
+        thisbranch=$(
+            git branch --show-current
+            )
+
+        git \
+            --no-pager \
+            log \
+                --name-only \
+                --abbrev-commit \
+                --pretty=format:'' \
+                "main..${thisbranch}"
+
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   pom.xml
+    >   
+    >   .gitignore
+    >   
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   docker/tomcat/Dockerfile
+    >   
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20200828-01-vm-shutdown.txt
+    >   ....
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   doc/notes/zrq/20210125-01-git-move.txt
+
+
+        git \
+            --no-pager \
+            log \
+                --name-only \
+                --pretty=format:'' \
+                "main..${thisbranch}"
+
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   pom.xml
+    >   
+    >   .gitignore
+    >   
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   docker/tomcat/Dockerfile
+    >   
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20200828-01-vm-shutdown.txt
+    >   ....
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   doc/notes/zrq/20210125-01-git-move.txt
+
+
+        git \
+            --no-pager \
+            log \
+                --name-only \
+                --pretty=oneline \
+                "main..${thisbranch}"
+
+    >   05851cf57cbb38e7080aae6a73473347db539e4c (HEAD -> 20220408-zrq-updates, origin/20220408-zrq-updates) Notes on Hibernate changes
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   b2ea6a3a0c3072b98fcda4bb64344e24218cae25 Resolving update issues ...
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   pom.xml
+    >   4b34160aad9a8aee2e90d27856b2089858239a3d Added gitignore
+    >   .gitignore
+    >   fef792f53ec714b8cc1ba96a4f70553c6f1a627a Updated Fedora, Java, Tomcat and Postgres versions
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   docker/tomcat/Dockerfile
+    >   29329c4ad6755ee22c93f32f888aa2ff8a351633 ....
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   8764a0891e4f85f1920d6980cfece1cedbd14ae2 Notes on system updates
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   42b196eedd541295b692fb619b98e9240fac81c7 format-notes
+    >   doc/notes/zrq/20200828-01-vm-shutdown.txt
+    >   ....
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   5d03bfffb4a9a163e3ddf49a553164e89830ea07 Notes on system updates ...
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   ceb5af6bbaab171eeee6d349eb2e346ae0462f97 Assigning IP address to Apache proxy
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   5713331a75549b073cbf3a34a899f6f05153749c Minor tweaks to notes
+    >   doc/notes/zrq/20210125-01-git-move.txt
+
+
+        git \
+            --no-pager \
+            log \
+                --name-only \
+                --abbrev-commit \
+                --pretty=oneline \
+                "main..${thisbranch}"
+
+    >   05851cf57 (HEAD -> 20220408-zrq-updates, origin/20220408-zrq-updates) Notes on Hibernate changes
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   b2ea6a3a0 Resolving update issues ...
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   pom.xml
+    >   4b34160aa Added gitignore
+    >   .gitignore
+    >   fef792f53 Updated Fedora, Java, Tomcat and Postgres versions
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   docker/tomcat/Dockerfile
+    >   29329c4ad ....
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   8764a0891 Notes on system updates
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   42b196eed format-notes
+    >   doc/notes/zrq/20200828-01-vm-shutdown.txt
+    >   ....
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   5d03bfffb Notes on system updates ...
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   ceb5af6bb Assigning IP address to Apache proxy
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   5713331a7 Minor tweaks to notes
+    >   doc/notes/zrq/20210125-01-git-move.txt
+
+
+        git \
+            --no-pager \
+            log \
+                --name-only \
+                --pretty='format:## %h' \
+                "main..${thisbranch}"
+
+    >   ## 05851cf57
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## b2ea6a3a0
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   pom.xml
+    >   
+    >   ## 4b34160aa
+    >   .gitignore
+    >   
+    >   ## fef792f53
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   ....
+    >   docker/tomcat/Dockerfile
+    >   
+    >   ## 29329c4ad
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## 8764a0891
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## 42b196eed
+    >   doc/notes/zrq/20200828-01-vm-shutdown.txt
+    >   ....
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   ## 5d03bfffb
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   
+    >   ## ceb5af6bb
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   ## 5713331a7
+    >   doc/notes/zrq/20210125-01-git-move.txt
+
+
+    popd
+
+
+    #
+    # ChatGPT was useful for finding the `--name-only` and `--pretty` options,
+    # but final version involved trying the commands and tweaking the format.
+    #
+    # Figured out the details using the online documentation.
+    # https://git-scm.com/docs/git-log
+    #
+
+
+# -----------------------------------------------------
+# Final form.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE:?}"
+
+        thisbranch=$(
+            git branch --show-current
+            )
+
+        git \
+            --no-pager \
+            log \
+                --name-only \
+                --pretty='format:## %h %cs' \
+                "main..${thisbranch}"
+
+    popd
+
+    >   ## 05851cf57 2022-04-19
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## b2ea6a3a0 2022-04-15
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   docker/tomcat/Dockerfile
+    >   firethorn-core/pom.xml
+    >   firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/adql/query/blue/BlueQueryEntity.java
+    >   firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractEntityFactory.java
+    >   firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/entity/AbstractNamedEntity.java
+    >   firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/hibernate/HibernateThings.java
+    >   firethorn-core/src/main/java/uk/ac/roe/wfau/firethorn/hibernate/HibernateThingsImpl.java
+    >   firethorn-jdbc/pom.xml
+    >   firethorn-logging/pom.xml
+    >   firethorn-ogsadai/activity/client/pom.xml
+    >   firethorn-ogsadai/distributed/server/pom.xml
+    >   firethorn-spring/pom.xml
+    >   firethorn-webapp/pom.xml
+    >   pom.xml
+    >   
+    >   ## 4b34160aa 2022-04-14
+    >   .gitignore
+    >   
+    >   ## fef792f53 2022-04-14
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   docker/apache/Dockerfile
+    >   docker/builder/Dockerfile
+    >   docker/compose/client/Dockerfile
+    >   docker/fedora/Dockerfile
+    >   docker/java/Dockerfile
+    >   docker/postgres/Dockerfile
+    >   docker/python/3.4.2/Dockerfile
+    >   docker/pythonlibs/Dockerfile
+    >   docker/sql-proxy/Dockerfile
+    >   docker/sql-tunnel/Dockerfile
+    >   docker/ssh-client/Dockerfile
+    >   docker/tester/Dockerfile
+    >   docker/tomcat/Dockerfile
+    >   
+    >   ## 29329c4ad 2022-04-11
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## 8764a0891 2022-04-11
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## 42b196eed 2022-04-11
+    >   doc/notes/zrq/20200828-01-vm-shutdown.txt
+    >   doc/notes/zrq/20200831-01-recovery.txt
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   ## 5d03bfffb 2022-04-08
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   
+    >   ## ceb5af6bb 2022-04-08
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   ## 5713331a7 2022-04-08
+    >   doc/notes/zrq/20210125-01-git-move.txt
+
+    #
+    # We can see 2 sets of commits.
+    #
+    # 2022-04-08 - 2022-04-11
+    # Notes on the git move and updates to the deployment.
+    #
+    # 2022-04-14 - 2022-04-19
+    # Notes on updating the OS, the Java SDK and the dependencies.
+    #
+
+    #
+    # Looks like this branch was created on 2022-04-08.
+    # With 4 commits that imported notes from 2020 and 2021,
+    # followed by 2 commits on 2022-04-11 that include
+    # details of the failed attempt at updating the OS
+    # in 20220407-01-system-updates.txt, and a start on
+    # updating the Dockerfiles in 20220411-01-system-updates.txt.
+    #
+
+    #
+    # Ideally we would want to split commit 8764a0891 on
+    # 2022-04-11, keeping the details of the failed OS update
+    # in 20220407-01-system-updates.txt, and leaving
+    # the Dockerfile updates in 20220411-01-system-updates.txt
+    # for another time.
+    #
+
+    #
+    # The failed OS update in 20220407-01-system-updates.txt
+    # is a separate thing, it isn't related to the deployment
+    # notes from before 2022-04-07.
+    #
+    # The Dockerfile updates in 20220411-01-system-updates.txt
+    # are a new step, but it just skims the start of the updates
+    # covering the OS, the JDK and Tomcat.
+    #
+
+    #
+    # I say we merge everything up to and including 29329c4ad 2022-04-11.
+    # Then fef792f53 2022-04-14 and beyond are the unmerged set.
+    #
+
+
+# -----------------------------------------------------
+# Try using cherry-pick to include everything upto
+# and including 29329c4ad on 2022-04-11.
+#[user@desktop]
+
+    branchname=git-cherry
+    newbranch=$(date '+%Y%m%d')-zrq-${branchname:?}
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE:?}"
+
+        git checkout main
+
+        git checkout -b "${newbranch:?}"
+
+        git cherry-pick ..29329c4ad
+
+    popd
+
+    >   Switched to branch 'main'
+    >   Your branch is up to date with 'origin/main'.
+
+    >   Switched to a new branch '20230622-zrq-git-cherry'
+
+    >   [20230622-zrq-git-cherry cc88703d0] Minor tweaks to notes
+    >    Date: Fri Apr 8 14:12:40 2022 +0100
+    >    1 file changed, 5 insertions(+), 5 deletions(-)
+    >   [20230622-zrq-git-cherry 8800a732a] Assigning IP address to Apache proxy
+    >    Date: Fri Apr 8 14:14:22 2022 +0100
+    >    1 file changed, 327 insertions(+)
+    >    create mode 100644 doc/notes/zrq/20210208-01-float-deploy.txt
+    >   [20230622-zrq-git-cherry cd14333f2] Notes on system updates ...
+    >    Date: Fri Apr 8 14:16:04 2022 +0100
+    >    1 file changed, 102 insertions(+)
+    >    create mode 100644 doc/notes/zrq/20220407-01-system-updates.txt
+    >   [20230622-zrq-git-cherry 358797cf7] format-notes
+    >    Date: Mon Apr 11 18:49:07 2022 +0100
+    >    3 files changed, 394 insertions(+), 480 deletions(-)
+    >   [20230622-zrq-git-cherry 757833b2e] Notes on system updates
+    >    Date: Mon Apr 11 18:50:11 2022 +0100
+    >    2 files changed, 1535 insertions(+), 26 deletions(-)
+    >    create mode 100644 doc/notes/zrq/20220411-01-system-updates.txt
+    >   [20230622-zrq-git-cherry 93dd6fccd] ....
+    >    Date: Mon Apr 11 18:52:26 2022 +0100
+    >    1 file changed, 64 insertions(+), 78 deletions(-)
+
+
+# -----------------------------------------------------
+# Check the logs.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE:?}"
+
+        thisbranch=$(
+            git branch --show-current
+            )
+
+        git \
+            --no-pager \
+            log \
+                --name-only \
+                --pretty='format:## %h %cs' \
+                "main..${thisbranch}"
+
+    popd
+
+    >   ## 93dd6fccd 2023-06-22
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## 757833b2e 2023-06-22
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   doc/notes/zrq/20220411-01-system-updates.txt
+    >   
+    >   ## 358797cf7 2023-06-22
+    >   doc/notes/zrq/20200828-01-vm-shutdown.txt
+    >   doc/notes/zrq/20200831-01-recovery.txt
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   ## cd14333f2 2023-06-22
+    >   doc/notes/zrq/20220407-01-system-updates.txt
+    >   
+    >   ## 8800a732a 2023-06-22
+    >   doc/notes/zrq/20210208-01-float-deploy.txt
+    >   
+    >   ## cc88703d0 2023-06-22
+    >   doc/notes/zrq/20210125-01-git-move.txt
+
+    #
+    # So we end up with a new set of commit dates.
+    # Not quite what I wanted, but time is getting on.
+    # Good enough for now.
+    #
+
+
+# -----------------------------------------------------
+# Push our commits to GitHub.
+#[user@desktop]
+
+    source "${HOME:?}/firethorn.env"
+    pushd "${FIRETHORN_CODE:?}"
+
+        git push --set-upstream 'origin' "$(git branch --show-current)"
+
+    popd
+
+    >   Enumerating objects: 46, done.
+    >   Counting objects: 100% (46/46), done.
+    >   Delta compression using up to 4 threads
+    >   Compressing objects: 100% (39/39), done.
+    >   Writing objects: 100% (39/39), 19.69 KiB | 2.81 MiB/s, done.
+    >   Total 39 (delta 25), reused 0 (delta 0), pack-reused 0
+    >   remote: Resolving deltas: 100% (25/25), completed with 6 local objects.
+    >   remote:
+    >   remote: Create a pull request for '20230622-zrq-git-cherry' on GitHub by visiting:
+    >   remote:      https://github.com/Zarquan/firethorn/pull/new/20230622-zrq-git-cherry
+    >   remote:
+    >   remote: GitHub found 89 vulnerabilities on Zarquan/firethorn's default branch (25 critical, 47 high, 15 moderate, 2 low). To find out more, visit:
+    >   remote:      https://github.com/Zarquan/firethorn/security/dependabot
+    >   remote:
+    >   To github.com:Zarquan/firethorn.git
+    >    * [new branch]          20230622-zrq-git-cherry -> 20230622-zrq-git-cherry
+    >   branch '20230622-zrq-git-cherry' set up to track 'origin/20230622-zrq-git-cherry'.
+
+
