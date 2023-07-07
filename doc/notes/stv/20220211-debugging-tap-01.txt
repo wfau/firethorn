@@ -1,0 +1,1495 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2022, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# Description of issue:
+
+Firethorn & the WFAU TAP services timing out
+
+
+# -------------------------
+# Email from Nigel to stv:
+
+..
+
+Stelios
+
+Do we have TAP services on our archives? A student of mine wants to do something like this in python:
+
+from astroquery.utils import tap
+t = tap.Tap(url = "http://tap.roe.ac.uk/ssa")
+job = t.launch_job_async("select count(*) from Plate")
+
+but computer says
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/site-packages/astroquery/utils/tap/core.py", line 433, in launch_job_async
+    raise requests.exceptions.HTTPError(response.reason)
+requests.exceptions.HTTPError
+
+Have I got the syntax wrong, or am I barking up the wrong tree, or is there no such service…
+
+Cheers
+
+Queries to SSA using astroquery client are timing out..
+
+..
+
+
+# After some debugging, it looks like the Database network mounts on ramses15 were down.
+
+
+
+
+# -------------------------
+# Email from stv to Rob:
+
+..
+
+Hello,
+
+There seems to be an issue with the SSA TAP service, I tried recreating the service, but got several database connection issues. Mike any idea if there is currently a known issue with MSSQL on host: 192.168.137.53? (Sorry not sure which ramses that is. Maybe 15 or 16?)
+
+Cheers,
+
+Stelios
+
+..
+
+
+
+# After an email exchange with Rob and Mike, ramses15 and the databases for SSA all recovered
+
+
+
+# --------------------------------------------------------------------------------------
+# Create new Firethorn ADQL Resources & the four WFAU TAP services based on notes here:
+# https://github.com/wfau/firethorn/blob/4481dbc36d3f168ea436127d5818a1f3da1d3fc8/doc/notes/stv/20201209-TAP-Swarm-deploy-2.1.36.txt#L411
+
+# [root@firethorn-py](Stevedore@Eterathiel)
+
+nohup python3 -u deployer_osa.py > osa.out &
+nohup python3 -u deployer_ssa.py > ssa.out &
+nohup python3 -u deployer_vsa.py > vsa.out &
+nohup python3 -u deployer_wsa.py > wsa.out &
+
+
+
+
+# ------------------------------------------------------------------------
+# Update Apache Proxy with new TAP services
+# [root@9683ea05bb04 /] (Stevedore@Acilamwen)
+
+  nano /etc/httpd/conf.d/tap.roe.ac.uk.conf
+
+  .. 
+
+    ProxyPassMatch    ^/osa\/(.*)$  http://eterathiel:8080/firethorn/tap/510577/$1
+    ProxyPassReverse  ^/osa\/(.*)$  http://eterathiel:8080/firethorn/tap/510577/$1
+
+    ProxyPassMatch    ^/ssa\/(.*)$  http://eterathiel:8080/firethorn/tap/1040383/$1
+    ProxyPassReverse  ^/ssa\/(.*)$  http://eterathiel:8080/firethorn/tap/1040383/$1
+
+    ProxyPassMatch    ^/vsa\/(.*)$  http://eterathiel:8080/firethorn/tap/1137354/$1
+    ProxyPassReverse  ^/vsa\/(.*)$  http://eterathiel:8080/firethorn/tap/1137354/$1
+
+    ProxyPassMatch    ^/wsa\/(.*)$  http://eterathiel:8080/firethorn/tap/1137362/$1
+    ProxyPassReverse  ^/wsa\/(.*)$  http://eterathiel:8080/firethorn/tap/1137362/$1
+
+    ProxyPassMatch    ^/firethorn\/(.*)$  http://eterathiel:8080/firethorn/$1
+    ProxyPassReverse  ^/firethorn\/(.*)$  http://eterathiel:8080/firethorn/$1
+
+..
+
+
+# Note: We did not recreate from scratch, instead I reimported and replaced the endpoints in our Apache Proxy with the new ones
+# Note2: Import failed on a few databases, which I reported back to Rob. Those were fixed and reimported once more.
+
+
+
+
+# ---------------------------------------------------
+# Another Email from Nigel to stv
+
+.. 
+
+t = tap.Tap(url = "http://tap.roe.ac.uk/ssa")
+job = t.launch_job_async("select count(*) from Plate")
+
+doesn’t work for me … it goes away and thinks about for a while, then comes back with
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/site-packages/astroquery/utils/tap/core.py", line 407, in launch_job_async
+    autorun)
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/site-packages/astroquery/utils/tap/core.py", line 620, in __launchJob
+    verbose=verbose)
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/site-packages/astroquery/utils/tap/conn/tapconn.py", line 273, in execute_tappost
+    return self.__execute_post(context, data, content_type, verbose)
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/site-packages/astroquery/utils/tap/conn/tapconn.py", line 404, in __execute_post
+    response = conn.getresponse()
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/http/client.py", line 1369, in getresponse
+    response.begin()
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/http/client.py", line 310, in begin
+    version, status, reason = self._read_status()
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/http/client.py", line 271, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/Users/nch/opt/anaconda3/envs/py37/lib/python3.7/socket.py", line 589, in readinto
+    return self._sock.recv_into(b)
+ConnectionResetError: [Errno 54] Connection reset by peer
+
+..
+
+
+
+# First issue is related to the query being wrong:
+
+# select count(*) from Plate
+
+#   should be
+
+# select count(*) from SSA.Plate
+
+
+
+
+# ----------------------------------------
+# Try using astroquery to query SSA
+
+
+# Install astroquery
+# [user@local]
+pip3 install astroquery
+
+
+python3
+
+
+# Try a synchronous query
+ssa = TapPlus(url="http://tap.roe.ac.uk/ssa")
+ssa.launch_job("SELECT count(*) FROM SSA.Plate")
+
+>
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/core.py", line 287, in launch_job
+    name)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/core.py", line 619, in __launchJob
+    verbose=verbose)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 273, in execute_tappost
+    return self.__execute_post(context, data, content_type, verbose)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 403, in __execute_post
+    conn.request("POST", context, data, self.__postHeaders)
+  File "/usr/lib/python3.6/http/client.py", line 1285, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1331, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1280, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1046, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.6/http/client.py", line 984, in send
+    self.connect()
+  File "/usr/lib/python3.6/http/client.py", line 956, in connect
+    (self.host,self.port), self.timeout, self.source_address)
+  File "/usr/lib/python3.6/socket.py", line 724, in create_connection
+    raise err
+  File "/usr/lib/python3.6/socket.py", line 713, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+
+# Error, connection timeout !!!
+
+
+# -------------------------------
+# Try an asynchronous query
+
+ssa = TapPlus(url="http://tap.roe.ac.uk/ssa")
+
+job = gaia.launch_job_async("select top count(*) from SSA.Plate")
+
+>
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/core.py", line 451, in launch_job_async
+    job.get_results()
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 246, in get_results
+    self.__load_async_job_results()
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 341, in __load_async_job_results
+    wjResponse, phase = self.wait_for_job_end()
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 326, in wait_for_job_end
+    responseData = self.get_phase(update=True)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 185, in get_phase
+    response = self.connHandler.execute_tapget(phase_request)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 196, in execute_tapget
+    return self.__execute_get(context, verbose)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 243, in __execute_get
+    conn.request("GET", context, None, self.__getHeaders)
+  File "/usr/lib/python3.6/http/client.py", line 1285, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1331, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1280, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1046, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.6/http/client.py", line 984, in send
+    self.connect()
+  File "/usr/lib/python3.6/http/client.py", line 956, in connect
+    (self.host,self.port), self.timeout, self.source_address)
+  File "/usr/lib/python3.6/socket.py", line 724, in create_connection
+    raise err
+  File "/usr/lib/python3.6/socket.py", line 713, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+
+
+# Error, connection timeout again !!!
+
+
+
+# Any request to http://tap.roe.ac.uk seems to hang, including checking firethorn system info as well as requests to http://tap.roe.ac.uk 
+# Looks ike it may be the proxy that is struggling?
+
+# I tried synchronous queries, or requests to firethorn urls (i.e. http://tap.roe.ac.uk/firethorn/blue/query/1137252)
+# All timed out
+
+
+# --------------------------
+# Restart FT & OGSADAI
+# [Stevedore@Eterathiel]
+
+docker ps
+
+docker stop 79bcf707301b (FT)
+docker stop 3a4f84887c8b (OGSADAI)
+
+
+# The services restart automatically, as we have deployed using Docker Swarm
+
+
+
+
+# --------------------------
+# Restart Apache
+# [Stevedore@Acilamwen ~]
+docker kill --signal 'USR1' 'apache'
+
+
+
+# ----------------------
+# Try a sync query 
+# [user@local]
+
+http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL
+
+
+curl -L "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+
+
+>
+
+<?xml version='1.0' encoding='UTF-8'?><VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3' version='1.3'><RESOURCE type='results'><INFO name='QUERY_STATUS' value='OK'></INFO><INFO name='link' value='http://tap.roe.ac.uk/firethorn/adql/table/1159329'/><TABLE ID='table.1159329' name='XX_6S7WAXKU6JFMAAAAAF7OIMDS6E'><FIELD ID='column.1160678' name='filterID' datatype='unsignedByte'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160678'/></FIELD><FIELD ID='column.1160681' name='shortName' datatype='char' arraysize='10'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160681'/></FIELD><FIELD ID='column.1160683' name='name' datatype='char' arraysize='16'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160683'/></FIELD><FIELD ID='column.1160685' name='description' datatype='char' arraysize='256'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160685'/></FIELD><FIELD ID='column.1160687' name='cutOn' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160687'/></FIELD><FIELD ID='column.1160689' name='cutOff' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160689'/></FIELD><FIELD ID='column.1160691' name='aebv' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160691'/></FIELD><FIELD ID='column.1160693' name='vegaToAB' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160693'/></FIELD><FIELD ID='column.1160695' name='oneSecMLVg' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160695'/></FIELD><FIELD ID='column.1160697' name='isSectioned' datatype='unsignedByte'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1160697'/></FIELD><DATA><TABLEDATA><TR><TD>0</TD><TD>NONE</TD><TD>NONE</TD><TD>NONE</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>0</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+
+
+# Sync query works again
+
+# However, as we restarted Apache as well as the FT services, we are not sure which was the unresponsive.
+
+
+
+# -----------------------------------------------
+# Try an asynchronous query using pyvo instead 
+# [user@local]
+
+
+python3
+>>
+
+access_url="http://tap.roe.ac.uk/ssa"
+query="SELECT COUNT(*) FROM SSA.Plate"
+job = pyvo.dal.TAPService(access_url).submit_job(query)
+job.run()
+job.fetch_result()
+
+>> 
+
+<Table length=1>
+COUNT_ALL
+  int64 
+---------
+     6647
+
+
+# So pyvo async worked?
+
+
+# -----------------------------------------------
+# Note at previously failed timed out queries 
+
+After some investigation of the failed / timed out queries, it looks like they have a "READY" status, which implies that they never started?
+
+For example see:
+
+   Query: "select count(*) from SSA.Plate"
+   Status": "READY"
+   URL: http://tap.roe.ac.uk/firethorn/blue/query/1135106
+
+
+
+
+# Try to see if we can cause the issue again by running an Astroquery synchronous query:
+# note we use launch_job instead of launch_job_async for this one:
+
+[user@local] python3
+
+>>> import astroquery
+>>> from astroquery.utils.tap.core import TapPlus
+>>> ssa = TapPlus(url="http://tap.roe.ac.uk/ssa")
+>>> ssa.launch_job("SELECT count(*) FROM SSA.Plate")
+
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/core.py", line 287, in launch_job
+    name)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/core.py", line 619, in __launchJob
+    verbose=verbose)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 273, in execute_tappost
+    return self.__execute_post(context, data, content_type, verbose)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 403, in __execute_post
+    conn.request("POST", context, data, self.__postHeaders)
+  File "/usr/lib/python3.6/http/client.py", line 1285, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1331, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1280, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1046, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.6/http/client.py", line 984, in send
+    self.connect()
+  File "/usr/lib/python3.6/http/client.py", line 956, in connect
+    (self.host,self.port), self.timeout, self.source_address)
+  File "/usr/lib/python3.6/socket.py", line 724, in create_connection
+    raise err
+  File "/usr/lib/python3.6/socket.py", line 713, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+
+# Try accessing some firethorn services 
+
+time curl "http://tap.roe.ac.uk/firethorn/adql/table/1636103/votable"
+
+<?xml version='1.0' encoding='UTF-8'?><VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3' version='1.3'><RESOURCE type='results'><INFO name='QUERY_STATUS' value='OK'></INFO><INFO name='link' value='http://tap.roe.ac.uk/firethorn/adql/table/1636103'/><TABLE ID='table.1636103' name='XX_NEIDXY5JRDFLKAAAAF7ORH2WM4'><FIELD ID='column.1636153' name='filterID' datatype='unsignedByte'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636153'/></FIELD><FIELD ID='column.1636155' name='shortName' datatype='char' arraysize='10'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636155'/></FIELD><FIELD ID='column.1636157' name='name' datatype='char' arraysize='16'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636157'/></FIELD><FIELD ID='column.1636159' name='description' datatype='char' arraysize='256'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636159'/></FIELD><FIELD ID='column.1636161' name='cutOn' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636161'/></FIELD><FIELD ID='column.1636163' name='cutOff' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636163'/></FIELD><FIELD ID='column.1636165' name='aebv' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636165'/></FIELD><FIELD ID='column.1636167' name='vegaToAB' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636167'/></FIELD><FIELD ID='column.1636169' name='oneSecMLVg' datatype='float'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636169'/></FIELD><FIELD ID='column.1636171' name='isSectioned' datatype='unsignedByte'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1636171'/></FIELD><DATA><TABLEDATA><TR><TD>0</TD><TD>NONE</TD><TD>NONE</TD><TD>NONE</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>-9.99999488E8</TD><TD>0</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+
+real	0m7.572s
+
+
+
+time curl "http://tap.roe.ac.uk/firethorn/blue/query/1135104"
+{"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json","input":"select top count(*) from SSA.Plate","tables":[],"status":"EDITING","results":{"formats":{"votable":null,"datatable":null},"count":0,"state":"NONE","table":null},"callback":"http://tap.roe.ac.uk:8081/firethorn/callback/1135104","columns":[],"mode":"AUTO","history":[],"delays":{"every":null,"last":null,"first":500},"limits":{"cells":null,"rows":1000000,"time":null},"syntax":{"friendly":" Encountered \"count\". Was expecting: <UNSIGNED_INTEGER> ","status":"PARSE_ERROR","message":" Encountered \"count\". Was expecting: <UNSIGNED_INTEGER> "},"osql":null,"adql":null,"workspace":"http://tap.roe.ac.uk/firethorn/adql/resource/1040383","fields":[],"resource":"http://tap.roe.ac.uk/firethorn/adql/resource/1040383","resources":[],"text":null,"name":"XX_F2UEBR6FNGFHGAAAAF7OH4YISU","owner":"http://tap.roe.ac.uk/firethorn/community-member/1135023","url":"http://tap.roe.ac.uk/firethorn/blue/query/1135104","self":"http://tap.roe.ac.uk/firethorn/blue/query/1135104","ident":"1135104","created":"2022-02-10T14:04:22.549","modified":"2022-02-10T14:04:22.571"}
+real	0m0.447s
+user	0m0.005s
+sys	0m0.008s
+
+
+
+# So first request took 7 seconds, but second took less than 1?
+# What caused the delay in the first one?
+
+
+
+# Try again...
+
+
+
+>>> job = ssa.launch_job("SELECT count(*) FROM SSA.Plate")
+>>> res = job.get_results()
+>>> res
+<Table length=1>
+column.1636195
+    int64     
+--------------
+          6647
+
+
+# It worked now??
+
+# Try some more timings
+
+# Time a Sync query to ATLASDR1
+
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+Location: http://tap.roe.ac.uk/firethorn/adql/table/1636119/votable
+real	0m1.450s
+user	0m0.019s
+sys	0m0.009s
+
+# 1 sec, seems fine
+
+
+
+# Time fetching the wsa / tables
+
+time curl  "http://tap.roe.ac.uk/wsa/tables" > tables
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 42.8M    0 42.8M    0     0   364k      0 --:--:--  0:02:00 --:--:--  286k
+
+real	2m0.332s
+user	0m1.044s
+sys	0m2.136s
+
+# 2 minutes. Seems a bit long?
+# tables file is 44 Mb
+
+
+# Trying a few more synchronous queries with astroquery to the SSA & the OSA, they seem to be working fine.
+
+# -------------------------------------------------
+# Let's go back to async astroquery queries:
+
+>>> job = ssa.launch_job_async("SELECT count(*) FROM SSA.Plate")
+>>> t1 = ssa.launch_job_async("SELECT count(*) FROM SSA.Plate")
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/core.py", line 451, in launch_job_async
+    job.get_results()
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 246, in get_results
+    self.__load_async_job_results()
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 341, in __load_async_job_results
+    wjResponse, phase = self.wait_for_job_end()
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 326, in wait_for_job_end
+    responseData = self.get_phase(update=True)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/model/job.py", line 185, in get_phase
+    response = self.connHandler.execute_tapget(phase_request)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 196, in execute_tapget
+    return self.__execute_get(context, verbose)
+  File "/home/stelios/.local/lib/python3.6/site-packages/astroquery/utils/tap/conn/tapconn.py", line 244, in __execute_get
+    response = conn.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1377, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 320, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 289, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+
+
+# Apache proxy logs:
+# [root@9683ea05bb04](Stevedore@Acilamwen)
+
+tail -f -n 1000 /var/log/httpd/tap.roe.ac.uk-access.log 
+
+129.215.4.131 - - [11/Feb/2022:12:46:02 +0000] "POST /ssa/async HTTP/1.1" 303 66 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:03 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:03 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:04 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:05 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:06 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:07 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:07 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:08 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:46:09 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+....
+129.215.4.131 - - [11/Feb/2022:12:48:18 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:48:19 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:48:19 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:48:20 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:48:21 +0000] "GET /ssa/async/1635915/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:12:48:43 +0000] "-" 408 - "-" "-"
+
+
+# Check the blue query info for this job:
+
+curl "http://tap.roe.ac.uk/firethorn/blue/query/1635915"
+
+..
+
+"status": "READY",
+
+..
+
+# Check the Phase of the job
+
+http://tap.roe.ac.uk/ssa/async/1635915/phase
+
+> PENDING
+
+
+# Query doesn't show any errors, but has a status of READY
+
+
+# While this is running, try a sync query:
+
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+curl: (7) Failed to connect to tap.roe.ac.uk port 80: Connection timed out
+
+real	2m11.007s
+user	0m0.009s
+sys	0m0.010s
+
+
+
+# Try a simple get to a firethorn VOTable
+time curl "http://tap.roe.ac.uk/firethorn/adql/table/1636117/votable"
+
+curl: (7) Failed to connect to tap.roe.ac.uk port 80: Connection timed out
+
+real	2m9.721s
+user	0m0.013s
+sys	0m0.000
+
+
+
+
+# Try a simple get to a firethorn Blue query:
+
+time curl "http://tap.roe.ac.uk/firethorn/blue/query/1635915"
+{"type":"http://data.metagrid.co.uk/wfau/firethorn/types/entity/blue-query-1.0.json","input":"SELECT count(*) FROM SSA.Plate","tables":[],"status":"READY","results":{"formats":{"votable":null,"datatable":null},"count":0,"state":"NONE","table":null},"callback":"http://tap.roe.ac.uk:8081/firethorn/callback/1635915","columns":[],"mode":"DIRECT","history":[],"delays":{"every":null,"last":null,"first":500},"limits":{"cells":null,"rows":1000000,"time":null},"syntax":{"friendly":null,"status":"VALID","message":null},"osql":"SELECT COUNT(*) AS [COUNT_ALL]\nFROM [SSA].[dbo].[Plate]","adql":"SELECT COUNT(*)\nFROM SSA.Plate","workspace":"http://tap.roe.ac.uk/firethorn/adql/resource/1040383","fields":[],"resource":"http://tap.roe.ac.uk/firethorn/adql/resource/1040383","resources":["http://tap.roe.ac.uk/firethorn/jdbc/resource/1040382"],"text":null,"name":"XX_PRRIBNUDHLNOEAAAAF7ORUNOKU","owner":"http://tap.roe.ac.uk/firethorn/community-member/1637463","url":"http://tap.roe.ac.uk/firethorn/blue/query/1635915","self":"http://tap.roe.ac.uk/firethorn/blue/query/1635915","ident":"1635915","created":"2022-02-11T12:46:02.837","modified":"2022-02-11T12:46:02.866"}
+real	1m5.262s
+user	0m0.004s
+sys	0m0.008s
+
+# Took 1 minute and 5 seconds
+
+
+# So all Firethorn services are now either very slow, or not returning before the request times out..
+
+
+
+# What about an async astroquery to /osa
+
+>>> t1 = osa.launch_job_async("SELECT count(*) FROM ATLASDR1.Filter")
+..
+TimeoutError: [Errno 110] Connection timed out
+
+# Every request hangs again..
+
+
+
+# Same Apache proxy logs..
+
+129.215.4.131 - - [11/Feb/2022:13:04:16 +0000] "GET /osa/async/1635922/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:13:04:17 +0000] "GET /osa/async/1635922/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:13:04:17 +0000] "GET /osa/async/1635922/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:13:04:18 +0000] "GET /osa/async/1635922/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:13:04:19 +0000] "GET /osa/async/1635922/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:13:04:20 +0000] "GET /osa/async/1635922/phase HTTP/1.1" 200 7 "-" "-"
+129.215.4.131 - - [11/Feb/2022:13:04:20 +0000] "GET /osa/async/1635922/phase HTTP/1.1" 200 7 "-" "-"
+
+
+
+
+
+# Restart Firethorn and OGSADAI
+[Stevedore@Eterathiel ~]$ docker ps
+> CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS                 PORTS               NAMES
+> fafeed8608f6        firethorn/ogsadai:2.1.36        "/bin/sh -c '/var/lo…"   2 hours ago         Up 2 hours (healthy)   8080/tcp            ft_jarmila.1.v22c0il9nvfqwwlqh421l9ocb
+> b4a7ea99632a        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   2 hours ago         Up 2 hours (healthy)   8080/tcp            ft_gillian.1.ynrk44krr8a1ypu97gci2xt7a
+> c59453bbdc8b        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   4 days ago          Up 4 days              5432/tcp            ft_bethany.1.yf3b8mjmk3qg8xvqsml6tflnb
+> e59a32e407ec        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   4 days ago          Up 4 days              5432/tcp            ft_carolina.1.lddnb8fg4olymjwv29gj5vsky
+> c2ee1a4630bb        firethorn/firethorn-py:2.1.36   "python3"                4 days ago          Up 4 days                                  ft_firethorn-py.1.rzh2v33a70ddrneihq36m6zta
+
+
+docker stop ft_gillian.1.ynrk44krr8a1ypu97gci2xt7a
+docker stop ft_jarmila.1.v22c0il9nvfqwwlqh421l9ocb
+
+...
+
+
+[Stevedore@Eterathiel ~]$ docker ps
+> CONTAINER ID        IMAGE                           COMMAND                  CREATED              STATUS                        PORTS               NAMES
+> 6f3eafaa24a8        firethorn/ogsadai:2.1.36        "/bin/sh -c '/var/lo…"   About a minute ago   Up About a minute (healthy)   8080/tcp            ft_jarmila.1.zfgf4c6e0iizr1echyalyeojs
+> 4f212da1f38e        firethorn/firethorn:2.1.36      "/bin/sh -c '/var/lo…"   2 minutes ago        Up About a minute (healthy)   8080/tcp            ft_gillian.1.2j6rnrje98ar3p2qjetxqizik
+> c59453bbdc8b        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   4 days ago           Up 4 days                     5432/tcp            ft_bethany.1.yf3b8mjmk3qg8xvqsml6tflnb
+> e59a32e407ec        firethorn/postgres:2.1.36       "docker-entrypoint.s…"   4 days ago           Up 4 days                     5432/tcp            ft_carolina.1.lddnb8fg4olymjwv29gj5vsky
+> c2ee1a4630bb        firethorn/firethorn-py:2.1.36   "python3"                4 days ago           Up 4 days                                         ft_firethorn-py.1.rzh2v33a70ddrneihq36m6zta
+
+
+# Try a simple sync query..
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+curl: (7) Failed to connect to tap.roe.ac.uk port 80: Connection timed out
+
+real	2m9.451s
+user	0m0.022s
+sys	0m0.012s
+
+
+# So restarting Ogsadai & FT didn't seem to fix things..
+
+# UPDATE: Same query seemed to work a couple minutes later..and now FT seems to be responding fast enough again..
+
+
+
+# Update so far:
+# ---------------------------------------
+
+
+# Astroquery async queries seem to cause our TAP services to hang, and stop responding
+# Issue could be either on the FT or the Apache Proxy side.
+# Restarting FT & OGSADAI doesn't seem to fix things, but eventually the service seems to recover
+# However until it recovers, all requests seem to hang
+
+
+
+
+# Restart FT, OGSADAI and Apache
+# Note by restart Apache, I'm running:
+#   docker kill --signal 'USR1' 'apache'
+# Is this the right command?
+
+
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+Location: http://tap.roe.ac.uk/firethorn/adql/table/1640403/votable
+real	1m9.889s
+user	0m0.017s
+sys	0m0.012s
+
+
+
+
+# Took 1 minute.. Should have taken 1 second
+
+
+
+
+
+# Same sync query again..
+
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+curl: (7) Failed to connect to tap.roe.ac.uk port 80: Connection timed out
+
+real	2m10.894s
+user	0m0.011s
+sys	0m0.018s
+
+
+
+# Check Apache Error logs:
+
+[Fri Feb 11 01:03:56.296423 2022] [access_compat:error] [pid 5728:tid 140159974614784] [client 133.40.215.109:47449] AH01797: client denied by server configuration: proxy:http://eterathiel:8080/firethorn/tap/510587/sync
+[Fri Feb 11 01:03:56.342183 2022] [access_compat:error] [pid 5942:tid 140161131599616] [client 133.40.215.109:47439] AH01797: client denied by server configuration: proxy:http://eterathiel:8080/firethorn/tap/510587/sync
+[Fri Feb 11 01:03:56.345529 2022] [access_compat:error] [pid 5730:tid 140160939284224] [client 133.40.215.109:47447] AH01797: client denied by server configuration: proxy:http://eterathiel:8080/firethorn/tap/510587/sync
+[Fri Feb 11 01:03:56.350328 2022] [access_compat:error] [pid 5729:tid 140160301766400] [client 133.40.215.109:47441] AH01797: client denied by server configuration: proxy:http://eterathiel:8080/firethorn/tap/510587/sync
+
+
+
+# Check Apache Access logs:
+
+129.215.4.131 - - [11/Feb/2022:13:13:34 +0000] "-" 408 - "-" "-"
+129.215.4.131 - - [11/Feb/2022:13:13:34 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL HTTP/1.1" 303 67 "-" "curl/7.58.0"
+129.215.4.131 - - [11/Feb/2022:13:48:18 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL HTTP/1.1" 303 67 "-" "curl/7.58.0"
+128.14.134.170 - - [11/Feb/2022:13:48:38 +0000] "GET / HTTP/1.1" 403 4650 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"
+129.215.4.131 - - [11/Feb/2022:13:52:16 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL HTTP/1.1" 303 67 "-" "curl/7.58.0"
+129.215.4.131 - - [11/Feb/2022:13:53:38 +0000] "GET /osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL HTTP/1.1" 303 67 "-" "curl/7.58.0"
+
+
+
+# Check FT logs:
+
+> .. Only System info checks output
+
+
+
+# Check OGSADAI logs:
+
+> .. 	Nothing new shows up
+
+
+# ---------------------------------------
+# Check active connections in Apache
+
+# Log into Apache (Acilamewn)
+
+
+# Start a synchronous query for each step..
+
+
+# List All Ports (both listening and non listening ports)
+
+[root@9683ea05bb04 /]# netstat -a | more
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 0.0.0.0:http            0.0.0.0:*               LISTEN     
+tcp        0      0 9683ea05bb04:40526      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40524      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38932  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40530      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38928  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38930  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38926  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40516      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40522      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38918  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38924  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38922  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40518      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38920  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40520      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40528      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (servers and established)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ACC ]     STREAM     LISTENING     74485852 /run/httpd/cgisock.1
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (servers and established)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+
+
+
+
+
+# Show the statistics for each protocol
+
+[root@9683ea05bb04 /]# netstat -s
+Ip:
+    Forwarding: 1
+    112791720 total packets received
+    0 forwarded
+    0 incoming packets discarded
+    112791720 incoming packets delivered
+    103172198 requests sent out
+Icmp:
+    8883 ICMP messages received
+    363 input ICMP message failed
+    ICMP input histogram:
+        destination unreachable: 8845
+        timeout in transit: 38
+    0 ICMP messages sent
+    0 ICMP messages failed
+    ICMP output histogram:
+IcmpMsg:
+        InType3: 8845
+        InType11: 38
+Tcp:
+    6113493 active connection openings
+    395970 passive connection openings
+    23609 failed connection attempts
+    2278 connection resets received
+    0 connections established
+    106669332 segments received
+    173179577 segments sent out
+    370305 segments retransmitted
+    1 bad segments received
+    8092 resets sent
+Udp:
+    6113505 packets received
+    0 packets to unknown port received
+    0 packet receive errors
+    6113528 packets sent
+    0 receive buffer errors
+    0 send buffer errors
+UdpLite:
+TcpExt:
+    15412 resets received for embryonic SYN_RECV sockets
+    279 packets pruned from receive queue because of socket buffer overrun
+    9 ICMP packets dropped because they were out-of-window
+    706678 TCP sockets finished time wait in fast timer
+    610 packetes rejected in established connections because of timestamp
+    63437 delayed acks sent
+    144 delayed acks further delayed because of locked socket
+    Quick ack mode was activated 9488 times
+    13 SYNs to LISTEN sockets dropped
+    18148801 packet headers predicted
+    55639806 acknowledgments not containing data payload received
+    7629126 predicted acknowledgments
+    TCPSackRecovery: 3669
+    TCPSACKReneging: 1
+    Detected reordering 78251 times using SACK
+    Detected reordering 284 times using reno fast retransmit
+    Detected reordering 946 times using time stamp
+    21 congestion windows fully recovered without slow start
+    321 congestion windows partially recovered using Hoe heuristic
+    TCPDSACKUndo: 121
+    1593 congestion windows recovered without slow start after partial ack
+    TCPLostRetransmit: 3638
+    7 timeouts after reno fast retransmit
+    TCPSackFailures: 45
+    33 timeouts in loss state
+    54688 fast retransmits
+    2664 retransmits in slow start
+    TCPTimeouts: 339691
+    TCPLossProbes: 29744
+    TCPLossProbeRecovery: 861
+    TCPSackRecoveryFail: 88
+    2502 packets collapsed in receive queue due to low socket buffer
+    TCPDSACKOldSent: 9371
+    TCPDSACKOfoSent: 2
+    TCPDSACKRecv: 29858
+    TCPDSACKOfoRecv: 140
+    6038 connections reset due to unexpected data
+    852 connections reset due to early user close
+    42 connections aborted due to timeout
+    TCPSACKDiscard: 81
+    TCPDSACKIgnoredOld: 51
+    TCPDSACKIgnoredNoUndo: 23346
+    TCPSpuriousRTOs: 11
+    TCPSackShifted: 59526
+    TCPSackMerged: 192328
+    TCPSackShiftFallback: 101846
+    TCPDeferAcceptDrop: 394361
+    TCPRcvCoalesce: 11154662
+    TCPOFOQueue: 121331
+    TCPOFOMerge: 47
+    TCPChallengeACK: 165
+    TCPSYNChallenge: 16
+    TCPFastOpenCookieReqd: 4
+    TCPFromZeroWindowAdv: 6834
+    TCPToZeroWindowAdv: 6834
+    TCPWantZeroWindowAdv: 8958
+    TCPSynRetrans: 281554
+    TCPOrigDataSent: 130805986
+    TCPHystartTrainDetect: 1379
+    TCPHystartTrainCwnd: 282391
+    TCPHystartDelayDetect: 599
+    TCPHystartDelayCwnd: 59644
+    TCPACKSkippedSynRecv: 687
+    TCPACKSkippedPAWS: 71
+    TCPACKSkippedSeq: 807
+    TCPACKSkippedTimeWait: 5
+    TCPACKSkippedChallenge: 21
+    TCPWinProbe: 93
+    TCPDelivered: 136902253
+    TCPAckCompressed: 4251
+IpExt:
+    InOctets: 155410878491
+    OutOctets: 155804475291
+    InNoECTPkts: 201788519
+    InECT1Pkts: 33
+    InECT0Pkts: 1768386
+
+
+
+# Check active connections
+ 
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+
+   netstat | grep http | wc -l
+   > 0
+
+> Done
+
+# Note that the synchronous query run at this step passed
+
+
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+
+..
+
+netstat -c 
+
+
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40544      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40544      Eterathiel:webcache     TIME_WAIT  
+
+
+....
+
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40544      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:40280 SYN_RECV   
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40546      Eterathiel:webcache     ESTABLISHED
+tcp        0      0 9683ea05bb04:40544      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:40280 ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40544      Eterathiel:webcache     TIME_WAIT  
+
+
+> Done
+
+# Note that the synchronous query run at this step passed
+
+
+
+
+# Try again...
+
+time curl "http://tap.roe.ac.uk/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+
+netstat -c 
+
+
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:40324 ESTABLISHED
+tcp        0      0 9683ea05bb04:40550      Eterathiel:webcache     ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0    500 9683ea05bb04:http       vpn2-131.vpn.net.:40324 ESTABLISHED
+tcp        0      0 9683ea05bb04:40550      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40550      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40550      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State  
+
+
+> Done
+
+# Query worked, but took 30 seconds
+
+
+# Try a sync astroquery and observe netstat
+
+
+>>> t1 = osa.launch_job("SELECT count(*) FROM ATLASDR1.Filter")
+
+netstat -c 
+
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40566      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40566      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40566      Eterathiel:webcache     TIME_WAIT  
+
+
+> Query Done..
+
+# Check netstat again
+
+
+netstat -c 
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40566      Eterathiel:webcache     TIME_WAIT  
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+
+# After a minute or so the connection to Eterathiel is finished
+
+
+
+
+# Try an async astroquery and observe netstat
+
+
+>>> t1 = osa.launch_job_async("SELECT count(*) FROM ATLASDR1.Filter")
+
+
+netstat -c 
+
+
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38942  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38944  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38938  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38936  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38946  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40598      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40608      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38940  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40602      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40610      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40606      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40612      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38948  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40604      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38934  TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38942  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38944  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38938  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38936  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38946  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40598      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40608      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38940  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40602      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40610      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40606      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40612      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38948  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40604      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38934  TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38942  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38944  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38938  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38936  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38946  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40598      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40608      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38940  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40602      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40610      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40606      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40612      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38948  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40604      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38934  TIME_WAIT  
+
+
+
+..
+
+
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40614      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:40614      Eterathiel:webcache     TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+
+...
+
+
+
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+
+# Async query fails..
+
+> TimeoutError: [Errno 110] Connection timed out
+
+
+
+# Query with pyvo
+
+>> access_url="http://tap.roe.ac.uk/ssa"
+>> query="SELECT COUNT(*) FROM SSA.Plate"
+>> job = pyvo.dal.TAPService(access_url).submit_job(query)
+
+
+> Connection timed out
+
+
+# Nothign showing up in netstat
+
+# Try running a few sync queries, all timeout, no connections
+
+
+# A few hours later try some sync queries again..
+
+
+
+netstat -c 
+
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38968  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38982  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38970  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38974  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38972  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38978  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40682      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38976  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38980  TIME_WAIT  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38968  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38982  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38970  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38974  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38972  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38978  TIME_WAIT  
+tcp        0      0 9683ea05bb04:40682      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38976  TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       trop02.roe.ac.uk:38980  TIME_WAIT  
+
+...
+
+
+# TAP service not responding to any requests ..
+
+netstat -c 
+
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0   1429 9683ea05bb04:http       vpn2-131.vpn.net.:53770 ESTABLISHED
+tcp        0      0 9683ea05bb04:40688      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:53772 SYN_RECV   
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:53770 ESTABLISHED
+tcp        0      0 9683ea05bb04:40688      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:53772 SYN_RECV   
+Active UNIX domain sockets (w/o servers)
+
+
+
+# TAP service now responding again
+
+# Try a pyvo async query:
+
+
+>>> job = pyvo.dal.TAPService(access_url).submit_job(query)
+
+# Job Completes
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56630 ESTABLISHED
+tcp        0      0 9683ea05bb04:40700      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40702      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56636 SYN_RECV   
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56630 ESTABLISHED
+tcp        0      0 9683ea05bb04:40700      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40702      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40704      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56636 ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56630 ESTABLISHED
+tcp        0      0 9683ea05bb04:40700      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40702      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40704      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56636 ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56630 FIN_WAIT2  
+tcp        0      0 9683ea05bb04:40700      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40702      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40704      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56636 ESTABLISHED
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56630 FIN_WAIT2  
+tcp        0      0 9683ea05bb04:40700      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40702      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40704      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56636 FIN_WAIT2  
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node   Path
+unix  2      [ ]         DGRAM                    516738   
+Active Bluetooth connections (w/o servers)
+Proto  Destination       Source            State         PSM DCID   SCID      IMTU    OMTU Security
+Proto  Destination       Source            State     Channel
+Active Internet connections (w/o servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State      
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56630 FIN_WAIT2  
+tcp        0      0 9683ea05bb04:40700      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40702      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:40704      Eterathiel:webcache     TIME_WAIT  
+tcp        0      0 9683ea05bb04:http       vpn2-131.vpn.net.:56636 FIN_WAIT2  
+
+
+..
+
+
+# Try a PyVO query
+
+>>> job = pyvo.dal.TAPService(access_url).submit_job(query)
+KeyboardInterrupt
+>>> access_url="http://tap.roe.ac.uk/ssa"
+>>> query="SELECT COUNT(*) FROM SSA.Plate"
+>>> job = pyvo.dal.TAPService(access_url).submit_job(query)
+
+>>> job.run()
+<pyvo.dal.tap.AsyncTAPJob object at 0x7f45eeead4a8>
+>>> job.fetch_result()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/stelios/.local/lib/python3.6/site-packages/pyvo/dal/tap.py", line 841, in fetch_result
+    return TAPResults(votableparse(response.raw.read), url=self.result_uri, session=self._session)
+  File "/usr/local/lib/python3.6/dist-packages/astropy/utils/decorators.py", line 521, in wrapper
+    return function(*args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/astropy/io/votable/table.py", line 167, in parse
+    config=config, pos=(1, 1)).parse(iterator, config)
+  File "/usr/local/lib/python3.6/dist-packages/astropy/io/votable/tree.py", line 3545, in parse
+    vo_raise(E19, (), config, pos)
+  File "/usr/local/lib/python3.6/dist-packages/astropy/io/votable/exceptions.py", line 101, in vo_raise
+    raise exception_class(args, config, pos)
+astropy.io.votable.exceptions.E19: None:1:39: E19: File does not appear to be a VOTABLE
+
+
+# New Problem???
+# Check the query object
+# Status = COMPLETED
+
+# Check VOTable..
+curl "http://tap.roe.ac.uk/firethorn/adql/table/1643271/votable"
+
+<?xml version='1.0' encoding='UTF-8'?><VOTABLE xmlns='http://www.ivoa.net/xml/VOTable/v1.3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3' version='1.3'><RESOURCE type='results'><INFO name='QUERY_STATUS' value='OK'></INFO><INFO name='link' value='http://tap.roe.ac.uk/firethorn/adql/table/1643271'/><TABLE ID='table.1643271' name='XX_3YCS5LRIPHEW2AAAAF7OTTBZWM'><FIELD ID='column.1643749' name='COUNT_ALL' datatype='long'><LINK content-type='application/json' content-role='metadata' href='http://tap.roe.ac.uk/firethorn/adql/column/1643749'/></FIELD><DATA><TABLEDATA><TR><TD>6647</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>
+
+
+# Looks fine to me ??
+
+
+
+
+# Going back to astroquery async queries
+
+>>> query="SELECT COUNT(*) FROM SSA.Plate"
+>>> t1 = osa.launch_job_async("SELECT count(*) FROM ATLASDR1.Filter")
+
+> TimeoutError: [Errno 110] Connection timed out
+
+
+# Any request to tap.roe.ac.uk hangs...
+
+# So we can recreate the issue consistently with astroquery async
+
+
+# But..!!!
+# It looks like queries from within the Apache Proxy docker container work:
+
+
+[root@9683ea05bb04 /]# curl http://localhost:80/firethorn/system/info
+
+
+{
+"java": {
+    "name" : "OpenJDK 64-Bit Server VM",
+    "build" : "25.212-b04",
+    "version" : "1.8.0_212",
+    "memory" : {
+        "total" : 450887680,
+        "free" : 188556704,
+        "max" : 919076864
+        },
+    "disk" : {
+        "total" : 33016512512,
+        "free" : 15741337600,
+        "usable" : 14190280704
+        }
+    },
+
+...   
+        ]
+    }
+}
+
+
+
+
+[root@9683ea05bb04 /]#  time curl "http://localhost/osa/sync?REQUEST=doQuery&QUERY=SELECT+TOP+1+*+from+ATLASDR1.Filter&LANG=ADQL"
+Location: http://localhost/firethorn/adql/table/1643275/votable
+real	0m1.284s
+user	0m0.010s
+sys	0m0.010s
+
+
+
+# So... while queries from the outside are timing out, queries and requests from within the container (to localhost) work fine.
+
+# Some connectivity issue from the outside caused by running the Astroquery async jobs?
+
+
+
+
+
+
+
