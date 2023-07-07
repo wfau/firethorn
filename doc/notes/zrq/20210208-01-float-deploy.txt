@@ -1,0 +1,313 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2021, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#zrq-notes-time
+#zrq-notes-indent
+#zrq-notes-crypto
+#zrq-notes-ansible
+#zrq-notes-osformat
+#zrq-notes-zeppelin
+#
+
+    Target:
+
+        Assign floating IP address to Apache proxy VM, Acilamwen, following a reboot.
+        VM was replaced with a new instance, so original association was lost.
+
+    Result:
+
+        Work in progress.
+
+    Source:
+
+        Previous notes:
+            doc/notes/zrq/20180901-02-trop-deploy.txt
+
+
+# -----------------------------------------------------
+# Settings for float1 on trop02
+#[user@trop02]
+
+    newnetname=ens7
+    newaddress=129.215.175.100
+    newmacaddr=52:54:00:00:01:00
+
+# -----------------------------------------------------
+# Generic settings for the ROE network.
+#[user@trop02]
+
+    roegateway=129.215.175.126
+    roenetwork=129.215.175.0
+    roenetmask=255.255.255.0
+
+# -----------------------------------------------------
+# Virtual machine name.
+#[user@trop02]
+
+    vmname=Acilamwen
+    vmuser=Stevedore
+
+
+# -----------------------------------------------------
+# Login to the new VM and list the interfaces.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        '
+        hostname
+        date
+        sudo ifconfig -a
+        '
+
+    >   Acilamwen
+    >   Mon  8 Feb 15:51:27 GMT 2021
+    >   docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           inet6 fe80::42:5aff:fee7:d404  prefixlen 64  scopeid 0x20<link>
+    >           ether 02:42:5a:e7:d4:04  txqueuelen 0  (Ethernet)
+    >           RX packets 547  bytes 44610 (43.5 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 611  bytes 2555117 (2.4 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
+    >           inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
+    >           RX packets 42984  bytes 643382975 (613.5 MiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 22310  bytes 1799775 (1.7 MiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 36  bytes 12690 (12.3 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 36  bytes 12690 (12.3 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   veth92b997e: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet6 fe80::38f5:aff:fec0:7cc6  prefixlen 64  scopeid 0x20<link>
+    >           ether 3a:f5:0a:c0:7c:c6  txqueuelen 0  (Ethernet)
+    >           RX packets 15  bytes 3913 (3.8 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 32  bytes 5126 (5.0 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+# -----------------------------------------------------
+# Login to the new VM and configure the new interface.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
+
+        sudo -s
+
+        cat > /etc/sysconfig/network-scripts/ifcfg-${newnetname:?} << EOF
+NAME=${newnetname:?}
+DEVICE=${newnetname:?}
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${newmacaddr:?}
+NETWORK=${roenetwork:?}
+NETMASK=${roenetmask:?}
+GATEWAY=${roegateway:?}
+IPADDR=${newaddress}
+EOF
+EOSH
+
+    >   ....
+    >   ....
+
+
+# -----------------------------------------------------
+# Login to the new VM and configure the default route.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
+
+        sudo -s
+
+        sed -i '
+            s/^GATEWAYDEV=.*/GATEWAYDEV=${newnetname:?}/
+            ' /etc/sysconfig/network
+EOSH
+
+    >   ....
+    >   ....
+
+
+#---------------------------------------------------------------------
+# Use virsh to attach an new network interface to the VM.
+#[user@trop02]
+
+    source "${HOME}/libvirt.env"
+
+    virsh -c ${libvirtcon:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${newmacaddr:?}" \
+            --live \
+            --config
+
+    >   Interface attached successfully
+
+
+    virsh -c ${libvirtcon:?} \
+        dumpxml \
+            "${vmname:?}" \
+        | xmllint --xpath '//interface' -
+
+
+    >   <interface type="network">
+    >       <mac address="52:54:00:02:02:0f"/>
+    >       <source network="default"/>
+    >       <target dev="vnet0"/>
+    >       <model type="virtio"/>
+    >       <alias name="net0"/>
+    >       <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+    >   </interface><interface type="bridge">
+    >       <mac address="52:54:00:00:01:00"/>
+    >       <source bridge="br0"/>
+    >       <target dev="vnet2"/>
+    >       <model type="virtio"/>
+    >       <alias name="net1"/>
+    >       <address type="pci" domain="0x0000" bus="0x00" slot="0x07" function="0x0"/>
+    >   </interface>
+
+
+# -----------------------------------------------------
+# Login to the VM and initialise the interface.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" << EOSH
+
+        sudo -s
+
+        ifup "${newnetname:?}"
+
+EOSH
+
+# -----------------------------------------------------
+# Reboot the new VM to force an update.
+# We should be able to avoid this .. but for now ..
+#[user@trop02]
+
+    source "${HOME}/libvirt.env"
+
+    virsh -c ${libvirtcon:?} \
+        reboot "${vmname:?}"
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Login to the new VM and list the interfaces.
+#[user@trop02]
+
+    ssh "${vmuser:?}@${vmname:?}" \
+        '
+        hostname
+        date
+        sudo ifconfig -a
+        '
+
+    >   Mon  8 Feb 15:56:43 GMT 2021
+    >   docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+    >           inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+    >           ether 02:42:95:57:78:34  txqueuelen 0  (Ethernet)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 0  bytes 0 (0.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 192.168.202.15  netmask 255.255.255.0  broadcast 192.168.202.255
+    >           inet6 fe80::5054:ff:fe02:20f  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:02:02:0f  txqueuelen 1000  (Ethernet)
+    >           RX packets 73  bytes 10971 (10.7 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 52  bytes 7617 (7.4 KiB)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   ens7: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+    >           inet 129.215.175.100  netmask 255.255.255.0  broadcast 129.215.175.255
+    >           inet6 fe80::5054:ff:fe00:100  prefixlen 64  scopeid 0x20<link>
+    >           ether 52:54:00:00:01:00  txqueuelen 1000  (Ethernet)
+    >           RX packets 467  bytes 28171 (27.5 KiB)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 11  bytes 834 (834.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    >   
+    >   lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+    >           inet 127.0.0.1  netmask 255.0.0.0
+    >           inet6 ::1  prefixlen 128  scopeid 0x10<host>
+    >           loop  txqueuelen 1000  (Local Loopback)
+    >           RX packets 0  bytes 0 (0.0 B)
+    >           RX errors 0  dropped 0  overruns 0  frame 0
+    >           TX packets 0  bytes 0 (0.0 B)
+    >           TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+#[root@trop02]
+
+    #
+    # Still unable to access the Apache service from outside.
+    # As if a firewall was blocking port 80 ...
+    # Found this in previous notes :
+
+        notes/zrq/20200831-01-recovery.txt
+
+            sysctl -w net.bridge.bridge-nf-call-arptables=0
+            sysctl -w net.bridge.bridge-nf-call-iptables=0
+            sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+
+    #
+    # Ran a check, and they have indeed reverted to default setting.
+    #
+
+    sysctl net.bridge
+
+    >   net.bridge.bridge-nf-call-arptables = 1
+    >   net.bridge.bridge-nf-call-ip6tables = 1
+    >   net.bridge.bridge-nf-call-iptables = 1
+    >   net.bridge.bridge-nf-filter-pppoe-tagged = 0
+    >   net.bridge.bridge-nf-filter-vlan-tagged = 0
+    >   net.bridge.bridge-nf-pass-vlan-input-dev = 0
+
+    #
+    # Settings to allow bridged traffic to avoid the host firewall.
+    #
+
+    sysctl -w net.bridge.bridge-nf-call-arptables=0
+    sysctl -w net.bridge.bridge-nf-call-iptables=0
+    sysctl -w net.bridge.bridge-nf-call-ip6tables=0
+
+
+
